@@ -32,7 +32,7 @@ const Header = () => {
     <header className="bg-gradient-to-r from-gray-900 to-gray-800 p-6 rounded-xl shadow-lg flex flex-col md:flex-row items-center justify-between">
         <div className="flex items-center gap-4">
             <img 
-            src="src\assets\profile.png"
+            src="R.png"
             alt="profile"
             className="w-20 h-20 rounded-full border-2 border-blue-400"
             />
