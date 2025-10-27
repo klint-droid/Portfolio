@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const Header = () => {
   
+  
   const text = "Klint Morales Ruales"
   const [displayedText, setDisplayedText] = useState("");
   const [index, setIndex] = useState(0);
@@ -44,7 +45,7 @@ const Header = () => {
                 Full-Stack Developer 
               </p>
               <p className="text-gray-400 text-sm">
-                Cebu City, Cebu
+                Cebu City, Cebu 6000 Philippines
               </p>
             </div>
         </div>
