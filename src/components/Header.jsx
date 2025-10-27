@@ -42,10 +42,10 @@ const Header = () => {
                 <span className="border-r-2 border-white animate-pulse"></span>
               </h1>
               <p className="text-blue-600 text-2xl">
-                Full-Stack Developer 
+                Backend Developer 
               </p>
               <p className="text-gray-400 text-sm">
-                Cebu City, Cebu 6000 Philippines
+                Cebu City, Cebu, Philippines
               </p>
             </div>
         </div>
