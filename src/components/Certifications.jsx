@@ -34,13 +34,6 @@ const Certifications = () => {
       link: "#",
     },
     {
-      name: "Philippine Mathematical Olympiad Bronze Awardee",
-      issuer: "PHIMO Organization",
-      year: "2020",
-      icon: <GiLaurelCrown className="text-amber-500 text-2xl" />,
-      link: "#",
-    },
-    {
       name: "Using Python to Interact with the Operating System",
       issuer: "Coursera",
       year: "2025",
