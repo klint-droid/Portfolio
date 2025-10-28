@@ -48,7 +48,7 @@ const Projects = () => {
                         </a>
                         <div className="flex items-center gap-3 mt-6">
                             {proj.icon}
-                            <h3 className="text-xl font-semibold">{proj.title}</h3>
+                            <h3 className="text-xl font-semibold"><a href={proj.link}>{proj.title}</a></h3>
                         </div>
                         <p className="text-sm mt-3">{proj.description}</p>
 
