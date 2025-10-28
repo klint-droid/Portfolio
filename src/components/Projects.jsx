@@ -13,7 +13,7 @@ const Projects = () => {
             ],
             icon: <SiReact className="text-sky-400 text-3xl" />,
             github: "https://github.com/klint-droid",
-            link: "klint-ruales.vercel.app",
+            link: "#",
         },
         {
             title: "Attendance Checker",
