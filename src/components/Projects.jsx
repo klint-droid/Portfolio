@@ -1,5 +1,4 @@
-import React from "react";
-import { SiReact, SiTailwindcss, SiVite, SiDjango, SiMysql, SiPrisma, SiGithub, SiAboutdotme } from "react-icons/si";
+import { SiDjango, SiGithub, SiMysql, SiReact, SiTailwindcss, SiVite } from "react-icons/si";
 
 const Projects = () => {
     const projects = [
@@ -13,7 +12,7 @@ const Projects = () => {
             ],
             icon: <SiReact className="text-sky-400 text-3xl" />,
             github: "https://github.com/klint-droid",
-            link: "#",
+            link: "/",
         },
         {
             title: "Attendance Checker",
