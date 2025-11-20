@@ -11,7 +11,7 @@ const Projects = () => {
                 { name: "Vite", icon: <SiVite className="text-purple-500 text-xl" /> },
             ],
             icon: <SiReact className="text-sky-400 text-3xl" />,
-            github: "https://github.com/klint-droid",
+            github: "https://github.com/klint-droid/Portfolio",
             link: "/",
         },
         {
@@ -23,8 +23,8 @@ const Projects = () => {
                 { name: "MySQL", icon: <SiMysql className="text-blue-600 text-xl" /> },
             ],
             icon: <SiDjango className="text-green-600 text-3xl" />,
-            github: "https://github.com/klint-droid",
-            link: "#",
+            github: "https://github.com/klint-droid/Attendance-Checker",
+            link: "https://attendance-record-cyan.vercel.app/",
         },
     ]
 
