@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   
@@ -53,7 +53,7 @@ const Header = () => {
           <button className="bg-blue-600 px-4 py-2 rounded-lg text-white transform hover:-translate-y-1 hover:scale-103 transition duration-300 ease-in-out">
             Send Email
           </button>
-          <button className="border border-gray-500 px-4 py-2 rounded-lg text-black transform hover:-translate-y-1 hover:scale-103 transition duration-300 ease-in-out">
+          <button className="border border-gray-500 px-4 py-2 rounded-lg text-white transform hover:-translate-y-1 hover:scale-103 transition duration-300 ease-in-out">
             View Resume
           </button>
           <button className="bg-gray-700 px-4 py-2 rounded-lg text-white transform hover:-translate-y-1 hover:scale-103 transition duration-300 ease-in-out">
