@@ -31,7 +31,7 @@ const Header = () => {
   }, [index, isDeleting]);
 
   return (
-    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray relative overflow-hidden">
+    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden">
       <div className="absolute top-6 right-6">
         <div className="w-12 h-6 bg-gray-200 rounded-full flex items-center p-1 cursor-pointer hover:bg-gray-300 transition-colors">
           <div className="w-4 h-4 bg-white rounded-full shadow-sm transform translate-x-0 transition-transform"></div>

@@ -1,58 +1,48 @@
 import React from "react";
+import { RiLayoutMasonryLine } from "react-icons/ri";
 
 const Experience = () => {
-    const seminars = [
+    const timelineData = [
         {
-            title: "Full Stack Development",
-            organizer: "Roman GUERRY",
-            year: "2025",
-            description: "Learned frontend (HTML, CSS, JavaScript, React) and backend (Node.js, Express, MySQL) development through hands-on projects."
+            role: "Associate Degree in Computer Technology Major in Software Developer",
+            company: "University of San Jose - Recoletos",
+            year: "2024 - Present",
         },
         {
-            title: "Database Design & SQL Fundamentals",
-            organizer: "Roman GUERRY",
+            role: "Digital Designer",
+            company: "Datawords Philippines",
             year: "2025",
-            description: "Focused on database schema design, CRUD operations, and using SQL & NoSQL databases."
         },
         {
-            title: "Adobe Photoshop Training",
-            organizer: "Datawords",
-            year: "2025",
-            description: "Learned image editing, layout design, color correction, and creating visuals for web and print."
+            role: "Hello World!",
+            company: "Write my first line of code!",
+            year: "2024",
         },
-        {
-            title: "Youth Empowerment Session",
-            organizer: "Synchrony Global",
-            year: "2025",
-            description: "Participated in a training focused on leadership, teamwork, and personal development skills for young individuals."
-        },
-        {
-            title: "Tech Talk in Navigating the Digital Age: Cloud, Generative AI & Cybersecurity",
-            organizer: "Accenture Inc.",
-            year: "2025",
-            description: "Participated in a symposium focused on Cloud, Generative AI & Cybersecurity"
-        }
     ]
 
     return(
-        <section className="bg-gray-800 p-6 rounded-xl shadow mt-6">
-            <h2 className="text-2xl font-bold mb-3">Workshops & Bootcamps</h2>
-            <ul className="space-y-4">
-                {seminars.map((e, index) => (
-                    <li 
-                    key={index}
-                    className="flex justify-between items-center border-gray-700"
-                    >
-                        <div>
-                            <h3 className="font-semibold text-white">{e.title}</h3>
-                            <h2 className="text-gray-400 text-sm">{e.organizer}</h2>
-                            <p className="text-gray-400 text-sm">{e.description}</p>
-                        </div>
-                        <span className="text-gray-500">{e.year}</span>
-                    </li>
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-2 mb-3">
+                <RiLayoutMasonryLine className="text-lg text-gray-800"/>
+                <h2 className="text-lg font-bold text-gray-900">Experience</h2>
+            </div>
+            <div className="relative border-l border-gray-200 ml-2 space-y-8 pb-2">
+                {timelineData.map((item, index) => (
+                <div key={index} className="relative pl-6">
+                    <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-gray-900 rounded-full border-white box-content"></div>
+                    <span className="text-xs font-semibold text-gray-400 mb-0.5 block">
+                        {item.year}
+                    </span>
+                    <h3 className="text-sm font-semibold text-gray-900 leading-tight">
+                        {item.role}
+                    </h3>
+                    <p className="text-xs text-gray-500 mt-1">
+                        {item.company}
+                    </p>
+                </div>
                 ))}
-            </ul>
-        </section>
+            </div>
+        </div>
     );
 }
 

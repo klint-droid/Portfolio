@@ -1,38 +1,54 @@
 import React from "react";
-import { FaHtml5, FaCss3Alt, FaReact, FaNodeJs, FaPython, FaGitAlt, FaGithub } from "react-icons/fa";
-import { SiTailwindcss, SiMysql, SiDjango, SiFirebase, SiJavascript, SiPostman } from "react-icons/si";
-
+import { BiLayer } from 'react-icons/bi'; 
+import { 
+  SiHtml5, SiCss3, SiJavascript, SiReact, SiBootstrap, 
+  SiPhp, SiPython, SiMysql, 
+  SiFigma,
+  SiAdobe} from 'react-icons/si';
 const TechStack = () => {
-    const techs = [
-        { name: "HTML5", icon: <FaHtml5 className="text-orange-500 text-3xl" /> },
-        { name: "CSS", icon: <FaCss3Alt className="text-blue-500 text-3xl" /> },
-        { name: "React", icon: <FaReact className="text-sky-400 text-3xl" /> },
-        { name: "Tailwind CSS", icon: <SiTailwindcss className="text-cyan-400 text-3xl" /> },
-        { name: "JavaScript", icon: <SiJavascript className="text-yellow-400 text-3xl" /> },
-        { name: "Node.js", icon: <FaNodeJs className="text-green-500 text-3xl" /> },
-        { name: "MySQL", icon: <SiMysql className="text-blue-600 text-3xl" /> },
-        { name: "Python", icon: <FaPython className="text-yellow-500 text-3xl" /> },
-        { name: "Django", icon: <SiDjango className="text-green-700 text-3xl" /> },
-        { name: "Firebase", icon: <SiFirebase className="text-amber-500 text-3xl" /> },
-        { name: "GIT", icon: <FaGitAlt className="text-red-500 text-3xl" /> },
-        { name: "GitHub", icon: <FaGithub className="text-gray-300 text-3xl" /> },
-        { name: "REST APIs", icon: <SiPostman className="text-orange-400 text-3xl" /> },
-    ]
+    
+    const Badge = ({ icon: IconBase, name, colorClass }) => (
+        <div className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-100 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow">
+            <IconBase className={`${colorClass} text-sm`} />
+            <span className="text-xs font-semibold text-gray-700">{name}</span>
+        </div>
+    );
+    
     return(
-        <section className="bg-gray-800 p-6 rounded-xl shadow mt-6">
-            <h2 className="text-2xl font-bold mb-3">Tech Stack</h2>
-            <div className="flex flex-wrap gap-3">
-                {techs.map((tech, index) => (
-                    <div 
-                    key={index}
-                    className="flex flex-col items-center justify-center bg-gray-900 p-4 rounded-lg shadow hover:shadow-lg transform hover:translate-x-1 transition duration-300"
-                    >
-                        {tech.icon}
-                    <span className="mt-2 text-sm font-medium">{tech.name}</span>
-                    </div>
-                ))}
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100"> 
+            <div className="flex items-center gap-2 mb-6">
+                <BiLayer className="text-lg text-gray-800" />
+                <h2 className="text-lg font-bold text-gray-900">Tech Stack</h2>
             </div>
-        </section>
+
+            <div className="space-y-6">
+                <div>
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Frontend</h3>
+                    <div className="flex flex-wrap gap-2">
+                        <Badge icon={SiHtml5} name="HTML" colorClass="text-orange-500"/>
+                        <Badge icon={SiCss3} name="CSS" colorClass="text-blue-500"/>
+                        <Badge icon={SiJavascript} name="JavaScript" colorClass="text-yellow-500"/>
+                        <Badge icon={SiReact} name="React" colorClass="text-cyan-500"/>
+                        <Badge icon={SiBootstrap} name="Bootstrap" colorClass="text-purple-500"/>
+                    </div>
+                </div>
+                <div>
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Backend & Database</h3>
+                    <div className="flex flex-wrap gap-2">
+                        <Badge icon={SiPhp} name="PHP" colorClass="text-purple-700"/>
+                        <Badge icon={SiPython} name="Python" colorClass="text-yellow-600"/>
+                        <Badge icon={SiMysql} name="MySQL" colorClass="text-blue-700"/>
+                    </div>
+                </div>
+                <div>
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Design & Tools</h3>
+                    <div className="flex flex-wrap gap-2">
+                        <Badge icon={SiFigma} name="Figma" colorClass="text-purple-500"/>
+                        <Badge icon={SiAdobe} name="Adobe" colorClass="text-blue-500"/>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
 

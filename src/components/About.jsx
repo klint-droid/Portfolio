@@ -1,30 +1,25 @@
 import React from "react";
+import { FaRegAddressCard } from "react-icons/fa";
 
 const About = () => {
     return(
-        <section className="bg-gray-800 p-6 rounded-xl shadow mt-6">
-            <h2 className="text-2xl font-bold mb-3">Objective</h2>
-            <p className="text-gray-600 leading-relaxed">Aspiring Full Stack Developer skilled in building scalable web applications using React, Node.js, and SQL/NoSQL databases. 
-                Passionate about creating responsive user interfaces, developing RESTful APIs, and deploying 
-                cloud-based solutions with a focus on performance, usability, and continuous learning.</p>
-            <div className="flex flex-wrap gap-3 mt-4">
-                <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm transform hover:translate-x-1 transition duration-300">
-                    React Expertise & REST Api
-                </span>
-                <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm transform hover:translate-x-1 transition duration-300">
-                    Performance Optimization
-                </span>
-                <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm transform hover:translate-x-1 transition duration-300">
-                    HTML5, CSS & JavaScript
-                </span>
-                <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm transform hover:translate-x-1 transition duration-300">
-                    Python/Django
-                </span>
-                <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm transform hover:translate-x-1 transition duration-300">
-                    Scalable Applications
-                </span>
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 h-full">
+            <div className="flex items-center gap-2 mb-4">
+                <FaRegAddressCard className="text-gray-700" size={24} />
+                <h2 className="text-lg font-bold text-gray-900">About Me</h2>
             </div>
-        </section>
+            <div className="text-gray-800 text-[20px] leading-relaxed flex flex-col gap-4">
+                <p>
+                    Hi, I'm <span className="font-semibold text-gray-800">Klint M. Ruales</span> - a Software Developer from Cebu City specializing in full-stack development, digital design, technical support, and data-driven solutions. I help businesses strengthen their digital presence by building responsive websites, creating high-converting funnels, designing user-centered interfaces, and providing reliable technical support.
+                </p>
+                <p>
+                    My core skills include Junior Full-Stack Development, UI/UX Design (Figma), Digital & Graphic Design, and Technical Support. Adaptable, detail-oriented, and results-driven, I enjoy using tech, design, and data to solve business needs. I'm open to freelance, contract, and full-time opportunities.
+                </p>
+                <p>
+                    Let's connect — I'd love to support your next project.
+                </p>
+            </div>
+        </div>
     );
 }
 

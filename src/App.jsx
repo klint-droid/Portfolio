@@ -16,5 +16,6 @@ export default function App() {
       <TechStack />
       <Certifications />
     </div>
+    
   );
 }
