@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { FaCalendarAlt, FaEnvelope, FaMapMarkerAlt, FaDownload } from "react-icons/fa";
+import { MdVerified } from "react-icons/md";
 
 const Header = () => {
   
@@ -29,40 +31,49 @@ const Header = () => {
   }, [index, isDeleting]);
 
   return (
-    <header className="bg-gradient-to-r from-gray-900 to-gray-800 p-6 rounded-xl shadow-lg flex flex-col md:flex-row items-center justify-between">
-        <div className="flex items-center gap-4">
-            <img 
-            src="R.png"
-            alt="profile"
-            className="w-20 h-20 rounded-full border-2 border-blue-400"
-            />
-            <div>
-              <h1 className="text-white text-3xl font-mono">
-                {displayedText}
-                <span className="border-r-2 border-white animate-pulse"></span>
-              </h1>
-              <p className="text-blue-600 text-2xl">
-                Backend Developer 
-              </p>
-              <p className="text-gray-400 text-sm">
-                Cebu City, Cebu, Philippines
-              </p>
-            </div>
+    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray relative overflow-hidden">
+      <div className="absolute top-6 right-6">
+        <div className="w-12 h-6 bg-gray-200 rounded-full flex items-center p-1 cursor-pointer hover:bg-gray-300 transition-colors">
+          <div className="w-4 h-4 bg-white rounded-full shadow-sm transform translate-x-0 transition-transform"></div>
+        </div> 
+      </div>
+      <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center p-1 cursor-pointer transition-colors">
+        <div className="flex-shrink-0">
+          <img
+          src="R.png"
+          alt="profile"
+          className="w-32 h-32 md:w-40 md:h-40 rounded-2xl object-cover shadow-sm bg-gray-100"
+          />
         </div>
-        <div className="mt-12 md:mt-0 flex gap-4">
-          <button className="bg-blue-600 px-4 py-2 rounded-lg text-white transform hover:-translate-y-1 hover:scale-103 transition duration-300 ease-in-out">
-            Send Email
-          </button>
-          <button className="border border-gray-500 px-4 py-2 rounded-lg text-white transform hover:-translate-y-1 hover:scale-103 transition duration-300 ease-in-out">
-            View Resume
-          </button>
-          <button className="bg-gray-700 px-4 py-2 rounded-lg text-white transform hover:-translate-y-1 hover:scale-103 transition duration-300 ease-in-out">
-            <a href="https://www.linkedin.com/in/klint-ruales-67865527b/">
-              LinkedIn
-            </a>
-          </button>
+        <div className="flex-1 text-center md:text-left pt-2">
+          <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{displayedText}</h1>
+            <MdVerified className="text-blue-500" size={24} />
+          </div>
+          <div className="flex items-center justify-center md:justify-start gap-2 text-gray-500 text-sm mb-3 font-medium">
+            <FaMapMarkerAlt className="text-gray-400" />
+            <span>Cebu City, Cebu, Philippines</span>
+          </div>
+          <p className="text-2xl text-gray-800 font-medium mb-6">
+            Junior Full-Stack Developer <span className="text-gray-300 mx-2">|</span> Data Analyst
+          </p>
+          <div className="flex flex-wrap justify-center md:justify-start gap-3">
+            <button className="flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-lg shadow-gray-200">
+              <FaCalendarAlt className="text-sm"/>
+              <span>Schedule a Call</span>
+            </button>
+            <button className="flex items-center gap-2 bg-white border border-gray-200 text-black hover:bg-gray-300 px-5 py-2.5 rounded-xl font-medium transition-colors">
+              <FaEnvelope className="text-gray-700"/>
+              <span>Send Email</span>
+            </button>
+            <button className="flex items-center gap-2 bg-white border border-gray-200 text-black hover:bg-gray-300 px-5 py-2.5 rounded-xl font-medium transition-colors">
+              <FaDownload className="text-gray-700"/>
+              <span>Download CV</span>
+            </button>
+          </div>
         </div>
-    </header>
+      </div>
+    </div>
   );
 };
 
