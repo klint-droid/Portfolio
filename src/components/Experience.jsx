@@ -6,7 +6,12 @@ const Experience = () => {
         {
             role: "Associate Degree in Computer Technology Major in Software Developer",
             company: "University of San Jose - Recoletos",
-            year: "2024 - Present",
+            year: "2026",
+        },
+        {
+            role: "Youth Empowerment Session Participant",
+            company: "Synchrony",
+            year: "2025",
         },
         {
             role: "Digital Designer",

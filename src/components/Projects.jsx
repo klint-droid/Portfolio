@@ -1,71 +1,56 @@
-import { SiDjango, SiGithub, SiMysql, SiReact, SiTailwindcss, SiVite } from "react-icons/si";
+import React from "react";
+import { FaFolderOpen, FaArrowRight } from "react-icons/fa6";
 
 const Projects = () => {
     const projects = [
         {
             title: "Portfolio Website",
-            description: "A personal portfolio built with React and Tailwind CSS to showcase my skills, projects, and achievements.",
-            tech: [
-                { name: "React", icon: <SiReact className="text-sky-400 text-xl" /> },
-                { name: "Tailwind", icon: <SiTailwindcss className="text-cyan-500 text-xl" /> },
-                { name: "Vite", icon: <SiVite className="text-purple-500 text-xl" /> },
-            ],
-            icon: <SiReact className="text-sky-400 text-3xl" />,
-            github: "https://github.com/klint-droid/Portfolio",
-            link: "/",
-        },
-        {
-            title: "Attendance Checker",
-            description: "A student attendance tracking system with role-based access and data stored in MySQL + Django ORM.",
-            tech: [
-                { name: "Django", icon: <SiDjango className="text-green-600 text-xl" /> },
-                { name: "React", icon: <SiReact className="text-sky-400 text-xl" /> },
-                { name: "MySQL", icon: <SiMysql className="text-blue-600 text-xl" /> },
-            ],
-            icon: <SiDjango className="text-green-600 text-3xl" />,
-            github: "https://github.com/klint-droid/Attendance-Checker",
-            link: "https://attendance-record-cyan.vercel.app/",
-        },
+            description: "A personal portfolio website to showcase my projects and skills.",
+            link: "#",
+            year: "2026",
+        }
     ]
 
-    return(
-        <section className="bg-gray-800 p-6 rounded-xl shadow mt-6">
-            <h2 className="text-2xl font-bold mb-3">Projects</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-                {projects.map((proj, index) => (
-                    <div 
-                    key={index}
-                    className="relative bg-gray-700 p-6 rounded-2xl shadow-lg transform hover:translate-x-1 transition duration-300"
-                    >
-                        <a
-                            href={proj.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="absolute top-4 left-4 text-white hover:text-black"
-                        >
-                           <SiGithub className="text-2xl" /> 
-                        </a>
-                        <div className="flex items-center gap-3 mt-6">
-                            {proj.icon}
-                            <h3 className="text-xl font-semibold"><a href={proj.link}>{proj.title}</a></h3>
-                        </div>
-                        <p className="text-sm mt-3">{proj.description}</p>
-
-                        <div className="flex gap-3 mt-4">
-                            {proj.tech.map((tech, index) => (
-                                <div 
-                                key={index}
-                                className="flex items-center gap-1">
-                                    {tech.icon}
-                                    <span className="text-sm text-gray-500">{tech.name}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                ))}
+    return (
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-2">
+                    <FaFolderOpen className="text-lg text-gray-800"/>
+                    <h2 className="text-lg font-bold text-gray-900">Projects</h2>
                 </div>
-        </section>
-    );
+                <a href="#" className="text-xs font-semibold text-gray-400 hover:text-gray-900 flex items-center gap-1 transition-colors duration-200">
+                    View All <FaArrowRight className="text-[10px]"/>
+                </a>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {projects.map((project, index) => (
+                    <a 
+                    key={index}
+                    href={`https://${project.link}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block bg-gray-50 rounded-xl p-4 border border-gray-100 hover:border-gray-300 hover:shadow-sm transition-all"
+                    > 
+                        <div className="flex justify-between items-start mb-2">
+                            <h3 className="font-bold text-sm text-gray-900 group-hover:text-blue-600 transition-colors">
+                                {project.title}
+                            </h3>
+                            <span className="text-[10px] bg-white border-gray-200 px-1.5 py-0.5 rounded text-gray-500">{project.year}</span>
+                        </div>
+                        <p className="text-xs text-gray-600 mb-3 line-clamp-1">
+                            {project.description}
+                        </p>
+                        <div className="flex items-center gap-1">
+                            <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                            <p className="font-mono text-[10px] text-gray-400 group-hover:text-gray-600 truncate">
+                                {project.link}
+                            </p>
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </div>
+    )
 }
 
 export default Projects;
