@@ -41,10 +41,10 @@ const Recommendations = () => {
                     <button
                         key={index}
                         onClick={() => setActiveIndex(index)}
-                        className={`w-0.5 h-1 rounded-full transition-all duration-300 ${
+                        className={`w-1 h-1 rounded-full transition-all duration-300 ${
                             activeIndex === index 
-                            ? 'w-0.5 bg-gray-900 hover:border-gray-900' 
-                            : 'w-0.5 bg-gray-200 hover:bg-gray-300'   
+                            ? 'w-3 h-2 bg-gray-900 hover:border-gray-900' 
+                            : 'w-3 h-2 bg-gray-200 hover:bg-gray-300'   
                         }`}
                         aria-label={`View testimonial ${index + 1}`}
                     />

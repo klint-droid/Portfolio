@@ -40,7 +40,7 @@ const Header = () => {
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center p-1 cursor-pointer transition-colors">
         <div className="flex-shrink-0">
           <img
-          src="R.png"
+          src="R.jpg"
           alt="profile"
           className="w-32 h-32 md:w-40 md:h-40 rounded-2xl object-cover shadow-sm bg-gray-100"
           />
