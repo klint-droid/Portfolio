@@ -53,15 +53,15 @@ const Certifications = () => {
           <BiBadgeCheck className="text-xl text-gray-800"/>
           <h2 className="text-lg font-bold text-gray-900">Recent Certifications</h2>
         </div>
-        <a href="#" className="text-xs font-semiboldtext-gray-400 hover:text-gray-900 flex items-center gap-1 transition-colors">
+        <a href="#" className="text-xs font-semibold text-gray-400 hover:text-gray-900 flex items-center gap-1 transition-colors">
           View All <FaArrowRight className="text-[10px]"/>
         </a>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-3 max-h-[260px] overflow-y-auto pr-2">
         {certs.map((cert, index) => (
           <div
-          key={index}
-          className="group flex flex-col p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors cursor-default"
+            key={index}
+            className="group flex flex-col p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors cursor-default"
           >
             <h3 className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
               {cert.name}
@@ -69,7 +69,7 @@ const Certifications = () => {
             <p className="text-xs text-gray-500 mt-1">
               {cert.issuer}
             </p>
-            <a href={cert.link} className="text-xs text-blue-600 mt-0.5">
+            <a href={cert.link} className="text-xs text-blue-600 mt-0.5 hover:underline">
               View Certificate
             </a>
           </div>

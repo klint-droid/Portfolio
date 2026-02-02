@@ -67,8 +67,8 @@ import { FaUserFriends, FaPaperPlane,
                         <FaLightbulb className="text-lg text-gray-800"/>
                         <h3 className="font-bold text-gray-900">Daily Verse</h3>
                     </div>
-                    <div className="p-4 border border-gray-100 rounded-xl h-full flex flex-col justify-center bg-gray-50/50">
-                        <p className="text-sm text-gray-600 italic leading-relaxed mb-4">
+                    <div className="p-4 border border-gray-100 rounded-xl flex-1 flex flex-col justify-center bg-gray-50/50">
+                        <p className="text-sm text-gray-600 italic leading-relaxed mb-1">
                             "For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future."
                         </p>
                         <p className="text-xs font-bold text-gray-900 text-right">
