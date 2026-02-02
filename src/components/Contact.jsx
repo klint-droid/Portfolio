@@ -48,15 +48,15 @@ import { FaUserFriends, FaPaperPlane,
                         <h3 className="font-bold text-gray-900">Social Links</h3>
                     </div>
                     <div className="space-y-3">
-                        <a href="#" className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
+                        <a href="https://www.linkedin.com/in/klint-ruales-67865527b/" className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
                             <FaLinkedin className="text-xl text-blue-600"/>
                             <span className="text-sm font-semibold text-gray-700">LinkedIn</span>
                         </a>
-                        <a href="#" className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
+                        <a href="https://github.com/klint-droid" className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
                             <FaGithub className="text-xl text-blue-600"/>
                             <span className="text-sm font-semibold text-gray-700">GitHub</span>
                         </a>
-                        <a href="#" className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
+                        <a href="https://www.instagram.com/isklaynts/" className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
                             <FaInstagram className="text-xl text-blue-600"/>
                             <span className="text-sm font-semibold text-gray-700">Instagram</span>
                         </a>
