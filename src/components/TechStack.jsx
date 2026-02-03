@@ -4,26 +4,30 @@ import {
   SiHtml5, SiCss3, SiJavascript, SiReact, SiBootstrap, 
   SiPhp, SiPython, SiMysql, 
   SiFigma,
-  SiAdobe} from 'react-icons/si';
+  SiAdobe
+} from 'react-icons/si';
+
 const TechStack = () => {
     
     const Badge = ({ icon: IconBase, name, colorClass }) => (
-        <div className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-100 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow">
+
+        <div className="flex items-center gap-1.5 px-3 py-1.5 border border-[var(--border-color)] rounded-lg bg-[var(--bg-color)] shadow-sm hover:shadow-md transition-shadow">
             <IconBase className={`${colorClass} text-sm`} />
-            <span className="text-xs font-semibold text-gray-700">{name}</span>
+            <span className="text-xs font-semibold">{name}</span>
         </div>
     );
     
     return(
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100"> 
+        <div className="card rounded-3xl h-full"> 
             <div className="flex items-center gap-2 mb-6">
-                <BiLayer className="text-lg text-gray-800" />
-                <h2 className="text-lg font-bold text-gray-900">Tech Stack</h2>
+                <BiLayer className="text-lg" />
+                <h2 className="text-lg font-bold">Tech Stack</h2>
             </div>
 
             <div className="space-y-6">
                 <div>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Frontend</h3>
+                    {/* 5. Use opacity instead of fixed gray for subheaders so they remain visible in dark mode */}
+                    <h3 className="text-xs font-bold uppercase tracking-wider mb-3 opacity-60">Frontend</h3>
                     <div className="flex flex-wrap gap-2">
                         <Badge icon={SiHtml5} name="HTML" colorClass="text-orange-500"/>
                         <Badge icon={SiCss3} name="CSS" colorClass="text-blue-500"/>
@@ -33,7 +37,7 @@ const TechStack = () => {
                     </div>
                 </div>
                 <div>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Backend & Database</h3>
+                    <h3 className="text-xs font-bold uppercase tracking-wider mb-3 opacity-60">Backend & Database</h3>
                     <div className="flex flex-wrap gap-2">
                         <Badge icon={SiPhp} name="PHP" colorClass="text-purple-700"/>
                         <Badge icon={SiPython} name="Python" colorClass="text-yellow-600"/>
@@ -41,7 +45,7 @@ const TechStack = () => {
                     </div>
                 </div>
                 <div>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Design & Tools</h3>
+                    <h3 className="text-xs font-bold uppercase tracking-wider mb-3 opacity-60">Design & Tools</h3>
                     <div className="flex flex-wrap gap-2">
                         <Badge icon={SiFigma} name="Figma" colorClass="text-purple-500"/>
                         <Badge icon={SiAdobe} name="Adobe" colorClass="text-blue-500"/>

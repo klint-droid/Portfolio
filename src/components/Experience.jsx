@@ -26,22 +26,32 @@ const Experience = () => {
     ]
 
     return(
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-            <div className="flex items-center gap-2 mb-3">
-                <RiLayoutMasonryLine className="text-lg text-gray-800"/>
-                <h2 className="text-lg font-bold text-gray-900">Experience</h2>
+        <div className="card rounded-3xl h-fit">
+            <div className="flex items-center gap-2 mb-6">
+                <RiLayoutMasonryLine className="text-lg"/>
+                <h2 className="text-lg font-bold">Experience</h2>
             </div>
-            <div className="relative border-l border-gray-200 ml-2 space-y-8 pb-2">
+            
+            <div className="relative border-l border-[var(--border-color)] ml-4 space-y-8 pb-2">
                 {timelineData.map((item, index) => (
-                <div key={index} className="relative pl-6">
-                    <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-gray-900 rounded-full border-white box-content"></div>
-                    <span className="text-xs font-semibold text-gray-400 mb-0.5 block">
+
+                <div key={index} className="relative pl-8 group cursor-default">
+                    
+                    <div 
+                        className={`absolute -left-[10px] top-1.5 w-4 h-4 rounded-full border-2 border-[var(--card-bg)] box-content transition-colors duration-300
+                        ${index === 0 
+                            ? 'bg-[var(--text-primary)]' 
+                            : 'bg-[var(--border-color)] group-hover:bg-[var(--text-primary)]' 
+                        }`}
+                    ></div>
+                    
+                    <span className={`text-xs font-semibold mb-0.5 block transition-opacity duration-300 ${index === 0 ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'}`}>
                         {item.year}
                     </span>
-                    <h3 className="text-sm font-semibold text-gray-900 leading-tight">
+                    <h3 className={`text-sm font-bold leading-tight mb-1 transition-colors duration-300 ${index === 0 ? 'text-[var(--text-primary)]' : 'group-hover:text-[var(--text-primary)]'}`}>
                         {item.role}
                     </h3>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs opacity-70">
                         {item.company}
                     </p>
                 </div>

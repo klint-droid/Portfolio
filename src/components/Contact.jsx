@@ -23,89 +23,109 @@ import { FaUserFriends, FaPaperPlane,
     ]
 
     return (
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
-                <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-2">
-                        <FaUserFriends className="text-lg text-gray-800"/>
-                        <h3 className="font-bold text-gray-900">Community</h3>
-                    </div>
-                    <div className="space-y-3">
-                        {memberships.map((membership, index) => (
-                            <div
-                            key={index}
-                            className="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors cursor-wait group"
-                            >
-                                <span className="text-xs font-semibold text-gray-700">{membership.name}</span>
-                                <FaExternalLinkAlt className="text-[10px] text-gray-400 group-hover:text-gray-600"/>
-                            </div>
-                        ))}
-                    </div>
+        <div className="footer-grid rounded-3xl">
+            
+            {/* COLUMN 1: Community */}
+            <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <FaUserFriends className="text-lg"/>
+                    <h3 className="font-bold">Community</h3>
                 </div>
-                <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-2">
-                        <FaPaperPlane className="text-lg text-gray-800"/>
-                        <h3 className="font-bold text-gray-900">Social Links</h3>
-                    </div>
-                    <div className="space-y-3">
-                        <a href="https://www.linkedin.com/in/klint-ruales-67865527b/" className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
-                            <FaLinkedin className="text-xl text-blue-600"/>
-                            <span className="text-sm font-semibold text-gray-700">LinkedIn</span>
+                <div className="space-y-3">
+                    {memberships.map((membership, index) => (
+                        <a
+                        key={index}
+                        href={membership.link}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        // 2. Inner Item Styling:
+                        // - bg-[var(--bg-color)]: Gray-50 (Light) / Slate-900 (Dark)
+                        // - border-[var(--border-color)]: Adapts to theme
+                        className="flex items-center justify-between p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-all cursor-pointer group"
+                        >
+                            <span className="text-xs font-semibold">{membership.name}</span>
+                            <FaExternalLinkAlt className="text-[10px] opacity-50 group-hover:opacity-100"/>
                         </a>
-                        <a href="https://github.com/klint-droid" className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
-                            <FaGithub className="text-xl text-blue-600"/>
-                            <span className="text-sm font-semibold text-gray-700">GitHub</span>
-                        </a>
-                        <a href="https://www.instagram.com/isklaynts/" className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
-                            <FaInstagram className="text-xl text-blue-600"/>
-                            <span className="text-sm font-semibold text-gray-700">Instagram</span>
-                        </a>
-                    </div>
-                </div>
-                <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-2">
-                        <FaLightbulb className="text-lg text-gray-800"/>
-                        <h3 className="font-bold text-gray-900">Daily Verse</h3>
-                    </div>
-                    <div className="p-4 border border-gray-100 rounded-xl flex-1 flex flex-col justify-center bg-gray-50/50">
-                        <p className="text-sm text-gray-600 italic leading-relaxed mb-1">
-                            "For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future."
-                        </p>
-                        <p className="text-xs font-bold text-gray-900 text-right">
-                             - Jeremiah 29:11
-                        </p>
-                    </div>
-                </div>
-                <div className="space-y-3 pt-8 md:pt-0">
-                    <div className="flex items-start gap-4 p-3 bg-white border border-gray-300 rounded-xl hover:shadow-sm hover:bg-gray-50 transition-all text-left">
-                        <div className="p-2 bg-gray-50 rounded-lg">
-                            <FaEnvelope className="text-xl text-gray-800"/>
-                        </div>
-                        <div>
-                            <p className="text-xs font-bold text-blue-900">Email</p>
-                            <p className="text-xs text-gray-500 break-all">klintruales11@gmail.com</p>
-                        </div>
-                    </div>
-                    <button className="w-full flex items-start gap-4 p-3 bg-white border border-gray-300 rounded-xl hover:shadow-sm hover:bg-gray-50 transition-all text-left">
-                        <div className="p-2 bg-gray-50 rounded-lg">
-                            <FaCalendarAlt className="text-xl text-gray-800"/> 
-                        </div>
-                        <div>
-                            <p className="text-xs font-bold text-blue-900">Let's Talk</p>
-                            <p className="text-xs text-gray-500">Schedule a Call</p>
-                        </div>
-                    </button>
-                    <button className="w-full flex items-start gap-4 p-3 bg-white border border-gray-300 rounded-xl hover:shadow-sm hover:bg-gray-50 transition-all text-left">
-                        <div className="p-2 bg-gray-50 rounded-lg">
-                            <FaDownload className="text-gray-800"/>
-                        </div>
-                        <div>
-                            <p className="text-xs font-bold text-blue-900">Download CV</p>
-                            <p className="text-xs text-gray-500">Resume</p>
-                        </div>
-                    </button>
+                    ))}
                 </div>
             </div>
+
+            {/* COLUMN 2: Social Links */}
+            <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <FaPaperPlane className="text-lg"/>
+                    <h3 className="font-bold">Social Links</h3>
+                </div>
+                <div className="space-y-3">
+                    <a href="https://www.linkedin.com/in/klint-ruales-67865527b/" className="flex items-center gap-3 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-colors">
+                        <FaLinkedin className="text-xl text-blue-600"/>
+                        <span className="text-sm font-semibold">LinkedIn</span>
+                    </a>
+                    <a href="https://github.com/klint-droid" className="flex items-center gap-3 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-colors">
+                        <FaGithub className="text-xl text-blue-600"/>
+                        <span className="text-sm font-semibold">GitHub</span>
+                    </a>
+                    <a href="https://www.instagram.com/isklaynts/" className="flex items-center gap-3 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-colors">
+                        <FaInstagram className="text-xl text-blue-600"/>
+                        <span className="text-sm font-semibold">Instagram</span>
+                    </a>
+                </div>
+            </div>
+
+            {/* COLUMN 3: Daily Verse */}
+            <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <FaLightbulb className="text-lg"/>
+                    <h3 className="font-bold">Daily Verse</h3>
+                </div>
+                {/* 3. Daily Verse Box */}
+                <div className="p-4 border border-[var(--border-color)] rounded-xl flex-1 flex flex-col justify-center bg-[var(--bg-color)] h-50">
+                    <p className="text-sm italic leading-relaxed mb-2 opacity-80">
+                        "For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future."
+                    </p>
+                    <p className="text-xs font-bold text-right">
+                         - Jeremiah 29:11
+                    </p>
+                </div>
+            </div>
+
+            {/* COLUMN 4: Contact Actions */}
+            <div className="space-y-3 pt-8 md:pt-0">
+                
+                {/* Email Box */}
+                <div className="flex items-start gap-4 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:shadow-sm transition-all text-left">
+                    <div className="p-2 bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)]">
+                        <FaEnvelope className="text-xl"/>
+                    </div>
+                    <div>
+                        <p className="text-xs font-bold">Email</p>
+                        <p className="text-xs opacity-70 break-all">klintruales11@gmail.com</p>
+                    </div>
+                </div>
+
+                {/* Schedule Call */}
+                <button className="w-full flex items-start gap-4 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-all text-left">
+                    <div className="p-2 bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)]">
+                        <FaCalendarAlt className="text-xl"/> 
+                    </div>
+                    <div>
+                        <p className="text-xs font-bold">Let's Talk</p>
+                        <p className="text-xs opacity-70">Schedule a Call</p>
+                    </div>
+                </button>
+
+                {/* Download CV */}
+                <button className="w-full flex items-start gap-4 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-all text-left">
+                    <div className="p-2 bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)]">
+                        <FaDownload/>
+                    </div>
+                    <div>
+                        <p className="text-xs font-bold">Download CV</p>
+                        <p className="text-xs opacity-70">Resume</p>
+                    </div>
+                </button>
+            </div>
+
         </div>
     );
  };
