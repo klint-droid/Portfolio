@@ -76,15 +76,21 @@ const Header = ({ theme, toggleTheme }) => {
 
           <div className="flex flex-wrap justify-center md:justify-start gap-3">
             
-            <button className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-colors shadow-lg ${isDark ? 'bg-white text-black hover:bg-gray-200' : 'bg-gray-900 hover:bg-black text-white shadow-gray-200'}`}>
+            <a
+            href="https://calendly.com/klintruales11"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-colors shadow-lg ${isDark ? 'bg-white text-black hover:bg-gray-200' : 'bg-gray-900 hover:bg-black text-white shadow-gray-200'}`}>
               <FaCalendarAlt className="text-sm"/>
               <span>Schedule a Call</span>
-            </button>
+            </a>
             
-            <button className={`flex items-center gap-2 border px-5 py-2.5 rounded-xl font-medium transition-colors ${isDark ? 'bg-slate-800 text-white border-slate-700 hover:bg-slate-700' : 'bg-white text-black border-gray-200 hover:bg-gray-100'}`}>
+            <a
+            href="mailto:klintruales11@gmail.com?subject=Project Inquiry"
+            className={`flex items-center gap-2 border px-5 py-2.5 rounded-xl font-medium transition-colors ${isDark ? 'bg-slate-800 text-white border-slate-700 hover:bg-slate-700' : 'bg-white text-black border-gray-200 hover:bg-gray-100'}`}>
               <FaEnvelope className={isDark ? "text-gray-300" : "text-gray-700"}/>
               <span>Send Email</span>
-            </button>
+            </a>
             
             <button className={`flex items-center gap-2 border px-5 py-2.5 rounded-xl font-medium transition-colors ${isDark ? 'bg-slate-800 text-white border-slate-700 hover:bg-slate-700' : 'bg-white text-black border-gray-200 hover:bg-gray-100'}`}>
               <FaDownload className={isDark ? "text-gray-300" : "text-gray-700"}/>

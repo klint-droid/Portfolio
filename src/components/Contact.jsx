@@ -25,7 +25,6 @@ import { FaUserFriends, FaPaperPlane,
     return (
         <div className="footer-grid rounded-3xl">
             
-            {/* COLUMN 1: Community */}
             <div className="space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                     <FaUserFriends className="text-lg"/>
@@ -38,9 +37,6 @@ import { FaUserFriends, FaPaperPlane,
                         href={membership.link}
                         target="_blank" 
                         rel="noopener noreferrer"
-                        // 2. Inner Item Styling:
-                        // - bg-[var(--bg-color)]: Gray-50 (Light) / Slate-900 (Dark)
-                        // - border-[var(--border-color)]: Adapts to theme
                         className="flex items-center justify-between p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-all cursor-pointer group"
                         >
                             <span className="text-xs font-semibold">{membership.name}</span>
@@ -50,7 +46,6 @@ import { FaUserFriends, FaPaperPlane,
                 </div>
             </div>
 
-            {/* COLUMN 2: Social Links */}
             <div className="space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                     <FaPaperPlane className="text-lg"/>
@@ -72,13 +67,11 @@ import { FaUserFriends, FaPaperPlane,
                 </div>
             </div>
 
-            {/* COLUMN 3: Daily Verse */}
             <div className="space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                     <FaLightbulb className="text-lg"/>
                     <h3 className="font-bold">Daily Verse</h3>
                 </div>
-                {/* 3. Daily Verse Box */}
                 <div className="p-4 border border-[var(--border-color)] rounded-xl flex-1 flex flex-col justify-center bg-[var(--bg-color)] h-50">
                     <p className="text-sm italic leading-relaxed mb-2 opacity-80">
                         "For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future."
@@ -89,11 +82,13 @@ import { FaUserFriends, FaPaperPlane,
                 </div>
             </div>
 
-            {/* COLUMN 4: Contact Actions */}
             <div className="space-y-3 pt-8 md:pt-0">
                 
-                {/* Email Box */}
-                <div className="flex items-start gap-4 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:shadow-sm transition-all text-left">
+                <a
+                href="mailto:klintruales11@gmail.com?subject=Project Inquiry"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-4 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:shadow-sm transition-all text-left">
                     <div className="p-2 bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)]">
                         <FaEnvelope className="text-xl"/>
                     </div>
@@ -101,10 +96,13 @@ import { FaUserFriends, FaPaperPlane,
                         <p className="text-xs font-bold">Email</p>
                         <p className="text-xs opacity-70 break-all">klintruales11@gmail.com</p>
                     </div>
-                </div>
+                </a>
 
-                {/* Schedule Call */}
-                <button className="w-full flex items-start gap-4 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-all text-left">
+                <a 
+                href="https://calendly.com/klintruales11"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-start gap-4 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-all text-left">
                     <div className="p-2 bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)]">
                         <FaCalendarAlt className="text-xl"/> 
                     </div>
@@ -112,9 +110,8 @@ import { FaUserFriends, FaPaperPlane,
                         <p className="text-xs font-bold">Let's Talk</p>
                         <p className="text-xs opacity-70">Schedule a Call</p>
                     </div>
-                </button>
+                </a>
 
-                {/* Download CV */}
                 <button className="w-full flex items-start gap-4 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-all text-left">
                     <div className="p-2 bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)]">
                         <FaDownload/>
