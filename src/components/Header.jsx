@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaCalendarAlt, FaEnvelope, FaMapMarkerAlt, FaDownload, FaSun, FaMoon } from "react-icons/fa";
+import { FaCalendarAlt, FaDownload, FaEnvelope, FaMapMarkerAlt, FaMoon, FaSun } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 
 const Header = ({ theme, toggleTheme }) => {
@@ -49,7 +49,7 @@ const Header = ({ theme, toggleTheme }) => {
         
         <div className="flex-shrink-0">
           <img
-            src="R.jpg"
+            src="R.png"
             alt="profile"
             className={`w-35 h-40 md:w-40 md:h-45 rounded-2xl object-cover mt-3 shadow-sm transition-colors duration-300 ${isDark ? 'bg-slate-800' : 'bg-gray-100'}`}
           />
