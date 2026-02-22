@@ -11,7 +11,7 @@ const Recommendations = () => {
         },
         {
             text: "Klint has a great eye for design and pays attention to detail. His creativity and problem-solving skills make him a valuable asset to any team.",
-            name: "Maria Lopez",
+            name: "Milven Gay",
             role: "Student at University of San Jose - Recoletos",
         }
     ];
