@@ -112,7 +112,11 @@ import { FaUserFriends, FaPaperPlane,
                     </div>
                 </a>
 
-                <button className="w-full flex items-start gap-4 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-all text-left">
+                <a 
+                href="/Klint_Ruales_Resume.pdf"
+                download="Klint_Ruales_Resume.pdf"
+                className="w-full flex items-start gap-4 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-all text-left cursor-pointer"
+                >
                     <div className="p-2 bg-[var(--card-bg)] rounded-lg border border-[var(--border-color)]">
                         <FaDownload/>
                     </div>
@@ -120,9 +124,8 @@ import { FaUserFriends, FaPaperPlane,
                         <p className="text-xs font-bold">Download CV</p>
                         <p className="text-xs opacity-70">Resume</p>
                     </div>
-                </button>
+                </a>
             </div>
-
         </div>
     );
  };
