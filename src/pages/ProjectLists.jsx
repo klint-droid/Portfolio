@@ -1,0 +1,55 @@
+import React, { use, useEffect } from "react";
+import { BiBadge } from "react-icons/bi";
+import { FaArrowLeft, FaFolderOpen } from "react-icons/fa";
+import { Link } from "react-router-dom";
+
+const ProjectLists = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    const projects = [
+        {
+            name: "Personal Portfolio Website",
+            description: "A responsive portfolio website built with React and Tailwind CSS to showcase my projects, skills, and experience.",
+            link: "https://klint-ruales.vercel.app/",
+        }
+    ]
+
+    return(
+        <div className="container max-w-3xl mx-auto py-12">
+            <div className="card rounded-3xl">
+                <div className="flex items-center gap-4 mb-8">
+                    <Link to="/" 
+                    className="p-2 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-full hover:border-[var(--text-secondary)] transition-colors">
+                        <FaArrowLeft className="text-sm"/>
+                    </Link>
+                    <div className="flex items-center gap-2">
+                        <FaFolderOpen className="text-2xl"/>
+                        <h2 className="text-lg font-bold">Projects</h2>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {projects.map((projects, index) => (
+                        <div
+                        key={index}
+                        className="group flex flex-col p-4 bg-[var(--bg-color)] rounded-xl border border-[var(--border-color)] hover:border-[var(--text-secondary)] transition-all"
+                        >
+                            <h3 className="text-sm font-bold group-hover:text-blue-500 transition-colors">
+                                {projects.name}
+                            </h3>
+                            <p className="text-xs mt-1 opacity-70 mb-3">
+                                {projects.description}
+                            </p>
+                            <a href={projects.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 mt-auto hover:underline w-fit">
+                                View Project
+                            </a>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default ProjectLists;
