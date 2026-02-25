@@ -1,6 +1,7 @@
 import React from "react";
 import { BiBadgeCheck } from "react-icons/bi";
 import { FaArrowRight } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 const Certifications = () => {
     const certs = [
@@ -30,9 +31,9 @@ const Certifications = () => {
             <BiBadgeCheck className="text-xl"/>
             <h2 className="text-lg font-bold">Recent Certifications</h2>
           </div>
-          <a href="#" className="text-xs font-semibold opacity-60 hover:opacity-100 flex items-center gap-1 transition-opacity">
+          <Link to="/all-certifications" className="text-xs font-semibold opacity-60 hover:opacity-100 flex items-center gap-1 transition-opacity">
             View All <FaArrowRight className="text-[10px]"/>
-          </a>
+          </Link>
         </div>
         
         <div className="space-y-3">
