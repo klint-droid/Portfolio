@@ -19,12 +19,15 @@ const About = () => {
                     <span className="font-semibold mx-1" style={{ color: 'var(--text-primary)' }}>
                         Klint M. Ruales
                     </span> 
-                    - a Software Developer from Cebu City specializing in full-stack development, digital design, technical support, and data-driven solutions. I help businesses strengthen their digital presence by building responsive websites, creating high-converting funnels, designing user-centered interfaces, and providing reliable technical support.
+                    - I have strong analytical and problem-solving skills with hands-on experience in programming and building user-centered applications. I enjoy turning ideas into practical, efficient digital solutions through clean code and thoughtful design.
                 </p>
                 <p>
-                    My core skills include Junior Full-Stack Development, UI/UX Design (Figma), Digital & Graphic Design, and Technical Support. Adaptable, detail-oriented, and results-driven, I enjoy using tech, design, and data to solve business needs. I'm open to freelance, contract, and full-time opportunities.
+                     I'm passionate about learning new technologies and staying up-to-date with industry trends, which helps me continuously improve and adapt in the fast-paced world of software development.
                 </p>
                 <p>
+                    Currently seeking internship or entry-level opportunities where I can apply my technical skills, grow as a developer, and contribute to meaningful projects.
+                </p>
+                <p className="font-semibold mx-1" style={{ color: 'var(--text-primary)' }}>
                     Let's connect — I'd love to support your next project.
                 </p>
             </div>
