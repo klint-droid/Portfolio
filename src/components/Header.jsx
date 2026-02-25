@@ -92,11 +92,14 @@ const Header = ({ theme, toggleTheme }) => {
               <span>Send Email</span>
             </a>
             
-            <button className={`flex items-center gap-2 border px-5 py-2.5 rounded-xl font-medium transition-colors ${isDark ? 'bg-slate-800 text-white border-slate-700 hover:bg-slate-700' : 'bg-white text-black border-gray-200 hover:bg-gray-100'}`}>
+            <a 
+              href="/Klint_Ruales_Resume.pdf"           
+              download="Klint_Ruales_Resume.pdf"
+              className={`flex items-center gap-2 border px-5 py-2.5 rounded-xl font-medium transition-colors cursor-pointer ${isDark ? 'bg-slate-800 text-white border-slate-700 hover:bg-slate-700' : 'bg-white text-black border-gray-200 hover:bg-gray-100'}`}
+            >
               <FaDownload className={isDark ? "text-gray-300" : "text-gray-700"}/>
-              <span>Download CV</span>
-            </button>
-
+              <span>Download Resume</span>
+            </a>
           </div>
         </div>
       </div>
