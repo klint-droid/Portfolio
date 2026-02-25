@@ -1,5 +1,6 @@
 import React from "react";
 import { FaFolderOpen, FaArrowRight } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 const Projects = () => {
     const projects = [
@@ -21,9 +22,9 @@ const Projects = () => {
                     <h2 className="text-lg font-bold">Projects</h2>
                 </div>
                
-                <a href="#" className="text-xs font-semibold opacity-60 hover:opacity-100 flex items-center gap-1 transition-opacity">
+                <Link to="/all-projects" className="text-xs font-semibold opacity-60 hover:opacity-100 flex items-center gap-1 transition-opacity">
                     View All <FaArrowRight className="text-[10px]"/>
-                </a>
+                </Link>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
