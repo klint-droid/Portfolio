@@ -7,7 +7,13 @@ const Projects = () => {
         {
             title: "Portfolio Website",
             description: "A personal portfolio website to showcase my projects and skills.",
-            link: "klintruales.com", 
+            link: "#", 
+            year: "2026",
+        },
+        {
+            title: "Task Tracker Mobile App",
+            description: "A mobile app to manage tasks and track progress.",
+            link: "/TaskTracker.apk", 
             year: "2026",
         }
     ]
@@ -31,7 +37,7 @@ const Projects = () => {
                 {projects.map((project, index) => (
                     <a 
                     key={index}
-                    href={`https://${project.link}`}
+                    href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
                    
