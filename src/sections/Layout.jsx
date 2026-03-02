@@ -12,7 +12,7 @@ import Recommendations from '../components/Recommendations';
 import Footer from '../components/Footer';
 import Contact from '../components/Contact';
 import IncubationBanner from '../components/IncubationBanner';
-
+import AIChatButton from '../components/AIChatButton';
 export default function Layout() {
 
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
@@ -59,6 +59,7 @@ export default function Layout() {
         <Contact />
         <Footer />
       </div>
+      <AIChatButton />
     </div>
   );
 }
