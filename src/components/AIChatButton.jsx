@@ -43,6 +43,21 @@ const AIChatButton = () => {
     if (text.includes("contact") || text.includes("email") || text.includes("hire") || text.includes("reach")) {
       return "You can reach Klint directly at klint.ruales@student.passerellesnumeriques.org or use the 'Schedule a Call' button on his profile!";
     }
+    if(text.includes("hobby") || text.includes("interest") || text.includes("passion") || text.includes("like")) {
+      return "Klint enjoys exploring new technologies, building personal projects, and contributing to open-source. He also has a passion for design and creativity, which is reflected in his work as a digital designer.";
+    }
+    if(text.includes("strength") || text.includes("weakness") || text.includes("improve") || text.includes("challenge")) {
+      return "Klint's strengths include his strong work ethic, adaptability, and eagerness to learn. He is always looking for ways to improve his skills and take on new challenges. As for areas of improvement, he is continuously working on enhancing his knowledge of backend development and cloud technologies.";
+    }
+    if(text.includes("goal") || text.includes("future") || text.includes("aspire") || text.includes("plan")) {
+      return "Klint aspires to become a well-rounded software developer with expertise in both frontend and backend technologies. He plans to continue building his portfolio, contributing to open-source projects, and gaining industry experience through internships and collaborations.";
+    }
+    if(text.includes("fun fact") || text.includes("random") || text.includes("interesting") || text.includes("quirky")) {
+      return "A fun fact about Klint is that he has a background in digital design, which gives him a unique perspective when it comes to creating user-friendly and visually appealing applications!";
+    }
+    if(text.includes("certification") || text.includes("course") || text.includes("learned") || text.includes("training")) {
+      return "Klint has completed various online courses on Coursera, Cisco and certifications in web development, programming languages, and design. He is always eager to learn new skills and stay updated with the latest industry trends!";
+    }
     if (text.includes("hello") || text.includes("hi") || text.includes("hey")) {
       return "Hello! How can I help you learn more about Klint today?";
     }
