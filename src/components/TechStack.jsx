@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { BiLayer } from 'react-icons/bi'; 
-import { FaJava, FaNodeJs, FaLaravel } from "react-icons/fa";
+import { FaJava, FaNodeJs, FaLaravel, FaArrowRight } from "react-icons/fa";
 import { 
   SiHtml5, SiCss3, SiJavascript, SiReact, SiBootstrap, 
   SiPhp, SiPython, SiMysql, 
@@ -25,9 +26,15 @@ const TechStack = () => {
     
     return(
         <div className="card rounded-3xl h-full"> 
-            <div className="flex items-center gap-2 mb-6">
-                <BiLayer className="text-lg" />
-                <h2 className="text-lg font-bold">Tech Stack</h2>
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-2">
+                    <BiLayer className="text-lg" />
+                    <h2 className="text-lg font-bold">Tech Stack</h2>
+                </div>
+
+                <Link to="/all-techstack" className="text-xs font-semibold opacity-60 hover:opacity-100 flex items-center gap-1 transition-opacity">
+                    View Level of Proficiency<FaArrowRight className="text-[10px]"/>
+                </Link>
             </div>
 
             <div className="space-y-6">
