@@ -9,6 +9,11 @@ const Experience = () => {
             year: "2026",
         },
         {
+            role: "Breakout Session Participant",
+            company: "JP Morgan Chase & Co",
+            year: "2025",
+        },
+        {
             role: "Youth Empowerment Session Participant",
             company: "Synchrony",
             year: "2025",
