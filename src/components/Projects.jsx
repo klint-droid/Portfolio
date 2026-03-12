@@ -29,7 +29,7 @@ const Projects = () => {
                 </div>
                
                 <Link to="/all-projects" className="text-xs font-semibold opacity-60 hover:opacity-100 flex items-center gap-1 transition-opacity">
-                    View All <FaArrowRight className="text-[10px]"/>
+                    View All Projects<FaArrowRight className="text-[10px]"/>
                 </Link>
             </div>
             
