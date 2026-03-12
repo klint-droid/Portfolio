@@ -12,12 +12,20 @@ const ProjectLists = () => {
         {
             name: "Personal Portfolio Website",
             description: "A responsive portfolio website built with React and Tailwind CSS to showcase my projects, skills, and experience.",
+            tech: "React, Tailwind CSS",
             link: "https://klint-ruales.vercel.app/",
         },
         {
             name: "Task Tracker Mobile App",
             description: "A mobile app developed using React Native to help users manage their tasks and improve productivity.",
+            tech: "Ionic Framework, TypeScript, Android Studio",
             link: "/TaskTracker.apk"
+        },
+        {
+            name: "Student Grade Prediction App",
+            description: "A web application that predicts student grades based on their study time, failures, absecences, and test scores.",
+            tech: "Streamlit, Python, Machine Learning",
+            link: "https://grade-predict.streamlit.app/"
         }
     ]
 
@@ -45,6 +53,9 @@ const ProjectLists = () => {
                             </h3>
                             <p className="text-xs mt-1 opacity-70 mb-3">
                                 {projects.description}
+                            </p>
+                            <p className="text-xs text-yellow-600 mt-1 opacity-70 mb-3">
+                                {projects.tech}
                             </p>
                             <a href={projects.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 mt-auto hover:underline w-fit">
                                 View Project
