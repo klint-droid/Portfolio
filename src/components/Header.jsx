@@ -71,7 +71,7 @@ const Header = ({ theme, toggleTheme }) => {
           </div>
 
           <p className={`text-2xl font-medium mb-6 transition-colors duration-300 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>
-            Junior Sotfware Developer | Automation Engineer<span className="text-gray-300 mx-2">|</span> Data Analyst
+            Sotfware Developer | Automation Engineer<span className="text-gray-300 mx-2">|</span> Data Analyst
           </p>
 
           <div className="flex flex-wrap justify-center md:justify-start gap-3">
