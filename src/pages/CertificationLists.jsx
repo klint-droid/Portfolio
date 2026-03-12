@@ -88,6 +88,11 @@ const CertificationLists = () => {
         name: "Tech Talk in Navigating the Digital Age: Cloud, Generative AI & Cybersecurity",
         issuer: "Accenture",
         link: "https://drive.google.com/drive/u/0/folders/1Y8v0HIpmUh3KPUWkYwSLaKOBryFDY8bQ"
+      },
+      {
+        name: "Into to Power BI",
+        issuer: "DataSense Analytics",
+        link: "https://drive.google.com/file/d/1KQQWM74yv_MNEqSCsrTaC-mYzeAdUqRJ/view?usp=sharing"
       }
     ]
 
