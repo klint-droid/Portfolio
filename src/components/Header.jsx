@@ -67,7 +67,7 @@ const Header = ({ theme, toggleTheme }) => {
 
           <div className={`flex items-center justify-center md:justify-start gap-2 text-sm mb-3 font-medium transition-colors duration-300 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             <FaMapMarkerAlt className={isDark ? "text-gray-500" : "text-gray-400"} />
-            <span>Cebu City, Cebu, Philippines</span>
+            <span>Cebu City, Cebu, Philippines</span> <span>|</span><span>+639363488084</span>
           </div>
 
           <p className={`text-2xl font-medium mb-6 transition-colors duration-300 ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>
