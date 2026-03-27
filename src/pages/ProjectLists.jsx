@@ -16,6 +16,12 @@ const ProjectLists = () => {
             link: "https://klint-ruales.vercel.app/",
         },
         {
+            name: "Evacuation Assistant App",
+            description: "An AI-powered disaster preparedness app designed for households in the Philippines that generates personalized evacuation guidance for floods, typhoons, and earthquakes. Users input household size, disaster type, and risk level, and the app produces a tailored evacuation plan, emergency supplies checklist with recommended quantities, safety tips specific to each disaster, and a priority level assessment with urgency and next steps.",
+            tech: "PartyRock (Amazon AWS), Large Language Model (LLM), Amazon Web Services (AWS)",
+            link: "https://partyrock.aws/u/thisisklint/APJz77mmS/new-app-APJz77mmS"
+        },
+        {
             name: "Task Tracker Mobile App",
             description: "A mobile app developed using React Native to help users manage their tasks and improve productivity.",
             tech: "Ionic Framework, TypeScript, Android Studio",
