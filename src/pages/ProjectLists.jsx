@@ -23,7 +23,7 @@ const ProjectLists = () => {
         },
         {
             name: "Task Tracker Mobile App",
-            description: "A mobile app developed using React Native to help users manage their tasks and improve productivity.",
+            description: "A mobile app developed using Ionic Framework + React.js to help users manage their tasks and improve productivity.",
             tech: "Ionic Framework, TypeScript, Android Studio",
             link: "/TaskTracker.apk"
         },
@@ -32,6 +32,12 @@ const ProjectLists = () => {
             description: "A web application that predicts student grades based on their study time, failures, absecences, and test scores.",
             tech: "Streamlit, Python, Machine Learning",
             link: "https://grade-predict.streamlit.app/"
+        },
+        {
+            name: "Smart Home Management System (Java Swing GUI)",
+            description: "A desktop application built with Java Swing to manage and control smart home devices and systems.",
+            tech: "Java, Swing",
+            link: "/SmartHome-1.0.0.exe"
         }
     ]
 
