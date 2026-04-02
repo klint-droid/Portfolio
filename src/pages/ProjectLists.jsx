@@ -37,7 +37,7 @@ const ProjectLists = () => {
             name: "Smart Home Management System (Java Swing GUI)",
             description: "A desktop application built with Java Swing to manage and control smart home devices and systems.",
             tech: "Java, Swing",
-            link: "/SmartHome-1.0.0.exe"
+            link: "https://github.com/klint-droid/Smarthub"
         }
     ]
 
