@@ -32,9 +32,12 @@ const TechStack = () => {
                     <h2 className="text-lg font-bold">Tech Stack</h2>
                 </div>
 
-                <Link to="/all-techstack" className="text-xs font-semibold opacity-60 hover:opacity-100 flex items-center gap-1 transition-opacity">
-                    View Level of Proficiency<FaArrowRight className="text-[10px]"/>
-                </Link>
+                <Link 
+                    to="/3d"
+                    className="text-sm text-blue-500 hover:underline"
+                    >
+                    View All →
+                    </Link>
             </div>
 
             <div className="space-y-6">
