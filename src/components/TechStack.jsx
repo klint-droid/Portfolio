@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { BiLayer } from 'react-icons/bi'; 
-import { FaJava, FaNodeJs, FaLaravel, FaArrowRight } from "react-icons/fa";
+import { FaJava, FaNodeJs, FaLaravel, FaArrowRight, FaAws } from "react-icons/fa";
 import { 
   SiHtml5, SiCss3, SiJavascript, SiReact, SiBootstrap, 
   SiPhp, SiPython, SiMysql, 
@@ -71,19 +71,15 @@ const TechStack = () => {
                         <Badge icon={SiGit} name="Git" colorClass="text-orange-600"/>
                         <Badge icon={SiGithub} name="GitHub" colorClass="text-gray-800 dark:text-white"/>
                         <Badge icon={SiPostman} name="Postman" colorClass="text-orange-500"/>
-                        <Badge icon={SiBurpsuite} name="Burp Suite" colorClass="text-green-500"/>
                         <Badge icon={SiDocker} name="Docker" colorClass="text-blue-500"/>
                         <Badge icon={SiLinux} name="Linux" colorClass="text-yellow-500"/>
                         <Badge icon={SiJenkins} name="Jenkins" colorClass="text-red-500"/>
-                        <Badge icon={SiNpm} name="npm" colorClass="text-red-600"/>
                     </div>
                 </div>
                 <div>
-                    <h3 className="text-xs font-bold uppercase tracking-wider mb-3 opacity-60">Design Tools</h3>
+                    <h3 className="text-xs font-bold uppercase tracking-wider mb-3 opacity-60">Cloud</h3>
                     <div className="flex flex-wrap gap-2">
-                        <Badge icon={SiFigma} name="Figma" colorClass="text-purple-500"/>
-                        <Badge icon={SiAdobe} name="Adobe" colorClass="text-blue-500"/>
-                        <Badge icon={SiCanva} name="Canva" colorClass="text-blue-600"/>
+                        <Badge icon={FaAws} name="AWS" colorClass="text-orange-500"/>
                     </div>
                 </div>
             </div>
