@@ -44,6 +44,12 @@ const ProjectLists = () => {
             description: "Developed a full-stack Point of Sale (POS) and debt (utang) management system using ASP.NET MVC and Entity Framework Core. The system allows administrators to manage products, process orders, and track customer debts efficiently. It includes real-time sales processing, profit calculation, and analytics dashboard for business insights.",
             tech: "C#, ASP.NET MVC, Entity Framework Core, SQL Server",
             link: "https://github.com/klint-droid/simple-pos"
+        },
+        {
+            name: "RPG Java Swing Game",
+            description: "A java swing game based on Final Fantasy",
+            tech: "Java, Swing",
+            link: "https://github.com/klint-droid/RPG"
         }
     ]
 

@@ -11,10 +11,10 @@ const Projects = () => {
             year: "2026",
         },
         {
-            title: "Task Tracker Mobile App",
-            description: "A mobile app to manage tasks and track progress.",
-            link: "/TaskTracker.apk", 
-            year: "2026",
+            title: "RPG Java Swing Game",
+            description: "A java swing game based on Final Fantasy",
+            link: "https://github.com/klint-droid/RPG", 
+            year: "2025",
         }
     ]
 
