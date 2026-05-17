@@ -48,11 +48,18 @@ const Header = ({ theme, toggleTheme }) => {
       <div className="flex flex-col md:flex-row gap-5 md:gap-8 items-center p-1 transition-colors">
         
         <div className="flex-shrink-0">
-          <img
-            src="R.png"
-            alt="profile"
-            className={`w-35 h-40 md:w-40 md:h-45 rounded-2xl object-cover mt-3 shadow-sm transition-colors duration-300 ${isDark ? 'bg-slate-800' : 'bg-gray-100'}`}
-          />
+          <div className="relative w-35 h-40 md:w-40 md:h-45 mt-3 rounded-2xl overflow-hidden shadow-sm group cursor-pointer">
+            <img
+              src="1st.jpg"
+              alt="profile"
+              className={`absolute inset-0 w-full h-full rounded-2xl object-cover transition-opacity duration-500 ease-in-out group-hover:opacity-0 ${isDark ? 'bg-slate-800' : 'bg-gray-100'}`}
+            />
+            <img
+              src="2nd.jpg"
+              alt="profile hover"
+              className={`absolute inset-0 w-full h-full rounded-2xl object-cover transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100 ${isDark ? 'bg-slate-800' : 'bg-gray-100'}`}
+            />
+          </div>
         </div>
 
         <div className="flex-1 text-center md:text-left pt-2">
