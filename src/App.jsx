@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { pageView } from "./analytics";
 import Layout from './sections/Layout.jsx';
 import CertificationLists from "./pages/CertificationLists.jsx";
 import ProjectLists from "./pages/ProjectLists.jsx";
@@ -7,6 +8,11 @@ import ThreePortfolio from "./pages/ThreePortfolio";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const App = () => {
+
+  useEffect(() => {
+    pageView();
+  }, []);
+
   return(
     <Router>
       <Routes>
