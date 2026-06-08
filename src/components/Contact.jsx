@@ -4,6 +4,7 @@ import { FaUserFriends, FaPaperPlane,
     FaInstagram, FaExternalLinkAlt, FaEnvelope,
     FaCalendarAlt, FaDownload
  } from "react-icons/fa";
+import { trackEvent } from "../analytics";
 
  const Contact = () => {
 
@@ -52,15 +53,30 @@ import { FaUserFriends, FaPaperPlane,
                     <h3 className="font-bold">Social Links</h3>
                 </div>
                 <div className="space-y-3">
-                    <a href="https://www.linkedin.com/in/klint-ruales-67865527b/" className="flex items-center gap-3 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-colors">
+                    <a 
+                    href="https://www.linkedin.com/in/klint-ruales-67865527b/" 
+                    className="flex items-center gap-3 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-colors"
+                    target="_blank"
+                    onClick={() => trackEvent("Social Link", "Click", "LinkedIn")}
+                    >
                         <FaLinkedin className="text-xl text-blue-600"/>
                         <span className="text-sm font-semibold">LinkedIn</span>
                     </a>
-                    <a href="https://github.com/klint-droid" className="flex items-center gap-3 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-colors">
+                    <a 
+                    href="https://github.com/klint-droid" 
+                    className="flex items-center gap-3 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-colors"
+                    target="_blank"
+                    onClick={() => trackEvent("Social Link", "Click", "GitHub")}
+                    >
                         <FaGithub className="text-xl text-blue-600"/>
                         <span className="text-sm font-semibold">GitHub</span>
                     </a>
-                    <a href="https://www.instagram.com/isklaynts/" className="flex items-center gap-3 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-colors">
+                    <a 
+                    href="https://www.instagram.com/isklaynts/" 
+                    className="flex items-center gap-3 p-3 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-xl hover:border-[var(--text-secondary)] transition-colors"
+                    target="_blank"
+                    onClick={() => trackEvent("Social Link", "Click", "Instagram")}
+                    >
                         <FaInstagram className="text-xl text-blue-600"/>
                         <span className="text-sm font-semibold">Instagram</span>
                     </a>

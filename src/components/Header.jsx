@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaCalendarAlt, FaDownload, FaEnvelope, FaMapMarkerAlt, FaMoon, FaSun } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
+import { trackEvent } from "../analytics";
 
 const Header = ({ theme, toggleTheme }) => {
   
@@ -8,6 +9,10 @@ const Header = ({ theme, toggleTheme }) => {
   const [displayedText, setDisplayedText] = useState("");
   const [index, setIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDownloadCV = () => {
+    trackEvent("Resume", "Download", "User downloaded the resume");
+  }
 
   useEffect(() => {
     const speed = isDeleting ? 100 : 150;
@@ -100,6 +105,7 @@ const Header = ({ theme, toggleTheme }) => {
             </a>
             
             <a 
+              onClick={handleDownloadCV}
               href="/Klint_Ruales_Resume.pdf"           
               download="Klint_Ruales_Resume.pdf"
               className={`flex items-center gap-2 border px-5 py-2.5 rounded-xl font-medium transition-colors cursor-pointer ${isDark ? 'bg-slate-800 text-white border-slate-700 hover:bg-slate-700' : 'bg-white text-black border-gray-200 hover:bg-gray-100'}`}

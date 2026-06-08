@@ -10,3 +10,12 @@ export const pageView = () => {
     page: window.location.pathname,
   });
 };
+
+// generic event tracker
+export const trackEvent = (category, action, label) => {
+  ReactGA.event({
+    category,
+    action,
+    label,
+  });
+};
