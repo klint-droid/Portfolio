@@ -4,6 +4,11 @@ import { RiLayoutMasonryLine } from "react-icons/ri";
 const Experience = () => {
     const timelineData = [
         {
+            role: "Software Engineer Intern",
+            company: "Kyocera Document Solutions Philippines, Inc.",
+            year: "2026",
+        },
+        {
             role: "Associate Degree in Computer Technology Major in Software Developer",
             company: "University of San Jose - Recoletos",
             year: "2026",
