@@ -8,6 +8,7 @@ import TechStack from '../components/TechStack';
 import BeyondCoding from '../components/BeyondCoding';
 import Projects from '../components/Projects';
 import Certifications from '../components/Certifications';
+import Courses from '../components/Courses';
 import Recommendations from '../components/Recommendations';
 import Footer from '../components/Footer';
 import Contact from '../components/Contact';
@@ -51,6 +52,7 @@ export default function Layout() {
       </div>
 
       <div className="bottom-grid">
+        <Courses />
         <Certifications />
         <Recommendations />
       </div>
