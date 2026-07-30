@@ -48,8 +48,8 @@ const TechStackLists = () => {
     ];
 
     return(
-        <div className="container max-w-3xl mx-auto py-12 px-4 sm:px-6">
-            <div className="bento-card rounded-3xl">
+        <div className="container max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div className="w-full">
 
                 <div className="flex items-center gap-4 mb-8">
                     <Link to="/" 
@@ -62,7 +62,7 @@ const TechStackLists = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {techCategories.map((category, catIndex) => (
 
                         <div key={catIndex} className="p-6 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-2xl shadow-sm animate-fade-in-up" style={{ animationDelay: `${catIndex * 150}ms` }}>

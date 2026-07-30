@@ -97,8 +97,8 @@ const CertificationLists = () => {
     ]
 
     return(
-        <div className="container max-w-3xl mx-auto py-12 px-4 sm:px-6">
-            <div className="bento-card rounded-3xl">
+        <div className="container max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div className="w-full">
                 <div className="flex items-center gap-4 mb-8">
                     <Link to="/" 
                     className="p-2 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-full hover:border-[var(--text-secondary)] transition-colors">
@@ -109,7 +109,7 @@ const CertificationLists = () => {
                         <h1 className="text-2xl font-bold">All Certifications</h1>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {certs.map((cert, index) => (
                         <div
                         key={index}
