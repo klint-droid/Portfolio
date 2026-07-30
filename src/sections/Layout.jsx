@@ -12,6 +12,7 @@ import BookOfAnswers from '../components/BookOfAnswers';
 import Recommendations from '../components/Recommendations';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
+import RightPanel from '../components/RightPanel';
 import AIChatButton from '../components/AIChatButton';
 
 export default function Layout() {
@@ -36,7 +37,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-white dark:bg-[#09090b] text-gray-900 dark:text-[#f4f4f5] transition-colors duration-300">
+    <div className="min-h-screen flex flex-col lg:flex-row justify-between bg-white dark:bg-[#09090b] text-gray-900 dark:text-[#f4f4f5] transition-colors duration-300">
       {/* Sticky Left Sidebar */}
       <Sidebar
         theme={theme}
@@ -45,7 +46,7 @@ export default function Layout() {
       />
 
       {/* Main Content Stream */}
-      <main className="flex-1 px-4 py-8 lg:py-10 lg:px-12 max-w-5xl mx-auto w-full space-y-12 overflow-x-hidden pt-20 lg:pt-10">
+      <main className="flex-1 px-4 py-8 lg:py-10 lg:px-12 max-w-4xl mx-auto w-full space-y-12 overflow-x-hidden pt-20 lg:pt-10">
         <About />
         <Experience />
         <Projects />
@@ -57,6 +58,9 @@ export default function Layout() {
         <Contact />
         <Footer />
       </main>
+
+      {/* Sticky Right Widescreen Panel */}
+      <RightPanel />
 
       {/* AI Chat Assistant Drawer (without floating button) */}
       <AIChatButton />
