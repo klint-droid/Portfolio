@@ -1,4 +1,4 @@
-import { Text } from "@react-three/drei";
+import { Text, Sparkles } from "@react-three/drei";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 
@@ -16,7 +16,7 @@ export default function Panel({ position, id, isNear }) {
 
     // ✨ subtle floating
     groupRef.current.position.y =
-      position[1] + Math.sin(t * 2) * 0.1;
+      position[1] + Math.sin(t * 2 + position[0]) * 0.1;
 
     // slight rotation
     groupRef.current.rotation.y += 0.003;
@@ -34,33 +34,41 @@ export default function Panel({ position, id, isNear }) {
       <mesh position={[0, 0.5, 0]}>
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial
-          emissiveIntensity={isNear ? 4 : 1}
+          color="#312e81"
+          emissive="#a855f7"
+          emissiveIntensity={isNear ? 1.5 : 0.2}
           transparent
-          opacity={0.4}
+          opacity={isNear ? 0.8 : 0.3}
           roughness={0.1}
-          metalness={0.5}
+          metalness={0.8}
         />
       </mesh>
 
       {/* 🟪 FLOATING SCREEN */}
       <group ref={screenRef} position={[0, 1.6, 0]}>
+        {isNear && (
+          <Sparkles count={40} scale={4} size={3} speed={0.4} opacity={0.6} color="#c084fc" position={[0, 0, -1]} />
+        )}
         <mesh>
           <planeGeometry args={[2.4, 1.2]} />
-          <meshStandardMaterial
-            color="#0f172a"
+          <meshPhysicalMaterial
+            color="#020617"
+            transmission={0.95}
+            opacity={1}
             transparent
-            opacity={0.35}
-            roughness={0.1}
-            metalness={0.6}
+            metalness={0.2}
+            roughness={0.2}
+            ior={1.5}
+            thickness={1}
           />
         </mesh>
 
         <mesh position={[0, 0, 0.01]}>
             <planeGeometry args={[2.5, 1.3]} />
             <meshBasicMaterial
-            color="#a855f7"
+            color="#c084fc"
             transparent
-            opacity={isNear ? 0.6 : 0.25}
+            opacity={isNear ? 0.8 : 0.1}
             />
         </mesh>
 

@@ -54,10 +54,14 @@ export default function PanelPopup({ panel }) {
         radius={0.22}
         position={[0, 0, 0.01]}
       >
-        <meshStandardMaterial
-          color="#000000"
+        <meshPhysicalMaterial
+          color="#020617"
+          transmission={0.9}
+          roughness={0.4}
+          ior={1.5}
+          thickness={0.5}
           transparent
-          opacity={0.15}
+          opacity={1}
         />
       </RoundedBox>
 
