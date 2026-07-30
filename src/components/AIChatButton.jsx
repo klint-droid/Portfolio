@@ -501,30 +501,6 @@ const AIChatButton = () => {
 
         </div>
       )}
-
-      {/* Floating Action Launcher Button */}
-      <button
-        onClick={toggleChat}
-        className="group relative bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-4 py-3 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-2.5 border border-blue-400/30"
-        aria-label="Ask me AI Assistant"
-      >
-        {isOpen ? (
-          <div className="flex items-center gap-2">
-            <IoClose size={22} />
-            <span className="font-semibold text-sm">Close</span>
-          </div>
-        ) : (
-          <>
-            <div className="relative flex items-center justify-center">
-              <FaRobot size={22} className="group-hover:rotate-12 transition-transform duration-300" />
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping"></span>
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>
-            </div>
-            <span className="font-semibold text-sm tracking-wide">Ask me</span>
-            <IoSparkles className="text-yellow-300 text-xs animate-pulse" />
-          </>
-        )}
-      </button>
     </div>
   );
 };

@@ -26,7 +26,9 @@ const Sidebar = ({ theme, toggleTheme, onOpenAIChat }) => {
     { id: "techstack", label: "04 — stack" },
     { id: "certifications", label: "05 — certifications" },
     { id: "recommendations", label: "06 — recommendations" },
-    { id: "contact", label: "07 — contact" },
+    { id: "courses", label: "07 — courses" },
+    { id: "book-of-answers", label: "08 — book of answers" },
+    { id: "contact", label: "09 — contact" },
   ];
 
   useEffect(() => {

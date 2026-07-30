@@ -8,6 +8,7 @@ import TechStack from '../components/TechStack';
 import Projects from '../components/Projects';
 import Certifications from '../components/Certifications';
 import Courses from '../components/Courses';
+import BookOfAnswers from '../components/BookOfAnswers';
 import Recommendations from '../components/Recommendations';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
@@ -52,11 +53,12 @@ export default function Layout() {
         <Certifications />
         <Recommendations />
         <Courses />
+        <BookOfAnswers />
         <Contact />
         <Footer />
       </main>
 
-      {/* Floating AI Chat Assistant */}
+      {/* AI Chat Assistant Drawer (without floating button) */}
       <AIChatButton />
     </div>
   );
