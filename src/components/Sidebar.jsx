@@ -33,21 +33,32 @@ const Sidebar = ({ theme, toggleTheme, onOpenAIChat }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 200;
+      // 1. If reached bottom of page, highlight the last section (contact)
+      const isAtBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60;
+      if (isAtBottom) {
+        setActiveSection(navItems[navItems.length - 1].id);
+        return;
+      }
+
+      // 2. Determine section based on top position in viewport
+      const scrollPosition = window.scrollY + 250;
+      let currentSection = navItems[0].id;
+
       for (const item of navItems) {
         const element = document.getElementById(item.id);
         if (element) {
-          const top = element.offsetTop;
-          const height = element.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(item.id);
-            break;
+          if (element.offsetTop <= scrollPosition) {
+            currentSection = item.id;
           }
         }
       }
+
+      setActiveSection(currentSection);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

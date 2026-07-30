@@ -42,7 +42,7 @@ const Contact = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Column 1: Community */}
-        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50">
+        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:border-blue-500/40 transition-all">
           <div className="flex items-center gap-2 mb-1">
             <FaUserFriends className="text-blue-500" size={15} />
             <h3 className="font-mono text-xs font-bold text-gray-900 dark:text-white">Community</h3>
@@ -54,7 +54,7 @@ const Contact = () => {
                 href={membership.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500/50 transition-colors text-xs font-mono text-gray-700 dark:text-gray-300"
+                className="flex items-center justify-between p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500 transition-colors text-xs font-mono text-gray-700 dark:text-gray-300"
               >
                 <span className="truncate">{membership.name}</span>
                 <FaExternalLinkAlt size={10} className="text-gray-400 shrink-0" />
@@ -64,7 +64,7 @@ const Contact = () => {
         </div>
 
         {/* Column 2: Social Links */}
-        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50">
+        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:border-blue-500/40 transition-all">
           <div className="flex items-center gap-2 mb-1">
             <FaPaperPlane className="text-blue-500" size={15} />
             <h3 className="font-mono text-xs font-bold text-gray-900 dark:text-white">Socials</h3>
@@ -75,7 +75,7 @@ const Contact = () => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("Social Link", "Click", "LinkedIn")}
-              className="flex items-center gap-2.5 p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500/50 transition-colors text-gray-700 dark:text-gray-300"
+              className="flex items-center gap-2.5 p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500 transition-colors text-gray-700 dark:text-gray-300"
             >
               <FaLinkedin className="text-blue-600" size={16} />
               <span>LinkedIn</span>
@@ -85,7 +85,7 @@ const Contact = () => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("Social Link", "Click", "GitHub")}
-              className="flex items-center gap-2.5 p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500/50 transition-colors text-gray-700 dark:text-gray-300"
+              className="flex items-center gap-2.5 p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500 transition-colors text-gray-700 dark:text-gray-300"
             >
               <FaGithub className="text-gray-900 dark:text-white" size={16} />
               <span>GitHub</span>
@@ -95,7 +95,7 @@ const Contact = () => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("Social Link", "Click", "Instagram")}
-              className="flex items-center gap-2.5 p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500/50 transition-colors text-gray-700 dark:text-gray-300"
+              className="flex items-center gap-2.5 p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500 transition-colors text-gray-700 dark:text-gray-300"
             >
               <FaInstagram className="text-pink-500" size={16} />
               <span>Instagram</span>
@@ -104,7 +104,7 @@ const Contact = () => {
         </div>
 
         {/* Column 3: Inspirational Verse */}
-        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 justify-between">
+        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:border-blue-500/40 transition-all justify-between">
           <div className="flex items-center gap-2">
             <FaLightbulb className="text-amber-500" size={15} />
             <h3 className="font-mono text-xs font-bold text-gray-900 dark:text-white">Daily Verse</h3>
