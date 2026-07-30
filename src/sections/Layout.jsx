@@ -46,7 +46,7 @@ export default function Layout() {
       />
 
       {/* Main Content Stream */}
-      <main className="flex-1 px-4 py-8 lg:py-10 lg:px-12 max-w-4xl mx-auto w-full space-y-12 overflow-x-hidden pt-20 lg:pt-10">
+      <main className="flex-1 min-w-0 px-4 py-6 sm:px-6 lg:px-8 xl:px-10 w-full space-y-10 overflow-x-hidden pt-20 lg:pt-8">
         <About />
         <Experience />
         <Projects />

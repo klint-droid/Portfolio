@@ -106,7 +106,7 @@ const About = () => {
               <div className="font-mono text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-0.5">
                 {metric.value}
               </div>
-              <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-1">
+              <p className="text-[11px] text-gray-500 dark:text-gray-400">
                 {metric.subtext}
               </p>
             </div>
