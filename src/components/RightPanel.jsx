@@ -172,15 +172,15 @@ const RightPanel = () => {
           <div className="space-y-2 text-[11px] text-gray-600 dark:text-gray-300">
             <div className="flex items-start gap-2">
               <span className="text-blue-500 font-bold">▹</span>
-              <span>Building Generative AI & MCP Agent Integrations</span>
+              <span>Java Spring Boot</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-blue-500 font-bold">▹</span>
-              <span>Advanced System Architecture & Microservices</span>
+              <span>Advanced System Architecture</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-blue-500 font-bold">▹</span>
-              <span>Next.js 15 & Server Components</span>
+              <span>Cloud Infrastructure and Services</span>
             </div>
           </div>
         </div>
