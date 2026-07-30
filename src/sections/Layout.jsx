@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import '../App.css'; 
+import '../App.css';
 
-import Header from '../components/Header';
+import Sidebar from '../components/Sidebar';
 import About from '../components/About';
 import Experience from '../components/Experience';
 import TechStack from '../components/TechStack';
-import BeyondCoding from '../components/BeyondCoding';
 import Projects from '../components/Projects';
 import Certifications from '../components/Certifications';
 import Courses from '../components/Courses';
 import Recommendations from '../components/Recommendations';
-import Footer from '../components/Footer';
 import Contact from '../components/Contact';
-import IncubationBanner from '../components/IncubationBanner';
+import Footer from '../components/Footer';
 import AIChatButton from '../components/AIChatButton';
-export default function Layout() {
 
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+export default function Layout() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
 
   useEffect(() => {
     document.body.className = theme === 'light' ? 'light-theme' : 'dark-theme';
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
     localStorage.setItem('theme', theme);
   }, [theme]);
 
@@ -27,40 +30,33 @@ export default function Layout() {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
+  const handleOpenAIChat = () => {
+    window.dispatchEvent(new CustomEvent('toggle-ai-chat'));
+  };
+
   return (
-    <div className="container">
-      
-      <div className="header-card">
-        <Header theme={theme} toggleTheme={toggleTheme}/>
-      </div>
-      
-      <div className="main-grid">
-        <div className="left-column">
-          <About />
-          <TechStack />
-        </div>
+    <div className="min-h-screen flex flex-col lg:flex-row bg-white dark:bg-[#09090b] text-gray-900 dark:text-[#f4f4f5] transition-colors duration-300">
+      {/* Sticky Left Sidebar */}
+      <Sidebar
+        theme={theme}
+        toggleTheme={toggleTheme}
+        onOpenAIChat={handleOpenAIChat}
+      />
 
-        <div className="right-column h-full flex flex-col">
-          <IncubationBanner />
-          <Experience />
-        </div>
-      </div>
-
-      <div className="split-grid mb-6"> 
-         <BeyondCoding />
-         <Projects />
-      </div>
-
-      <div className="bottom-grid">
-        <Courses />
+      {/* Main Content Stream */}
+      <main className="flex-1 px-4 py-8 lg:py-10 lg:px-12 max-w-5xl mx-auto w-full space-y-12 overflow-x-hidden pt-20 lg:pt-10">
+        <About />
+        <Experience />
+        <Projects />
+        <TechStack />
         <Certifications />
         <Recommendations />
-      </div>
-
-      <div className="footer-section"> 
+        <Courses />
         <Contact />
         <Footer />
-      </div>
+      </main>
+
+      {/* Floating AI Chat Assistant */}
       <AIChatButton />
     </div>
   );

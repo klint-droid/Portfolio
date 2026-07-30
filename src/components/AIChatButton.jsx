@@ -24,6 +24,23 @@ const AIChatButton = () => {
     }
   ]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.altKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsOpen((prev) => !prev);
+      }
+    };
+    const handleCustomToggle = () => setIsOpen(true);
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("toggle-ai-chat", handleCustomToggle);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("toggle-ai-chat", handleCustomToggle);
+    };
+  }, []);
+
   // Gather browser & device telemetry data
   const gatherTelemetry = async () => {
     const ua = navigator.userAgent;

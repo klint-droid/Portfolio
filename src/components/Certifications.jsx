@@ -4,55 +4,69 @@ import { FaArrowRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const Certifications = () => {
-    const certs = [
-      {
-        name: "Using Python to Interact with the Operating System",
-        issuer: "Coursera",
-      },
-      {
-        name: "Crash Course on Python",
-        issuer: "Coursera",
-      },
-      {
-        name: "Foundations of Cybersecurity",
-        issuer: "Coursera",
-      },
-      {
-        name: "Tech Talk: Generative AI",
-        issuer: "Accenture",
-      }
-    ]
+  const certs = [
+    {
+      name: "Using Python to Interact with the Operating System",
+      issuer: "Google / Coursera",
+      category: "Python / Automation"
+    },
+    {
+      name: "Crash Course on Python",
+      issuer: "Google / Coursera",
+      category: "Programming"
+    },
+    {
+      name: "Foundations of Cybersecurity",
+      issuer: "Google / Coursera",
+      category: "Security"
+    },
+    {
+      name: "Tech Talk: Generative AI",
+      issuer: "Accenture",
+      category: "AI & Innovation"
+    }
+  ];
 
-    return (
-
-      <div className="card rounded-3xl h-full">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-2">
-            <BiBadgeCheck className="text-xl"/>
-            <h2 className="text-lg font-bold">Recent Certifications</h2>
-          </div>
-          <Link to="/all-certifications" className="text-xs font-semibold opacity-60 hover:opacity-100 flex items-center gap-1 transition-opacity">
-            View All <FaArrowRight className="text-[10px]"/>
-          </Link>
+  return (
+    <section id="certifications" className="scroll-mt-20 bento-card">
+      <div className="bento-card-header">
+        <div className="bento-card-title">
+          <span className="section-number">05 // CERTIFICATIONS</span>
         </div>
-        
-        <div className="space-y-3">
-          {certs.slice(0, 4).map((cert, index) => (
-            <div
-              key={index}
-              className="group flex flex-col p-2 bg-[var(--bg-color)] rounded-xl border border-[var(--border-color)] hover:border-[var(--text-secondary)] transition-all cursor-default"
-            >
-              <h3 className="text-sm font-bold group-hover:text-blue-500 transition-colors">
+        <Link
+          to="/all-certifications"
+          className="font-mono text-xs text-gray-500 hover:text-blue-500 flex items-center gap-1.5 transition-colors group"
+        >
+          <span>view all</span>
+          <FaArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {certs.map((cert, index) => (
+          <div
+            key={index}
+            className="group flex flex-col justify-between p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:bg-gray-100 dark:hover:bg-[#1c1c21] transition-all cursor-default"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-mono text-[10px] text-blue-600 dark:text-blue-400 font-semibold">
+                  {cert.category}
+                </span>
+                <BiBadgeCheck className="text-blue-500" size={16} />
+              </div>
+              <h3 className="font-mono text-xs font-bold text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors">
                 {cert.name}
               </h3>
-              <p className="text-xs mt-1 opacity-70">
-                {cert.issuer}
-              </p>
             </div>
-          ))}
-        </div>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-2 font-mono">
+              {cert.issuer}
+            </p>
+          </div>
+        ))}
       </div>
-    );
-  }
+    </section>
+  );
+};
 
-  export default Certifications;
+export default Certifications;
