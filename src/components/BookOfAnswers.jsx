@@ -68,9 +68,9 @@ const BookOfAnswers = () => {
 
       <div className="bento-card-header">
         <div className="bento-card-title">
-          <span className="section-number">MINI GAME // 08</span>
+          <span className="section-number">08 // BOOK OF ANSWERS</span>
           <span className="font-mono text-xs font-bold text-blue-500 flex items-center gap-1">
-            <FaBookOpen size={12} /> Book of Answers
+            <FaBookOpen size={12} /> Oracle
           </span>
         </div>
         <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-semibold">

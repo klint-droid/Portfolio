@@ -33,7 +33,7 @@ const Contact = () => {
     <section id="contact" className="scroll-mt-20 bento-card">
       <div className="bento-card-header">
         <div className="bento-card-title">
-          <span className="section-number">07 // GET IN TOUCH</span>
+          <span className="section-number">09 // GET IN TOUCH</span>
         </div>
         <span className="font-mono text-xs text-blue-500 font-semibold">
           Say Hello 👋
