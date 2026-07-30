@@ -32,7 +32,7 @@ export default {
         }
       },
       animation: {
-        'fade-in-up': 'fade-in-up 0.3s ease-out',
+        'fade-in-up': 'fade-in-up 0.5s ease-out both',
         'pulse-subtle': 'pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       }
     },

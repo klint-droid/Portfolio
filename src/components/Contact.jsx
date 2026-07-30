@@ -40,7 +40,7 @@ const Contact = () => {
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4">
         {/* Column 1: Community */}
         <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:border-blue-500/40 transition-all">
           <div className="flex items-center gap-2 mb-1">
@@ -125,12 +125,12 @@ const Contact = () => {
             href="mailto:klintruales11@gmail.com?subject=Project Inquiry"
             className="flex items-center gap-3 p-2.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#18181b] hover:border-blue-500 transition-colors"
           >
-            <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500 border border-blue-500/20">
+            <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500 border border-blue-500/20 shrink-0">
               <FaEnvelope size={14} />
             </div>
-            <div>
-              <p className="font-bold text-gray-900 dark:text-white text-xs">Direct Email</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400">klintruales11@gmail.com</p>
+            <div className="min-w-0">
+              <p className="font-bold text-gray-900 dark:text-white text-xs truncate">Direct Email</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">klintruales11@gmail.com</p>
             </div>
           </a>
 
@@ -140,12 +140,12 @@ const Contact = () => {
             rel="noopener noreferrer"
             className="flex items-center gap-3 p-2.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#18181b] hover:border-blue-500 transition-colors"
           >
-            <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500 border border-purple-500/20">
+            <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500 border border-purple-500/20 shrink-0">
               <FaCalendarAlt size={14} />
             </div>
-            <div>
-              <p className="font-bold text-gray-900 dark:text-white text-xs">Schedule Call</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400">Calendly Meeting</p>
+            <div className="min-w-0">
+              <p className="font-bold text-gray-900 dark:text-white text-xs truncate">Schedule Call</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">Calendly Meeting</p>
             </div>
           </a>
 
@@ -154,12 +154,12 @@ const Contact = () => {
             download="Klint_Ruales_Resume.pdf"
             className="flex items-center gap-3 p-2.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#18181b] hover:border-blue-500 transition-colors cursor-pointer"
           >
-            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shrink-0">
               <FaDownload size={14} />
             </div>
-            <div>
-              <p className="font-bold text-gray-900 dark:text-white text-xs">Download CV</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400">Official Resume PDF</p>
+            <div className="min-w-0">
+              <p className="font-bold text-gray-900 dark:text-white text-xs truncate">Download CV</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">Official Resume PDF</p>
             </div>
           </a>
         </div>

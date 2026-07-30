@@ -97,8 +97,8 @@ const CertificationLists = () => {
     ]
 
     return(
-        <div className="container max-w-3xl mx-auto py-12">
-            <div className="card rounded-3xl">
+        <div className="container max-w-3xl mx-auto py-12 px-4 sm:px-6">
+            <div className="bento-card rounded-3xl">
                 <div className="flex items-center gap-4 mb-8">
                     <Link to="/" 
                     className="p-2 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-full hover:border-[var(--text-secondary)] transition-colors">
@@ -113,7 +113,8 @@ const CertificationLists = () => {
                     {certs.map((cert, index) => (
                         <div
                         key={index}
-                        className="group flex flex-col p-4 bg-[var(--bg-color)] rounded-xl border border-[var(--border-color)] hover:border-[var(--text-secondary)] transition-all"
+                        className="group flex flex-col p-4 bg-[var(--bg-color)] rounded-xl border border-[var(--border-color)] hover:border-[var(--text-secondary)] transition-all animate-fade-in-up"
+                        style={{ animationDelay: `${index * 100}ms` }}
                         >
                             <h3 className="text-sm font-bold group-hover:text-blue-500 transition-colors">
                                 {cert.name}
