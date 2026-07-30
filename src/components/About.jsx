@@ -52,7 +52,7 @@ const About = () => {
             I'm <span className="font-semibold text-gray-900 dark:text-white font-mono">Klint Morales Ruales</span> — a Software Engineer and Full-Stack Developer with hands-on experience in building scalable web applications, backend APIs, and modern UI components.
           </p>
           <p>
-            I focus on turning complex problem statements into clean, maintainable, and high-performance digital products. My core expertise spans React, Node.js, Laravel, PHP, Python, and cloud services.
+            I focus on turning complex problem statements into clean, maintainable, and high-performance digital products. My core expertise spans React, Node.js, Laravel, PHP, Python, Java Springboot and cloud services.
           </p>
           <p className="font-mono text-xs text-blue-600 dark:text-blue-400 font-semibold pt-1">
             ⚡ Open for Software Engineer, Full-Stack Developer, and DevOps positions.
