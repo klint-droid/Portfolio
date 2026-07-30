@@ -165,7 +165,7 @@ const RightPanel = () => {
         {/* Currently Learning & Experimenting Widget */}
         <div className="p-4 rounded-2xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#121215] space-y-3 font-mono text-xs">
           <div className="flex items-center gap-2 text-gray-900 dark:text-white font-bold text-xs">
-            <FaSparkles className="text-blue-500" size={13} />
+            <HiSparkles className="text-blue-500" size={13} />
             <span>Currently Focused On</span>
           </div>
 
