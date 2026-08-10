@@ -12,7 +12,9 @@ import {
   FaWhatsapp,
   FaTelegram,
   FaCheckCircle,
-  FaTimesCircle
+  FaTimesCircle,
+  FaEdit,
+  FaUndo
 } from "react-icons/fa";
 
 // Default Preset Questions
@@ -141,8 +143,9 @@ const FriendQuizPage = () => {
 
   // Creator state
   const [creatorName, setCreatorName] = useState("");
-  const [questions] = useState(DEFAULT_QUESTIONS);
+  const [questions, setQuestions] = useState(DEFAULT_QUESTIONS);
   const [creatorAnswers, setCreatorAnswers] = useState({}); // { [qId]: optionIndex }
+  const [editingQuestionId, setEditingQuestionId] = useState(null);
   const [generatedLink, setGeneratedLink] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -181,7 +184,6 @@ const FriendQuizPage = () => {
   // Save Leaderboard to localStorage
   const saveToLeaderboard = (newEntry) => {
     setLeaderboard((prev) => {
-      // Check if entry with same friend name exists for creator, update or add
       const filtered = prev.filter(
         (item) => item.friendName.toLowerCase() !== newEntry.friendName.toLowerCase() || item.creatorName !== newEntry.creatorName
       );
@@ -197,7 +199,6 @@ const FriendQuizPage = () => {
     const resParam = searchParams.get("res") || searchParams.get("result");
 
     if (resParam) {
-      // Result link opened! Decode and save to leaderboard
       const decodedRes = decodeData(resParam);
       if (decodedRes && decodedRes.friendName && decodedRes.creatorName) {
         saveToLeaderboard(decodedRes);
@@ -216,12 +217,112 @@ const FriendQuizPage = () => {
     }
   }, [searchParams]);
 
-  // Handle Creator setting up quiz
+  // Question & Choice Customization Handlers
   const handleSelectAnswer = (questionId, optionIdx) => {
     setCreatorAnswers((prev) => ({
       ...prev,
       [questionId]: optionIdx
     }));
+  };
+
+  const handleEditQuestionTitle = (qId, newTitle) => {
+    setQuestions((prev) =>
+      prev.map((q) => (q.id === qId ? { ...q, question: newTitle } : q))
+    );
+  };
+
+  const handleEditOptionText = (qId, optIdx, newText) => {
+    setQuestions((prev) =>
+      prev.map((q) => {
+        if (q.id === qId) {
+          const updatedOpts = [...q.options];
+          updatedOpts[optIdx] = newText;
+          return { ...q, options: updatedOpts };
+        }
+        return q;
+      })
+    );
+  };
+
+  const handleAddOption = (qId) => {
+    setQuestions((prev) =>
+      prev.map((q) => {
+        if (q.id === qId) {
+          if (q.options.length >= 6) {
+            showToast("Maximum 6 choices per question.");
+            return q;
+          }
+          return { ...q, options: [...q.options, `Option ${q.options.length + 1}`] };
+        }
+        return q;
+      })
+    );
+  };
+
+  const handleDeleteOption = (qId, optIdx) => {
+    setQuestions((prev) =>
+      prev.map((q) => {
+        if (q.id === qId) {
+          if (q.options.length <= 2) {
+            showToast("Question must have at least 2 choices.");
+            return q;
+          }
+          const updatedOpts = q.options.filter((_, idx) => idx !== optIdx);
+          return { ...q, options: updatedOpts };
+        }
+        return q;
+      })
+    );
+
+    // Reset answer if selected option was deleted
+    if (creatorAnswers[qId] === optIdx) {
+      setCreatorAnswers((prev) => {
+        const updated = { ...prev };
+        delete updated[qId];
+        return updated;
+      });
+    } else if (creatorAnswers[qId] > optIdx) {
+      setCreatorAnswers((prev) => ({
+        ...prev,
+        [qId]: prev[qId] - 1
+      }));
+    }
+  };
+
+  const handleAddCustomQuestion = () => {
+    const newId = Date.now();
+    const newQ = {
+      id: newId,
+      question: "Type your custom question here...",
+      options: ["Choice 1", "Choice 2", "Choice 3", "Choice 4"],
+      isCustom: true
+    };
+    setQuestions((prev) => [...prev, newQ]);
+    setEditingQuestionId(newId);
+    showToast("✨ Added new custom question! Scroll down to edit.");
+  };
+
+  const handleDeleteQuestion = (qId) => {
+    if (questions.length <= 3) {
+      showToast("Quiz must have at least 3 questions.");
+      return;
+    }
+    setQuestions((prev) => prev.filter((q) => q.id !== qId));
+    setCreatorAnswers((prev) => {
+      const updated = { ...prev };
+      delete updated[qId];
+      return updated;
+    });
+    showToast("Question deleted.");
+  };
+
+  const handleResetQuestions = () => {
+    if (window.confirm("Reset all questions and choices back to default?")) {
+      setQuestions(DEFAULT_QUESTIONS);
+      setCreatorAnswers({});
+      setEditingQuestionId(null);
+      showToast("Questions reset to default.");
+    }
   };
 
   const handleGenerateQuiz = () => {
@@ -230,14 +331,12 @@ const FriendQuizPage = () => {
       return;
     }
 
-    // Check if at least 5 questions answered
     const answeredCount = Object.keys(creatorAnswers).length;
-    if (answeredCount < 5) {
-      showToast(`Please answer at least 5 questions! (${answeredCount}/5 selected)`);
+    if (answeredCount < 3) {
+      showToast(`Please answer at least 3 questions! (${answeredCount}/3 selected)`);
       return;
     }
 
-    // Build payload of questions answered
     const quizPayload = {
       creatorName: creatorName.trim(),
       questions: questions
@@ -316,13 +415,11 @@ const FriendQuizPage = () => {
       rating
     });
 
-    // Save to local leaderboard
     saveToLeaderboard(resultObj);
     setView("result");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Generate result sync link for friend to send back to creator
   const getResultShareLink = () => {
     if (!finalScore) return "";
     const encodedRes = encodeData({
@@ -382,7 +479,7 @@ const FriendQuizPage = () => {
                 </h1>
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 font-sans">
-                Create custom quizzes about yourself, share with friends & track scores!
+                Create & customize quizzes about yourself, share with friends & track scores!
               </p>
             </div>
           </div>
@@ -439,25 +536,38 @@ const FriendQuizPage = () => {
             </div>
 
             {/* Questions Selection Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h2 className="font-mono text-base font-bold text-gray-900 dark:text-white">
-                  2. Answer Your Questions
+                  2. Customize Questions & Select Correct Answers
                 </h2>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Select your true answer for each question (minimum 5 questions).
+                  You can edit any question or choice text, add custom questions, and pick your answer!
                 </p>
               </div>
-              <span className="font-mono text-xs px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20 font-semibold">
-                {Object.keys(creatorAnswers).length} / {questions.length} Answered
-              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleResetQuestions}
+                  className="px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-[#27272a] text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-mono text-xs flex items-center gap-1 transition-colors"
+                  title="Reset to default preset"
+                >
+                  <FaUndo size={10} />
+                  <span>Reset Default</span>
+                </button>
+                <span className="font-mono text-xs px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20 font-semibold shrink-0">
+                  {Object.keys(creatorAnswers).length} / {questions.length} Answered
+                </span>
+              </div>
             </div>
 
-            {/* Questions List */}
-            <div className="space-y-4">
+            {/* Questions & Custom Choices List */}
+            <div className="space-y-5">
               {questions.map((q, qIndex) => {
                 const selectedIdx = creatorAnswers[q.id];
                 const isAnswered = selectedIdx !== undefined;
+                const isEditing = editingQuestionId === q.id;
 
                 return (
                   <div
@@ -468,43 +578,132 @@ const FriendQuizPage = () => {
                         : "border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215]"
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <span className="font-mono text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded-md">
-                        Q{qIndex + 1}
-                      </span>
-                      <h3 className="font-medium text-sm text-gray-900 dark:text-white flex-1">
-                        {q.question}
-                      </h3>
-                      {isAnswered && (
-                        <FaCheckCircle className="text-emerald-500 shrink-0 mt-0.5" />
-                      )}
+                    {/* Question Card Header */}
+                    <div className="flex items-center justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className="font-mono text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded-md shrink-0">
+                          Q{qIndex + 1}
+                        </span>
+
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={q.question}
+                            onChange={(e) => handleEditQuestionTitle(q.id, e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-lg border border-blue-500 bg-white dark:bg-[#18181b] text-gray-900 dark:text-white font-mono text-xs focus:outline-none"
+                            placeholder="Type question title..."
+                          />
+                        ) : (
+                          <h3 className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                            {q.question}
+                          </h3>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => setEditingQuestionId(isEditing ? null : q.id)}
+                          className={`p-1.5 rounded-lg font-mono text-xs transition-colors ${
+                            isEditing
+                              ? "bg-blue-600 text-white"
+                              : "text-gray-500 hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-[#18181b]"
+                          }`}
+                          title={isEditing ? "Done editing" : "Edit question text"}
+                        >
+                          <FaEdit size={12} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteQuestion(q.id)}
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
+                          title="Delete question"
+                        >
+                          <FaTrash size={12} />
+                        </button>
+                        {isAnswered && (
+                          <FaCheckCircle className="text-emerald-500 shrink-0" />
+                        )}
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3">
+                    {/* Choice Options List */}
+                    <div className="space-y-2.5 mt-4">
                       {q.options.map((opt, optIdx) => {
                         const isSelected = selectedIdx === optIdx;
 
                         return (
-                          <button
-                            key={optIdx}
-                            type="button"
-                            onClick={() => handleSelectAnswer(q.id, optIdx)}
-                            className={`p-3 rounded-xl border text-left text-xs font-sans transition-all flex items-center justify-between ${
-                              isSelected
-                                ? "bg-blue-600 text-white border-blue-600 font-medium shadow-md shadow-blue-500/20"
-                                : "bg-gray-50 dark:bg-[#18181b] border-gray-200 dark:border-[#27272a] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202025]"
-                            }`}
-                          >
-                            <span>{opt}</span>
-                            {isSelected && <FaCheck className="text-white text-xs shrink-0 ml-2" />}
-                          </button>
+                          <div key={optIdx} className="flex items-center gap-2">
+                            {/* Answer Selector Button */}
+                            <button
+                              type="button"
+                              onClick={() => handleSelectAnswer(q.id, optIdx)}
+                              className={`flex-1 p-2.5 rounded-xl border text-left text-xs font-sans transition-all flex items-center justify-between ${
+                                isSelected
+                                  ? "bg-blue-600 text-white border-blue-600 font-medium shadow-md shadow-blue-500/20"
+                                  : "bg-gray-50 dark:bg-[#18181b] border-gray-200 dark:border-[#27272a] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202025]"
+                              }`}
+                            >
+                              {isEditing ? (
+                                <input
+                                  type="text"
+                                  value={opt}
+                                  onClick={(e) => e.stopPropagation()}
+                                  onChange={(e) => handleEditOptionText(q.id, optIdx, e.target.value)}
+                                  className="w-full bg-transparent border-none outline-none text-xs font-sans focus:ring-0 text-inherit"
+                                />
+                              ) : (
+                                <span>{opt}</span>
+                              )}
+                              {isSelected && <FaCheck className="text-white text-xs shrink-0 ml-2" />}
+                            </button>
+
+                            {/* Delete Choice Option Button (in edit mode) */}
+                            {isEditing && (
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteOption(q.id, optIdx)}
+                                className="p-2 rounded-xl border border-gray-200 dark:border-[#27272a] text-gray-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors shrink-0"
+                                title="Delete choice option"
+                              >
+                                <FaTrash size={11} />
+                              </button>
+                            )}
+                          </div>
                         );
                       })}
                     </div>
+
+                    {/* Add Choice Option button in Edit Mode */}
+                    {isEditing && (
+                      <div className="mt-3 flex items-center justify-between pt-2 border-t border-gray-100 dark:border-[#1f1f24]">
+                        <button
+                          type="button"
+                          onClick={() => handleAddOption(q.id)}
+                          className="font-mono text-xs text-blue-500 hover:text-blue-600 flex items-center gap-1 font-medium"
+                        >
+                          <FaPlus size={10} />
+                          <span>Add Another Choice Option</span>
+                        </button>
+                        <span className="text-[11px] text-gray-400">
+                          Click any choice to set your true answer
+                        </span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
+
+            {/* Add Custom Question Button */}
+            <button
+              type="button"
+              onClick={handleAddCustomQuestion}
+              className="w-full py-3.5 rounded-xl border border-dashed border-blue-500/40 bg-blue-50/10 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 font-mono text-xs font-bold hover:bg-blue-50/30 dark:hover:bg-blue-950/30 transition-all flex items-center justify-center gap-2"
+            >
+              <FaPlus />
+              <span>Add Custom Question & Choices</span>
+            </button>
 
             {/* Create Quiz Button & Link Modal Card */}
             <div className="pt-4 pb-8">
@@ -521,7 +720,7 @@ const FriendQuizPage = () => {
                 <div className="p-6 rounded-2xl border border-emerald-500/30 bg-emerald-50/10 dark:bg-emerald-950/20 space-y-4 animate-fade-in">
                   <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-mono text-sm font-bold">
                     <FaCheckCircle className="text-lg" />
-                    <span>Your Friend Quiz is Ready to Share!</span>
+                    <span>Your Customized Friend Quiz is Ready to Share!</span>
                   </div>
 
                   <p className="text-xs text-gray-600 dark:text-gray-300">
@@ -806,7 +1005,7 @@ const FriendQuizPage = () => {
               className="w-full py-3.5 rounded-xl border border-dashed border-gray-300 dark:border-[#27272a] font-mono text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#121215] transition-all flex items-center justify-center gap-2"
             >
               <FaPlus />
-              <span>Create Your Own Friend Quiz Now</span>
+              <span>Create Your Own Custom Friend Quiz Now</span>
             </button>
           </div>
         )}
@@ -846,7 +1045,7 @@ const FriendQuizPage = () => {
                   No Leaderboard Entries Yet
                 </h3>
                 <p className="text-xs text-gray-500 max-w-sm mx-auto">
-                  Create a quiz, send the link to your friends, and watch their scores show up here!
+                  Create a custom quiz, send the link to your friends, and watch their scores show up here!
                 </p>
                 <button
                   onClick={() => setView("create")}
