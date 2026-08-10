@@ -1,4 +1,4 @@
-import React, { use, useEffect } from "react";
+import React, { useEffect } from "react";
 import { BiBadge } from "react-icons/bi";
 import { FaArrowLeft, FaFolderOpen } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -10,46 +10,60 @@ const ProjectLists = () => {
 
     const projects = [
         {
+            name: "Friend Quiz & Leaderboard Web App",
+            description: "An interactive web app allowing users to create personalized quizzes about themselves, share links with friends, calculate friendship tier ratings (BFF, Best Friend, Good Buddy), and view a live ranked friends leaderboard.",
+            tech: "React, Tailwind CSS, Web Storage API, URL Parameter Encoding",
+            link: "/friend-quiz",
+            isInternal: true
+        },
+        {
             name: "Personal Portfolio Website",
             description: "A responsive portfolio website built with React and Tailwind CSS to showcase my projects, skills, and experience.",
             tech: "React, Tailwind CSS",
             link: "https://klint-ruales.vercel.app/",
+            isInternal: false
         },
         {
             name: "Evacuation Assistant App",
             description: "An AI-powered disaster preparedness app designed for households in the Philippines that generates personalized evacuation guidance for floods, typhoons, and earthquakes. Users input household size, disaster type, and risk level, and the app produces a tailored evacuation plan, emergency supplies checklist with recommended quantities, safety tips specific to each disaster, and a priority level assessment with urgency and next steps.",
             tech: "PartyRock (Amazon AWS), Large Language Model (LLM), Amazon Web Services (AWS)",
-            link: "https://partyrock.aws/u/thisisklint/APJz77mmS/new-app-APJz77mmS"
+            link: "https://partyrock.aws/u/thisisklint/APJz77mmS/new-app-APJz77mmS",
+            isInternal: false
         },
         {
             name: "Task Tracker Mobile App",
             description: "A mobile app developed using Ionic Framework + React.js to help users manage their tasks and improve productivity.",
             tech: "Ionic Framework, TypeScript, Android Studio",
-            link: "/TaskTracker.apk"
+            link: "/TaskTracker.apk",
+            isInternal: false
         },
         {
             name: "Student Grade Prediction App",
             description: "A web application that predicts student grades based on their study time, failures, absecences, and test scores.",
             tech: "Streamlit, Python, Machine Learning",
-            link: "https://grade-predict.streamlit.app/"
+            link: "https://grade-predict.streamlit.app/",
+            isInternal: false
         },
         {
             name: "Smart Home Management System (Java Swing GUI)",
             description: "A desktop application built with Java Swing to manage and control smart home devices and systems.",
             tech: "Java, Swing",
-            link: "https://github.com/klint-droid/Smarthub"
+            link: "https://github.com/klint-droid/Smarthub",
+            isInternal: false
         },
         {
             name: "POSify",
             description: "Developed a full-stack Point of Sale (POS) and debt (utang) management system using ASP.NET MVC and Entity Framework Core. The system allows administrators to manage products, process orders, and track customer debts efficiently. It includes real-time sales processing, profit calculation, and analytics dashboard for business insights.",
             tech: "C#, ASP.NET MVC, Entity Framework Core, SQL Server",
-            link: "https://github.com/klint-droid/simple-pos"
+            link: "https://github.com/klint-droid/simple-pos",
+            isInternal: false
         },
         {
             name: "RPG Java Swing Game",
             description: "A java swing game based on Final Fantasy",
             tech: "Java, Swing",
-            link: "https://github.com/klint-droid/RPG"
+            link: "https://github.com/klint-droid/RPG",
+            isInternal: false
         }
     ]
 
@@ -67,24 +81,30 @@ const ProjectLists = () => {
                     </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {projects.map((projects, index) => (
+                    {projects.map((proj, index) => (
                         <div
                         key={index}
                         className="group flex flex-col p-4 bg-[var(--bg-color)] rounded-xl border border-[var(--border-color)] hover:border-[var(--text-secondary)] transition-all animate-fade-in-up"
                         style={{ animationDelay: `${index * 150}ms` }}
                         >
                             <h3 className="text-sm font-bold group-hover:text-blue-500 transition-colors">
-                                {projects.name}
+                                {proj.name}
                             </h3>
                             <p className="text-xs mt-1 opacity-70 mb-3">
-                                {projects.description}
+                                {proj.description}
                             </p>
                             <p className="text-xs text-yellow-600 mt-1 opacity-70 mb-3">
-                                {projects.tech}
+                                {proj.tech}
                             </p>
-                            <a href={projects.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 mt-auto hover:underline w-fit">
-                                View Project
-                            </a>
+                            {proj.isInternal ? (
+                                <Link to={proj.link} className="text-xs text-blue-500 mt-auto hover:underline w-fit">
+                                    View Project
+                                </Link>
+                            ) : (
+                                <a href={proj.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 mt-auto hover:underline w-fit">
+                                    View Project
+                                </a>
+                            )}
                         </div>
                     ))}
                 </div>

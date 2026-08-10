@@ -1,0 +1,926 @@
+import React, { useState, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { 
+  FaArrowLeft, 
+  FaCopy, 
+  FaCheck, 
+  FaTrophy, 
+  FaShareAlt, 
+  FaUser, 
+  FaTrash, 
+  FaPlus,
+  FaWhatsapp,
+  FaTelegram,
+  FaCheckCircle,
+  FaTimesCircle
+} from "react-icons/fa";
+
+// Default Preset Questions
+const DEFAULT_QUESTIONS = [
+  {
+    id: 1,
+    question: "What is my absolute favorite food?",
+    options: ["Pizza / Pasta 🍕", "Burgers & Fries 🍔", "Sushi / Asian Cuisine 🍣", "Home-cooked Comfort Food 🍲"]
+  },
+  {
+    id: 2,
+    question: "Am I a morning person or a night owl?",
+    options: ["Extreme Night Owl 🌙", "Early Bird ☀️", "Depends on Coffee ☕", "Always Tired 😴"]
+  },
+  {
+    id: 3,
+    question: "What's my dream travel destination?",
+    options: ["Tokyo, Japan 🇯🇵", "Tropical Beach Resort 🏝️", "European City Tour 🏰", "Camping in Nature 🏕️"]
+  },
+  {
+    id: 4,
+    question: "What genre of movies/shows do I love most?",
+    options: ["Sci-Fi / Anime / Fantasy 🚀", "Action & Thrillers 💥", "Comedy & Sitcoms 😂", "Documentaries & Tech 📽️"]
+  },
+  {
+    id: 5,
+    question: "What is my go-to weekend activity?",
+    options: ["Coding & Building Side Projects 💻", "Gaming / Binge Watching 🎮", "Hanging out with Friends 🍻", "Sleeping & Relaxing 💤"]
+  },
+  {
+    id: 6,
+    question: "What is my biggest pet peeve?",
+    options: ["Slow Internet / Lag 📶", "Unpunctuality / Waiting ⏳", "Loud Chewing 🍕", "Messy Spaces 🧹"]
+  },
+  {
+    id: 7,
+    question: "If I won $1 Million, what's the first thing I'd do?",
+    options: ["Buy a Dream House & Tech Setup 🏠", "Travel the World ✈️", "Invest & Save it All 📈", "Give to Family & Charity ❤️"]
+  },
+  {
+    id: 8,
+    question: "Which superpower would I choose?",
+    options: ["Teleportation / Instant Travel ⚡", "Time Travel ⏳", "Invisibility 👻", "Mind Reading 🧠"]
+  },
+  {
+    id: 9,
+    question: "How do I handle stress?",
+    options: ["Listen to Music & Chill 🎧", "Work Harder / Code it Out 💻", "Talk to Friends 🗣️", "Eat Snacks & Sleep 🍿"]
+  },
+  {
+    id: 10,
+    question: "What describes my personality best?",
+    options: ["Creative & Ambitious ✨", "Logical & Analytical 🧠", "Chill & Easygoing 😎", "Energetic & Fun 🎉"]
+  }
+];
+
+// Friendship Rating Tiers Helper
+const getFriendshipRating = (percentage) => {
+  if (percentage >= 90) {
+    return {
+      tier: "Soulmate / BFF",
+      icon: "💖",
+      badgeClass: "bg-pink-500/10 text-pink-500 border-pink-500/30",
+      description: "Unbelievable! You know me better than I know myself!",
+      gradient: "from-pink-500 to-rose-600"
+    };
+  } else if (percentage >= 70) {
+    return {
+      tier: "Best Friend",
+      icon: "🌟",
+      badgeClass: "bg-amber-500/10 text-amber-500 border-amber-500/30",
+      description: "Super impressive! We are definitely super close friends.",
+      gradient: "from-amber-500 to-yellow-600"
+    };
+  } else if (percentage >= 50) {
+    return {
+      tier: "Good Buddy",
+      icon: "🤝",
+      badgeClass: "bg-blue-500/10 text-blue-500 border-blue-500/30",
+      description: "Not bad! You know me pretty well.",
+      gradient: "from-blue-500 to-cyan-600"
+    };
+  } else if (percentage >= 30) {
+    return {
+      tier: "Acquaintance",
+      icon: "☕",
+      badgeClass: "bg-emerald-500/10 text-emerald-500 border-emerald-500/30",
+      description: "Room for improvement! We definitely need to hang out more.",
+      gradient: "from-emerald-500 to-teal-600"
+    };
+  } else {
+    return {
+      tier: "Stranger Danger",
+      icon: "😅",
+      badgeClass: "bg-purple-500/10 text-purple-500 border-purple-500/30",
+      description: "Do we even know each other?! Time for a coffee chat! 😂",
+      gradient: "from-purple-500 to-indigo-600"
+    };
+  }
+};
+
+// Safe Base64 Helper
+const encodeData = (obj) => {
+  try {
+    return btoa(encodeURIComponent(JSON.stringify(obj)));
+  } catch (e) {
+    console.error("Encoding error", e);
+    return "";
+  }
+};
+
+const decodeData = (str) => {
+  try {
+    return JSON.parse(decodeURIComponent(atob(str)));
+  } catch (e) {
+    console.error("Decoding error", e);
+    return null;
+  }
+};
+
+const FriendQuizPage = () => {
+  const [searchParams] = useSearchParams();
+  
+  // Views: 'create' | 'take' | 'result' | 'leaderboard'
+  const [view, setView] = useState("create");
+
+  // Creator state
+  const [creatorName, setCreatorName] = useState("");
+  const [questions] = useState(DEFAULT_QUESTIONS);
+  const [creatorAnswers, setCreatorAnswers] = useState({}); // { [qId]: optionIndex }
+  const [generatedLink, setGeneratedLink] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  // Quiz Taker (Friend) state
+  const [activeQuiz, setActiveQuiz] = useState(null); // decoded quiz payload
+  const [friendName, setFriendName] = useState("");
+  const [friendAnswers, setFriendAnswers] = useState({}); // { [qIndex]: optionIndex }
+  const [currentStep, setCurrentStep] = useState(0);
+
+  // Result State
+  const [finalScore, setFinalScore] = useState(null); // { score, total, percentage, rating, friendName, creatorName }
+
+  // Leaderboard State
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [toastMessage, setToastMessage] = useState("");
+
+  // Toast Helper
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(""), 4000);
+  };
+
+  // Load Leaderboard from localStorage
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const savedLb = localStorage.getItem("friend_quiz_leaderboard");
+    if (savedLb) {
+      try {
+        setLeaderboard(JSON.parse(savedLb));
+      } catch (e) {
+        console.error("Error loading leaderboard", e);
+      }
+    }
+  }, []);
+
+  // Save Leaderboard to localStorage
+  const saveToLeaderboard = (newEntry) => {
+    setLeaderboard((prev) => {
+      // Check if entry with same friend name exists for creator, update or add
+      const filtered = prev.filter(
+        (item) => item.friendName.toLowerCase() !== newEntry.friendName.toLowerCase() || item.creatorName !== newEntry.creatorName
+      );
+      const updated = [newEntry, ...filtered].sort((a, b) => b.percentage - a.percentage);
+      localStorage.setItem("friend_quiz_leaderboard", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  // Parse URL search params on mount
+  useEffect(() => {
+    const qParam = searchParams.get("q") || searchParams.get("quiz");
+    const resParam = searchParams.get("res") || searchParams.get("result");
+
+    if (resParam) {
+      // Result link opened! Decode and save to leaderboard
+      const decodedRes = decodeData(resParam);
+      if (decodedRes && decodedRes.friendName && decodedRes.creatorName) {
+        saveToLeaderboard(decodedRes);
+        showToast(`🎉 Recorded result for ${decodedRes.friendName} (${decodedRes.percentage}%)!`);
+        setView("leaderboard");
+        return;
+      }
+    }
+
+    if (qParam) {
+      const decodedQuiz = decodeData(qParam);
+      if (decodedQuiz && decodedQuiz.creatorName && decodedQuiz.questions) {
+        setActiveQuiz(decodedQuiz);
+        setView("take");
+      }
+    }
+  }, [searchParams]);
+
+  // Handle Creator setting up quiz
+  const handleSelectAnswer = (questionId, optionIdx) => {
+    setCreatorAnswers((prev) => ({
+      ...prev,
+      [questionId]: optionIdx
+    }));
+  };
+
+  const handleGenerateQuiz = () => {
+    if (!creatorName.trim()) {
+      showToast("Please enter your name to create the quiz!");
+      return;
+    }
+
+    // Check if at least 5 questions answered
+    const answeredCount = Object.keys(creatorAnswers).length;
+    if (answeredCount < 5) {
+      showToast(`Please answer at least 5 questions! (${answeredCount}/5 selected)`);
+      return;
+    }
+
+    // Build payload of questions answered
+    const quizPayload = {
+      creatorName: creatorName.trim(),
+      questions: questions
+        .filter((q) => creatorAnswers[q.id] !== undefined)
+        .map((q) => ({
+          id: q.id,
+          question: q.question,
+          options: q.options,
+          answer: creatorAnswers[q.id]
+        }))
+    };
+
+    const encoded = encodeData(quizPayload);
+    const fullLink = `${window.location.origin}/friend-quiz?q=${encoded}`;
+    setGeneratedLink(fullLink);
+    showToast("Quiz generated successfully! Share the link with your friends.");
+  };
+
+  const handleCopyLink = () => {
+    if (!generatedLink) return;
+    navigator.clipboard.writeText(generatedLink);
+    setCopied(true);
+    showToast("Link copied to clipboard! 📋");
+    setTimeout(() => setCopied(false), 2500);
+  };
+
+  // Handle Friend taking quiz
+  const handleFriendAnswerSelect = (optionIdx) => {
+    setFriendAnswers((prev) => ({
+      ...prev,
+      [currentStep]: optionIdx
+    }));
+  };
+
+  const handleNextQuestion = () => {
+    if (currentStep < activeQuiz.questions.length - 1) {
+      setCurrentStep((prev) => prev + 1);
+    } else {
+      finishFriendQuiz();
+    }
+  };
+
+  const finishFriendQuiz = () => {
+    if (!friendName.trim()) {
+      showToast("Please enter your name first!");
+      return;
+    }
+
+    let score = 0;
+    const total = activeQuiz.questions.length;
+
+    activeQuiz.questions.forEach((q, idx) => {
+      if (friendAnswers[idx] === q.answer) {
+        score += 1;
+      }
+    });
+
+    const percentage = Math.round((score / total) * 100);
+    const rating = getFriendshipRating(percentage);
+
+    const resultObj = {
+      creatorName: activeQuiz.creatorName,
+      friendName: friendName.trim(),
+      score,
+      total,
+      percentage,
+      tier: rating.tier,
+      icon: rating.icon,
+      timestamp: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+    };
+
+    setFinalScore({
+      ...resultObj,
+      questions: activeQuiz.questions,
+      friendAnswers,
+      rating
+    });
+
+    // Save to local leaderboard
+    saveToLeaderboard(resultObj);
+    setView("result");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Generate result sync link for friend to send back to creator
+  const getResultShareLink = () => {
+    if (!finalScore) return "";
+    const encodedRes = encodeData({
+      creatorName: finalScore.creatorName,
+      friendName: finalScore.friendName,
+      score: finalScore.score,
+      total: finalScore.total,
+      percentage: finalScore.percentage,
+      tier: finalScore.tier,
+      icon: finalScore.icon,
+      timestamp: finalScore.timestamp
+    });
+    return `${window.location.origin}/friend-quiz?res=${encodedRes}`;
+  };
+
+  const handleShareResultToCreator = () => {
+    const link = getResultShareLink();
+    const text = `Hey ${finalScore.creatorName}! I just took your Friend Quiz and scored ${finalScore.score}/${finalScore.total} (${finalScore.percentage}% - ${finalScore.tier})! Check out your updated leaderboard here: ${link}`;
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
+  const clearLeaderboard = () => {
+    if (window.confirm("Are you sure you want to clear the leaderboard?")) {
+      setLeaderboard([]);
+      localStorage.removeItem("friend_quiz_leaderboard");
+      showToast("Leaderboard cleared.");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-white dark:bg-[#09090b] text-gray-900 dark:text-[#f4f4f5] transition-colors duration-300 py-10 px-4 sm:px-6 lg:px-8">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-mono text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 animate-bounce">
+          <FaCheckCircle className="text-emerald-400 dark:text-emerald-600 text-sm" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      <div className="max-w-4xl mx-auto">
+        {/* App Header & Navigation */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 pb-6 border-b border-gray-200 dark:border-[#27272a]">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/"
+              className="p-2.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#121215] hover:bg-gray-100 dark:hover:bg-[#1c1c21] transition-colors"
+              title="Return to Portfolio"
+            >
+              <FaArrowLeft className="text-gray-600 dark:text-gray-400" />
+            </Link>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl">✨</span>
+                <h1 className="font-mono text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  Friend Quiz & Leaderboard
+                </h1>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 font-sans">
+                Create custom quizzes about yourself, share with friends & track scores!
+              </p>
+            </div>
+          </div>
+
+          {/* Nav Tabs */}
+          <div className="flex items-center gap-2 bg-gray-100 dark:bg-[#121215] p-1.5 rounded-xl border border-gray-200 dark:border-[#27272a]">
+            <button
+              onClick={() => setView("create")}
+              className={`px-3 py-1.5 rounded-lg font-mono text-xs transition-all ${
+                view === "create"
+                  ? "bg-white dark:bg-[#1f1f24] text-blue-600 dark:text-blue-400 font-semibold shadow-sm"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              }`}
+            >
+              📝 Create Quiz
+            </button>
+            <button
+              onClick={() => setView("leaderboard")}
+              className={`px-3 py-1.5 rounded-lg font-mono text-xs transition-all flex items-center gap-1.5 ${
+                view === "leaderboard"
+                  ? "bg-white dark:bg-[#1f1f24] text-blue-600 dark:text-blue-400 font-semibold shadow-sm"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              }`}
+            >
+              <FaTrophy className="text-amber-500" />
+              <span>Leaderboard</span>
+              {leaderboard.length > 0 && (
+                <span className="px-1.5 py-0.2 text-[10px] rounded-full bg-blue-500 text-white font-bold">
+                  {leaderboard.length}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* VIEW 1: QUIZ CREATOR */}
+        {view === "create" && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Creator Name Input Card */}
+            <div className="p-6 rounded-2xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#121215]/60 backdrop-blur-md shadow-sm">
+              <label className="block font-mono text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+                1. Your Name (Quiz Creator)
+              </label>
+              <div className="relative">
+                <FaUser className="absolute left-3.5 top-3.5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="e.g. Klint Ruales"
+                  value={creatorName}
+                  onChange={(e) => setCreatorName(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#18181b] text-gray-900 dark:text-white font-sans text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Questions Selection Header */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="font-mono text-base font-bold text-gray-900 dark:text-white">
+                  2. Answer Your Questions
+                </h2>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Select your true answer for each question (minimum 5 questions).
+                </p>
+              </div>
+              <span className="font-mono text-xs px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20 font-semibold">
+                {Object.keys(creatorAnswers).length} / {questions.length} Answered
+              </span>
+            </div>
+
+            {/* Questions List */}
+            <div className="space-y-4">
+              {questions.map((q, qIndex) => {
+                const selectedIdx = creatorAnswers[q.id];
+                const isAnswered = selectedIdx !== undefined;
+
+                return (
+                  <div
+                    key={q.id}
+                    className={`p-5 rounded-2xl border transition-all ${
+                      isAnswered
+                        ? "border-blue-500/40 bg-blue-50/20 dark:bg-blue-950/10 shadow-sm"
+                        : "border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215]"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <span className="font-mono text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded-md">
+                        Q{qIndex + 1}
+                      </span>
+                      <h3 className="font-medium text-sm text-gray-900 dark:text-white flex-1">
+                        {q.question}
+                      </h3>
+                      {isAnswered && (
+                        <FaCheckCircle className="text-emerald-500 shrink-0 mt-0.5" />
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3">
+                      {q.options.map((opt, optIdx) => {
+                        const isSelected = selectedIdx === optIdx;
+
+                        return (
+                          <button
+                            key={optIdx}
+                            type="button"
+                            onClick={() => handleSelectAnswer(q.id, optIdx)}
+                            className={`p-3 rounded-xl border text-left text-xs font-sans transition-all flex items-center justify-between ${
+                              isSelected
+                                ? "bg-blue-600 text-white border-blue-600 font-medium shadow-md shadow-blue-500/20"
+                                : "bg-gray-50 dark:bg-[#18181b] border-gray-200 dark:border-[#27272a] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202025]"
+                            }`}
+                          >
+                            <span>{opt}</span>
+                            {isSelected && <FaCheck className="text-white text-xs shrink-0 ml-2" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Create Quiz Button & Link Modal Card */}
+            <div className="pt-4 pb-8">
+              {!generatedLink ? (
+                <button
+                  type="button"
+                  onClick={handleGenerateQuiz}
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-mono text-sm font-bold shadow-lg shadow-blue-500/20 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
+                >
+                  <FaShareAlt />
+                  <span>Generate My Friend Quiz Link</span>
+                </button>
+              ) : (
+                <div className="p-6 rounded-2xl border border-emerald-500/30 bg-emerald-50/10 dark:bg-emerald-950/20 space-y-4 animate-fade-in">
+                  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-mono text-sm font-bold">
+                    <FaCheckCircle className="text-lg" />
+                    <span>Your Friend Quiz is Ready to Share!</span>
+                  </div>
+
+                  <p className="text-xs text-gray-600 dark:text-gray-300">
+                    Send this secret link to your friends. When they answer, their scores will automatically sync to your Leaderboard!
+                  </p>
+
+                  <div className="flex flex-col sm:flex-row items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={generatedLink}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-[#27272a] bg-white dark:bg-[#18181b] text-gray-900 dark:text-white font-mono text-xs"
+                    />
+                    <button
+                      onClick={handleCopyLink}
+                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-mono text-xs font-bold transition-all shrink-0 flex items-center justify-center gap-2 shadow-md"
+                    >
+                      {copied ? <FaCheck /> : <FaCopy />}
+                      <span>{copied ? "Copied!" : "Copy Link"}</span>
+                    </button>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 pt-2">
+                    <span className="text-xs font-mono text-gray-500">Quick Share:</span>
+                    <a
+                      href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                        `Hey! Take my Friend Quiz to see how well you really know me: ${generatedLink}`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-mono text-xs hover:bg-emerald-700 transition-colors"
+                    >
+                      <FaWhatsapp />
+                      <span>WhatsApp</span>
+                    </a>
+                    <a
+                      href={`https://t.me/share/url?url=${encodeURIComponent(generatedLink)}&text=${encodeURIComponent(
+                        "Take my Friend Quiz!"
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-500 text-white font-mono text-xs hover:bg-sky-600 transition-colors"
+                    >
+                      <FaTelegram />
+                      <span>Telegram</span>
+                    </a>
+                    <button
+                      onClick={() => {
+                        const decoded = decodeData(encodeData({
+                          creatorName,
+                          questions: questions
+                            .filter((q) => creatorAnswers[q.id] !== undefined)
+                            .map((q) => ({
+                              id: q.id,
+                              question: q.question,
+                              options: q.options,
+                              answer: creatorAnswers[q.id]
+                            }))
+                        }));
+                        setActiveQuiz(decoded);
+                        setView("take");
+                      }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-[#27272a] bg-gray-100 dark:bg-[#18181b] text-gray-700 dark:text-gray-300 font-mono text-xs hover:bg-gray-200 dark:hover:bg-[#222227] transition-colors"
+                    >
+                      <span>🧪 Test My Quiz Now</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* VIEW 2: QUIZ TAKER (FRIEND PLAYING) */}
+        {view === "take" && activeQuiz && (
+          <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
+            {/* Quiz Banner */}
+            <div className="p-6 rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-500/10 via-indigo-500/5 to-purple-500/10 text-center space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-500 font-mono text-xs font-semibold">
+                ✨ Friend Knowledge Challenge
+              </div>
+              <h2 className="font-mono text-2xl font-bold text-gray-900 dark:text-white">
+                How well do you know <span className="text-blue-500">{activeQuiz.creatorName}</span>?
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+                Answer these {activeQuiz.questions.length} questions guessing what {activeQuiz.creatorName} selected!
+              </p>
+            </div>
+
+            {/* Friend Name Input */}
+            {currentStep === 0 && (
+              <div className="p-5 rounded-2xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#121215]/60 space-y-2">
+                <label className="block font-mono text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                  Enter Your Name
+                </label>
+                <div className="relative">
+                  <FaUser className="absolute left-3.5 top-3.5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="e.g. Alex Smith"
+                    value={friendName}
+                    onChange={(e) => setFriendName(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#18181b] text-gray-900 dark:text-white font-sans text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Progress Bar */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs font-mono text-gray-500">
+                <span>Question {currentStep + 1} of {activeQuiz.questions.length}</span>
+                <span>{Math.round(((currentStep + 1) / activeQuiz.questions.length) * 100)}% Completed</span>
+              </div>
+              <div className="w-full h-2 rounded-full bg-gray-200 dark:bg-[#1f1f24] overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300"
+                  style={{ width: `${((currentStep + 1) / activeQuiz.questions.length) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Current Question Card */}
+            {activeQuiz.questions[currentStep] && (
+              <div className="p-6 rounded-2xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] space-y-5 shadow-sm">
+                <h3 className="font-mono text-base font-bold text-gray-900 dark:text-white leading-snug">
+                  {currentStep + 1}. {activeQuiz.questions[currentStep].question}
+                </h3>
+
+                <div className="space-y-2.5">
+                  {activeQuiz.questions[currentStep].options.map((opt, optIdx) => {
+                    const isSelected = friendAnswers[currentStep] === optIdx;
+
+                    return (
+                      <button
+                        key={optIdx}
+                        type="button"
+                        onClick={() => handleFriendAnswerSelect(optIdx)}
+                        className={`w-full p-4 rounded-xl border text-left text-sm font-sans transition-all flex items-center justify-between ${
+                          isSelected
+                            ? "bg-blue-600 text-white border-blue-600 font-medium shadow-md shadow-blue-500/20"
+                            : "bg-gray-50 dark:bg-[#18181b] border-gray-200 dark:border-[#27272a] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#202025]"
+                        }`}
+                      >
+                        <span>{opt}</span>
+                        {isSelected && <FaCheck className="text-white shrink-0 ml-2" />}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-[#27272a]">
+                  <button
+                    disabled={currentStep === 0}
+                    onClick={() => setCurrentStep((prev) => prev - 1)}
+                    className="px-4 py-2 rounded-xl border border-gray-200 dark:border-[#27272a] font-mono text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-[#18181b] transition-colors"
+                  >
+                    Previous
+                  </button>
+
+                  <button
+                    disabled={friendAnswers[currentStep] === undefined || !friendName.trim()}
+                    onClick={handleNextQuestion}
+                    className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-mono text-xs font-bold transition-all shadow-md"
+                  >
+                    {currentStep < activeQuiz.questions.length - 1 ? "Next Question →" : "See Friendship Rating 🏆"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* VIEW 3: QUIZ RESULT & RATING */}
+        {view === "result" && finalScore && (
+          <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
+            {/* Score & Rating Hero Card */}
+            <div className="p-8 rounded-3xl border border-gray-200 dark:border-[#27272a] bg-gradient-to-b from-gray-50 to-white dark:from-[#121215] dark:to-[#09090b] text-center space-y-4 shadow-lg relative overflow-hidden">
+              <div className="text-5xl mb-2">{finalScore.rating.icon}</div>
+
+              <span className={`inline-block px-4 py-1.5 rounded-full font-mono text-xs font-bold border ${finalScore.rating.badgeClass}`}>
+                {finalScore.rating.tier}
+              </span>
+
+              <h2 className="font-mono text-3xl font-extrabold text-gray-900 dark:text-white">
+                {finalScore.friendName}, you scored <span className="text-blue-500">{finalScore.percentage}%</span>!
+              </h2>
+
+              <p className="text-sm text-gray-600 dark:text-gray-300 max-w-md mx-auto">
+                {finalScore.rating.description}
+              </p>
+
+              <div className="inline-flex items-center gap-4 px-6 py-3 rounded-2xl bg-gray-100 dark:bg-[#18181b] border border-gray-200 dark:border-[#27272a] font-mono text-sm">
+                <div>
+                  <span className="text-gray-400 text-xs block">Correct Answers</span>
+                  <span className="font-bold text-emerald-500 text-base">{finalScore.score} / {finalScore.total}</span>
+                </div>
+                <div className="h-8 w-px bg-gray-300 dark:bg-[#27272a]" />
+                <div>
+                  <span className="text-gray-400 text-xs block">Tested On</span>
+                  <span className="font-bold text-gray-900 dark:text-white text-xs">{finalScore.creatorName}</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button
+                  onClick={handleShareResultToCreator}
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2"
+                >
+                  <FaWhatsapp className="text-base" />
+                  <span>Send Score to {finalScore.creatorName}</span>
+                </button>
+                
+                <button
+                  onClick={() => setView("leaderboard")}
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#18181b] text-gray-900 dark:text-white font-mono text-xs font-bold hover:bg-gray-100 dark:hover:bg-[#222227] transition-all flex items-center justify-center gap-2"
+                >
+                  <FaTrophy className="text-amber-500" />
+                  <span>View Leaderboard</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Answer Breakdown Details */}
+            <div className="p-6 rounded-2xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] space-y-4">
+              <h3 className="font-mono text-sm font-bold text-gray-900 dark:text-white">
+                Detailed Answers Breakdown:
+              </h3>
+
+              <div className="space-y-3">
+                {finalScore.questions.map((q, idx) => {
+                  const friendAnsIdx = finalScore.friendAnswers[idx];
+                  const isCorrect = friendAnsIdx === q.answer;
+
+                  return (
+                    <div
+                      key={q.id}
+                      className={`p-4 rounded-xl border text-xs space-y-1.5 ${
+                        isCorrect
+                          ? "border-emerald-500/30 bg-emerald-50/10 dark:bg-emerald-950/10"
+                          : "border-rose-500/30 bg-rose-50/10 dark:bg-rose-950/10"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="font-mono font-bold text-gray-900 dark:text-white">
+                          {idx + 1}. {q.question}
+                        </span>
+                        {isCorrect ? (
+                          <span className="flex items-center gap-1 text-emerald-500 font-mono text-[11px] font-bold">
+                            <FaCheckCircle /> Correct
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 text-rose-500 font-mono text-[11px] font-bold">
+                            <FaTimesCircle /> Incorrect
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="font-sans text-gray-600 dark:text-gray-300 pt-1 space-y-1">
+                        <div>
+                          Your answer: <span className="font-medium text-gray-900 dark:text-white">{q.options[friendAnsIdx] || "None"}</span>
+                        </div>
+                        {!isCorrect && (
+                          <div className="text-emerald-600 dark:text-emerald-400 font-medium">
+                            {finalScore.creatorName}'s actual answer: {q.options[q.answer]}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                setView("create");
+                setGeneratedLink("");
+                setCreatorAnswers({});
+              }}
+              className="w-full py-3.5 rounded-xl border border-dashed border-gray-300 dark:border-[#27272a] font-mono text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#121215] transition-all flex items-center justify-center gap-2"
+            >
+              <FaPlus />
+              <span>Create Your Own Friend Quiz Now</span>
+            </button>
+          </div>
+        )}
+
+        {/* VIEW 4: LIVE RANKED LEADERBOARD */}
+        {view === "leaderboard" && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-yellow-500/5 to-orange-500/10">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-amber-500 font-mono text-xs font-bold uppercase tracking-wider">
+                  <FaTrophy /> Live Scoreboard
+                </div>
+                <h2 className="font-mono text-2xl font-bold text-gray-900 dark:text-white">
+                  Friends Leaderboard 🏆
+                </h2>
+                <p className="text-xs text-gray-600 dark:text-gray-300">
+                  Ranked scores of all friends who completed quizzes!
+                </p>
+              </div>
+
+              {leaderboard.length > 0 && (
+                <button
+                  onClick={clearLeaderboard}
+                  className="px-3 py-2 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 font-mono text-xs transition-colors flex items-center gap-1.5"
+                >
+                  <FaTrash size={12} />
+                  <span>Clear Board</span>
+                </button>
+              )}
+            </div>
+
+            {/* Leaderboard Table / List */}
+            {leaderboard.length === 0 ? (
+              <div className="p-12 text-center rounded-2xl border border-dashed border-gray-300 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#121215]/50 space-y-3">
+                <div className="text-4xl text-gray-400">🏆</div>
+                <h3 className="font-mono text-sm font-bold text-gray-700 dark:text-gray-300">
+                  No Leaderboard Entries Yet
+                </h3>
+                <p className="text-xs text-gray-500 max-w-sm mx-auto">
+                  Create a quiz, send the link to your friends, and watch their scores show up here!
+                </p>
+                <button
+                  onClick={() => setView("create")}
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-mono text-xs font-bold transition-all shadow-md inline-flex items-center gap-2 mt-2"
+                >
+                  <FaPlus />
+                  <span>Create A Quiz</span>
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {leaderboard.map((item, idx) => {
+                  let medal = null;
+                  let cardBorder = "border-gray-200 dark:border-[#27272a]";
+
+                  if (idx === 0) {
+                    medal = "🥇";
+                    cardBorder = "border-amber-500/50 bg-amber-500/5 shadow-amber-500/10 shadow-md";
+                  } else if (idx === 1) {
+                    medal = "🥈";
+                    cardBorder = "border-slate-400/50 bg-slate-400/5";
+                  } else if (idx === 2) {
+                    medal = "🥉";
+                    cardBorder = "border-amber-700/40 bg-amber-700/5";
+                  }
+
+                  const ratingInfo = getFriendshipRating(item.percentage);
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-4 sm:p-5 rounded-2xl border ${cardBorder} bg-white dark:bg-[#121215] flex items-center justify-between gap-4 transition-all hover:scale-[1.005]`}
+                    >
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <span className="font-mono text-lg font-bold min-w-[28px] text-center">
+                          {medal ? medal : `#${idx + 1}`}
+                        </span>
+
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-mono text-sm font-bold text-gray-900 dark:text-white truncate">
+                              {item.friendName}
+                            </h4>
+                            <span className={`px-2 py-0.5 rounded-md font-mono text-[10px] font-bold border ${ratingInfo.badgeClass}`}>
+                              {ratingInfo.icon} {item.tier}
+                            </span>
+                          </div>
+
+                          <div className="text-[11px] text-gray-500 dark:text-gray-400 font-sans mt-0.5 flex items-center gap-2">
+                            <span>Quiz for {item.creatorName}</span>
+                            <span>•</span>
+                            <span>{item.timestamp}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <div className="font-mono text-xl font-extrabold text-blue-500">
+                          {item.percentage}%
+                        </div>
+                        <div className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">
+                          {item.score} / {item.total} correct
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default FriendQuizPage;

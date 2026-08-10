@@ -6,9 +6,19 @@ import { Link } from "react-router-dom";
 const Projects = () => {
   const projects = [
     {
+      title: "Friend Quiz & Leaderboard",
+      description: "Interactive web app where users create custom quizzes about themselves, share links with friends, get friendship ratings & live scoreboards.",
+      link: "/friend-quiz",
+      isInternal: true,
+      year: "2026",
+      tags: ["React", "Tailwind CSS", "LocalStorage", "Share API"],
+      status: "Interactive App"
+    },
+    {
       title: "Portfolio Website",
       description: "Modern sticky-sidebar dark grid portfolio built with React, Vite, and Tailwind CSS.",
       link: "https://github.com/KlintM/Portfolio",
+      isInternal: false,
       year: "2026",
       tags: ["React", "Vite", "Tailwind CSS", "JavaScript"],
       status: "Live"
@@ -17,6 +27,7 @@ const Projects = () => {
       title: "EvaTrack — Capstone System",
       description: "Comprehensive tracking & management system engineered for enterprise capstone workflow.",
       link: "https://github.com/KlintM",
+      isInternal: false,
       year: "2026",
       tags: ["Laravel", "PHP", "MySQL", "React", "REST API"],
       status: "Active"
@@ -25,17 +36,10 @@ const Projects = () => {
       title: "RPG Java Swing Game",
       description: "Turn-based tactical RPG game with custom graphics & battle logic built on Java Swing.",
       link: "https://github.com/klint-droid/RPG",
+      isInternal: false,
       year: "2025",
       tags: ["Java", "Java Swing", "OOP", "Game Logic"],
       status: "GitHub"
-    },
-    {
-      title: "AI Assistant & Web Chatbot",
-      description: "Interactive AI search drawer & chat assistant integrated with client-side portfolio analytics.",
-      link: "#",
-      year: "2026",
-      tags: ["React", "OpenAI / Claude API", "Tailwind"],
-      status: "Featured"
     }
   ];
 
@@ -55,54 +59,74 @@ const Projects = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {projects.map((project, index) => (
-          <a
-            key={index}
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex flex-col justify-between p-4 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:bg-gray-100 dark:hover:bg-[#1c1c21] hover:border-blue-500/50 transition-all"
-          >
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <div className="flex items-center gap-2">
-                  <FaFolderOpen className="text-blue-500" size={14} />
-                  <h3 className="font-mono text-sm font-bold text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors">
-                    {project.title}
-                  </h3>
-                </div>
-                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-gray-200 dark:bg-[#27272a] text-gray-600 dark:text-gray-400">
-                  {project.year}
-                </span>
-              </div>
-
-              <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-3">
-                {project.description}
-              </p>
-            </div>
-
-            <div>
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                {project.tags.map((tag, tIdx) => (
-                  <span key={tIdx} className="tech-badge">
-                    {tag}
+        {projects.map((project, index) => {
+          const CardContent = (
+            <>
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <FaFolderOpen className="text-blue-500" size={14} />
+                    <h3 className="font-mono text-sm font-bold text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors">
+                      {project.title}
+                    </h3>
+                  </div>
+                  <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-gray-200 dark:bg-[#27272a] text-gray-600 dark:text-gray-400">
+                    {project.year}
                   </span>
-                ))}
+                </div>
+
+                <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-3">
+                  {project.description}
+                </p>
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-gray-200/60 dark:border-[#27272a]/60 text-[11px] font-mono text-gray-500 dark:text-gray-400">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>{project.status}</span>
-                </span>
-                <span className="flex items-center gap-1 group-hover:text-blue-500 transition-colors">
-                  <span>view project</span>
-                  <FiExternalLink size={12} />
-                </span>
+              <div>
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {project.tags.map((tag, tIdx) => (
+                    <span key={tIdx} className="tech-badge">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-gray-200/60 dark:border-[#27272a]/60 text-[11px] font-mono text-gray-500 dark:text-gray-400">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>{project.status}</span>
+                  </span>
+                  <span className="flex items-center gap-1 group-hover:text-blue-500 transition-colors">
+                    <span>view project</span>
+                    <FiExternalLink size={12} />
+                  </span>
+                </div>
               </div>
-            </div>
-          </a>
-        ))}
+            </>
+          );
+
+          if (project.isInternal) {
+            return (
+              <Link
+                key={index}
+                to={project.link}
+                className="group flex flex-col justify-between p-4 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:bg-gray-100 dark:hover:bg-[#1c1c21] hover:border-blue-500/50 transition-all"
+              >
+                {CardContent}
+              </Link>
+            );
+          }
+
+          return (
+            <a
+              key={index}
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col justify-between p-4 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:bg-gray-100 dark:hover:bg-[#1c1c21] hover:border-blue-500/50 transition-all"
+            >
+              {CardContent}
+            </a>
+          );
+        })}
       </div>
     </section>
   );
