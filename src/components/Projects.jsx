@@ -17,7 +17,7 @@ const Projects = () => {
     {
       title: "Portfolio Website",
       description: "Modern sticky-sidebar dark grid portfolio built with React, Vite, and Tailwind CSS.",
-      link: "https://github.com/KlintM/Portfolio",
+      link: "https://github.com/klint-droid/Portfolio",
       isInternal: false,
       year: "2026",
       tags: ["React", "Vite", "Tailwind CSS", "JavaScript"],
@@ -26,7 +26,7 @@ const Projects = () => {
     {
       title: "EvaTrack — Capstone System",
       description: "Comprehensive tracking & management system engineered for enterprise capstone workflow.",
-      link: "https://github.com/KlintM",
+      link: "https://github.com/klint-droid",
       isInternal: false,
       year: "2026",
       tags: ["Laravel", "PHP", "MySQL", "React", "REST API"],

@@ -20,12 +20,12 @@ const Contact = () => {
       link: "https://www.facebook.com/groups/dataanalyticsphilippines",
     },
     {
-      name: "DEP X DataCamp",
-      link: "#",
-    },
-    {
       name: "Passerelles Numériques Philippines",
       link: "https://www.facebook.com/passerellesnumeriques.philippines",
+    },
+    {
+      name: "DEP X DataCamp",
+      link: "#",
     }
   ];
 
@@ -71,7 +71,7 @@ const Contact = () => {
           </div>
           <div className="flex flex-col gap-2 font-mono text-xs">
             <a
-              href="https://linkedin.com/in/klint-ruales"
+              href="https://www.linkedin.com/in/klint-ruales"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("Social Link", "Click", "LinkedIn")}
@@ -81,7 +81,7 @@ const Contact = () => {
               <span>LinkedIn</span>
             </a>
             <a
-              href="https://github.com/KlintM"
+              href="https://github.com/klint-droid"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("Social Link", "Click", "GitHub")}

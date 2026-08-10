@@ -241,7 +241,7 @@ const Sidebar = ({ theme, toggleTheme, onOpenAIChat }) => {
         <div className="pt-4 border-t border-gray-200 dark:border-[#27272a] flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
           <div className="flex items-center gap-3">
             <a
-              href="https://github.com/KlintM"
+              href="https://github.com/klint-droid"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-900 dark:hover:text-white transition-colors"

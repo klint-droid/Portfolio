@@ -62,7 +62,7 @@ const About = () => {
         {/* Social Quick Links */}
         <div className="flex flex-wrap gap-4 mt-6 pt-4 border-t border-gray-200 dark:border-[#27272a] font-mono text-xs">
           <a
-            href="https://github.com/KlintM"
+            href="https://github.com/klint-droid"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1 text-gray-700 dark:text-gray-300 hover:text-blue-500 transition-colors"
