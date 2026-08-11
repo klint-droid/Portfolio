@@ -130,10 +130,18 @@ const encodeData = (obj) => {
 
 const decodeData = (str) => {
   try {
-    return JSON.parse(decodeURIComponent(atob(str)));
+    let cleanStr = str;
+    if (cleanStr.includes("%")) {
+      cleanStr = decodeURIComponent(cleanStr);
+    }
+    return JSON.parse(decodeURIComponent(atob(cleanStr)));
   } catch (e) {
-    console.error("Decoding error", e);
-    return null;
+    try {
+      return JSON.parse(atob(str));
+    } catch (err) {
+      console.error("Decoding error", err);
+      return null;
+    }
   }
 };
 
