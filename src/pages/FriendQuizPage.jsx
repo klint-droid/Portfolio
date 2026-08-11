@@ -14,8 +14,10 @@ import {
   FaCheckCircle,
   FaTimesCircle,
   FaEdit,
-  FaUndo
+  FaUndo,
+  FaSync
 } from "react-icons/fa";
+import { saveScoreToCloud, fetchScoresFromCloud } from "../services/quizCloudApi";
 
 // Default Preset Questions
 const DEFAULT_QUESTIONS = [
@@ -161,6 +163,10 @@ const FriendQuizPage = () => {
   // Leaderboard State
   const [leaderboard, setLeaderboard] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
+  const [importInput, setImportInput] = useState("");
+  const [resultCopied, setResultCopied] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSynced, setLastSynced] = useState(null);
 
   // Toast Helper
   const showToast = (msg) => {
@@ -168,7 +174,7 @@ const FriendQuizPage = () => {
     setTimeout(() => setToastMessage(""), 4000);
   };
 
-  // Load Leaderboard from localStorage
+  // Load Leaderboard from localStorage and fetch Cloud DB
   useEffect(() => {
     window.scrollTo(0, 0);
     const savedLb = localStorage.getItem("friend_quiz_leaderboard");
@@ -181,16 +187,107 @@ const FriendQuizPage = () => {
     }
   }, []);
 
-  // Save Leaderboard to localStorage
+  // Sync with Cloud Database and merge entries
+  const syncCloudLeaderboard = async (isManual = false) => {
+    setIsSyncing(true);
+    try {
+      const cloudScores = await fetchScoresFromCloud();
+      setLeaderboard((prevLocal) => {
+        // Merge cloud scores with local scores, deduplicating by friendName + creatorName
+        const combined = [...prevLocal];
+        cloudScores.forEach((cloudItem) => {
+          const exists = combined.some(
+            (loc) => loc.friendName?.toLowerCase() === cloudItem.friendName?.toLowerCase() &&
+                     loc.creatorName?.toLowerCase() === cloudItem.creatorName?.toLowerCase()
+          );
+          if (!exists) {
+            combined.push(cloudItem);
+          }
+        });
+
+        const sorted = combined.sort((a, b) => (b.percentage || 0) - (a.percentage || 0));
+        localStorage.setItem("friend_quiz_leaderboard", JSON.stringify(sorted));
+        return sorted;
+      });
+      setLastSynced(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      if (isManual) showToast("🟢 Leaderboard synced live with Cloud DB!");
+    } catch (e) {
+      console.error("Cloud sync error:", e);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  // Auto-poll cloud database every 8 seconds when viewing leaderboard
+  useEffect(() => {
+    syncCloudLeaderboard();
+
+    let intervalId;
+    if (view === "leaderboard") {
+      intervalId = setInterval(() => {
+        syncCloudLeaderboard();
+      }, 8000);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [view]);
+
+  // Save Leaderboard to localStorage and trigger cloud save
   const saveToLeaderboard = (newEntry) => {
     setLeaderboard((prev) => {
       const filtered = prev.filter(
-        (item) => item.friendName.toLowerCase() !== newEntry.friendName.toLowerCase() || item.creatorName !== newEntry.creatorName
+        (item) => !(item.friendName?.toLowerCase() === newEntry.friendName?.toLowerCase() && item.creatorName?.toLowerCase() === newEntry.creatorName?.toLowerCase())
       );
       const updated = [newEntry, ...filtered].sort((a, b) => b.percentage - a.percentage);
       localStorage.setItem("friend_quiz_leaderboard", JSON.stringify(updated));
       return updated;
     });
+
+    // Also push to cloud DB asynchronously
+    saveScoreToCloud(newEntry);
+  };
+
+  // Import score manually from pasted result link or code
+  const handleImportScore = (e) => {
+    if (e) e.preventDefault();
+    if (!importInput.trim()) {
+      showToast("Please paste a result link or code first!");
+      return;
+    }
+
+    let rawData = importInput.trim();
+    if (rawData.includes("res=")) {
+      try {
+        const urlObj = new URL(rawData);
+        rawData = urlObj.searchParams.get("res") || urlObj.searchParams.get("result") || rawData;
+      } catch (err) {
+        const match = rawData.match(/[?&](?:res|result)=([^&]+)/);
+        if (match) rawData = match[1];
+      }
+    }
+
+    const decodedRes = decodeData(rawData);
+    if (decodedRes && decodedRes.friendName && decodedRes.creatorName && decodedRes.percentage !== undefined) {
+      saveToLeaderboard(decodedRes);
+      setImportInput("");
+      showToast(`🎉 Recorded score for ${decodedRes.friendName} (${decodedRes.percentage}%)!`);
+    } else {
+      showToast("❌ Invalid result link or code. Please check and try again.");
+    }
+  };
+
+  // Delete individual entry
+  const deleteLeaderboardEntry = (entryToDelete) => {
+    setLeaderboard((prev) => {
+      const updated = prev.filter(
+        (item) => !(item.friendName === entryToDelete.friendName && item.creatorName === entryToDelete.creatorName && item.timestamp === entryToDelete.timestamp)
+      );
+      localStorage.setItem("friend_quiz_leaderboard", JSON.stringify(updated));
+      return updated;
+    });
+    showToast(`Removed ${entryToDelete.friendName}'s score.`);
   };
 
   // Parse URL search params on mount
@@ -435,11 +532,24 @@ const FriendQuizPage = () => {
     return `${window.location.origin}/friend-quiz?res=${encodedRes}`;
   };
 
-  const handleShareResultToCreator = () => {
+  const handleShareResultToCreator = (platform = "whatsapp") => {
     const link = getResultShareLink();
     const text = `Hey ${finalScore.creatorName}! I just took your Friend Quiz and scored ${finalScore.score}/${finalScore.total} (${finalScore.percentage}% - ${finalScore.tier})! Check out your updated leaderboard here: ${link}`;
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-    window.open(whatsappUrl, "_blank");
+
+    if (platform === "whatsapp") {
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+    } else if (platform === "telegram") {
+      window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`, "_blank");
+    }
+  };
+
+  const handleCopyResultLink = () => {
+    const link = getResultShareLink();
+    if (!link) return;
+    navigator.clipboard.writeText(link);
+    setResultCopied(true);
+    showToast("Result sync link copied to clipboard! 📋");
+    setTimeout(() => setResultCopied(false), 2500);
   };
 
   const clearLeaderboard = () => {
@@ -925,23 +1035,41 @@ const FriendQuizPage = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <button
-                  onClick={handleShareResultToCreator}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2"
-                >
-                  <FaWhatsapp className="text-base" />
-                  <span>Send Score to {finalScore.creatorName}</span>
-                </button>
-                
-                <button
-                  onClick={() => setView("leaderboard")}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#18181b] text-gray-900 dark:text-white font-mono text-xs font-bold hover:bg-gray-100 dark:hover:bg-[#222227] transition-all flex items-center justify-center gap-2"
-                >
-                  <FaTrophy className="text-amber-500" />
-                  <span>View Leaderboard</span>
-                </button>
+              {/* Action Buttons to send score to creator */}
+              <div className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-50/10 dark:bg-emerald-950/20 space-y-3 text-center">
+                <p className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
+                  📲 Want your score added to {finalScore.creatorName}'s Leaderboard? Send them your result link below!
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-2.5">
+                  <button
+                    onClick={() => handleShareResultToCreator("whatsapp")}
+                    className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold transition-all shadow-md flex items-center gap-2"
+                  >
+                    <FaWhatsapp className="text-sm" />
+                    <span>WhatsApp</span>
+                  </button>
+                  <button
+                    onClick={() => handleShareResultToCreator("telegram")}
+                    className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-mono text-xs font-bold transition-all shadow-md flex items-center gap-2"
+                  >
+                    <FaTelegram className="text-sm" />
+                    <span>Telegram</span>
+                  </button>
+                  <button
+                    onClick={handleCopyResultLink}
+                    className="px-4 py-2.5 rounded-xl border border-gray-300 dark:border-[#27272a] bg-white dark:bg-[#18181b] text-gray-900 dark:text-white font-mono text-xs font-bold hover:bg-gray-100 dark:hover:bg-[#202025] transition-all flex items-center gap-2"
+                  >
+                    {resultCopied ? <FaCheck className="text-emerald-500" /> : <FaCopy />}
+                    <span>{resultCopied ? "Result Link Copied!" : "Copy Result Link"}</span>
+                  </button>
+                  <button
+                    onClick={() => setView("leaderboard")}
+                    className="px-4 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-xs font-bold hover:bg-amber-500/20 transition-all flex items-center gap-1.5"
+                  >
+                    <FaTrophy className="text-amber-500" />
+                    <span>View Leaderboard</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1015,27 +1143,73 @@ const FriendQuizPage = () => {
           <div className="space-y-6 animate-fade-in">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-yellow-500/5 to-orange-500/10">
               <div className="space-y-1">
-                <div className="flex items-center gap-2 text-amber-500 font-mono text-xs font-bold uppercase tracking-wider">
-                  <FaTrophy /> Live Scoreboard
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1.5 text-amber-500 font-mono text-xs font-bold uppercase tracking-wider">
+                    <FaTrophy /> Live Scoreboard
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 font-mono text-[10px] font-bold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                    <span>Live Auto-Syncing</span>
+                  </span>
                 </div>
                 <h2 className="font-mono text-2xl font-bold text-gray-900 dark:text-white">
                   Friends Leaderboard 🏆
                 </h2>
                 <p className="text-xs text-gray-600 dark:text-gray-300">
-                  Ranked scores of all friends who completed quizzes!
+                  Scores automatically update in real-time as your friends complete your quiz!
+                  {lastSynced && <span className="text-gray-400 font-mono ml-2">Last synced at {lastSynced}</span>}
                 </p>
               </div>
 
-              {leaderboard.length > 0 && (
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={clearLeaderboard}
-                  className="px-3 py-2 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 font-mono text-xs transition-colors flex items-center gap-1.5"
+                  type="button"
+                  onClick={() => syncCloudLeaderboard(true)}
+                  disabled={isSyncing}
+                  className="px-3.5 py-2 rounded-xl border border-blue-500/30 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 font-mono text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+                  title="Manually fetch latest cloud scores"
                 >
-                  <FaTrash size={12} />
-                  <span>Clear Board</span>
+                  <FaSync className={isSyncing ? "animate-spin" : ""} size={12} />
+                  <span>{isSyncing ? "Syncing..." : "Sync Now"}</span>
                 </button>
-              )}
+
+                {leaderboard.length > 0 && (
+                  <button
+                    onClick={clearLeaderboard}
+                    className="px-3 py-2 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 font-mono text-xs transition-colors flex items-center gap-1.5"
+                  >
+                    <FaTrash size={12} />
+                    <span>Clear Board</span>
+                  </button>
+                )}
+              </div>
             </div>
+
+            {/* Paste Score Link Import Box */}
+            <form onSubmit={handleImportScore} className="p-5 rounded-2xl border border-blue-500/30 bg-blue-50/10 dark:bg-blue-950/20 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="block font-mono text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                  📥 Received a score link from a friend? Paste it here to add them!
+                </label>
+                <span className="text-[10px] font-mono text-gray-400">100% Private • No Cloud DB Credentials</span>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Paste result link (e.g. https://.../friend-quiz?res=...)"
+                  value={importInput}
+                  onChange={(e) => setImportInput(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-[#27272a] bg-white dark:bg-[#18181b] text-gray-900 dark:text-white font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  type="submit"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-mono text-xs font-bold transition-all shrink-0 shadow-md flex items-center justify-center gap-1.5"
+                >
+                  <FaPlus size={11} />
+                  <span>Import Score</span>
+                </button>
+              </div>
+            </form>
 
             {/* Leaderboard Table / List */}
             {leaderboard.length === 0 ? (
@@ -1045,7 +1219,7 @@ const FriendQuizPage = () => {
                   No Leaderboard Entries Yet
                 </h3>
                 <p className="text-xs text-gray-500 max-w-sm mx-auto">
-                  Create a custom quiz, send the link to your friends, and watch their scores show up here!
+                  Create a custom quiz, send the link to your friends, and when they send back their score link, paste it above or open it to see them here!
                 </p>
                 <button
                   onClick={() => setView("create")}
@@ -1102,13 +1276,22 @@ const FriendQuizPage = () => {
                         </div>
                       </div>
 
-                      <div className="text-right shrink-0">
-                        <div className="font-mono text-xl font-extrabold text-blue-500">
-                          {item.percentage}%
+                      <div className="flex items-center gap-3 shrink-0">
+                        <div className="text-right">
+                          <div className="font-mono text-xl font-extrabold text-blue-500">
+                            {item.percentage}%
+                          </div>
+                          <div className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">
+                            {item.score} / {item.total} correct
+                          </div>
                         </div>
-                        <div className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">
-                          {item.score} / {item.total} correct
-                        </div>
+                        <button
+                          onClick={() => deleteLeaderboardEntry(item)}
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
+                          title="Remove score entry"
+                        >
+                          <FaTrash size={12} />
+                        </button>
                       </div>
                     </div>
                   );
