@@ -1036,38 +1036,41 @@ const FriendQuizPage = () => {
               </div>
 
               {/* Action Buttons to send score to creator */}
-              <div className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-50/10 dark:bg-emerald-950/20 space-y-3 text-center">
-                <p className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
-                  📲 Want your score added to {finalScore.creatorName}'s Leaderboard? Send them your result link below!
+              <div className="p-5 rounded-2xl border border-emerald-500/40 bg-emerald-50/20 dark:bg-emerald-950/30 space-y-3 text-center">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-xs font-bold">
+                  <FaCheckCircle /> Score Automatically Saved & Synced to Live Leaderboard!
+                </div>
+                <p className="text-xs font-sans text-gray-600 dark:text-gray-300">
+                  {finalScore.creatorName} will see your score on their leaderboard automatically! Want to share your score badge directly with {finalScore.creatorName}?
                 </p>
-                <div className="flex flex-wrap items-center justify-center gap-2.5">
+                <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
                   <button
                     onClick={() => handleShareResultToCreator("whatsapp")}
                     className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold transition-all shadow-md flex items-center gap-2"
                   >
                     <FaWhatsapp className="text-sm" />
-                    <span>WhatsApp</span>
+                    <span>Share on WhatsApp</span>
                   </button>
                   <button
                     onClick={() => handleShareResultToCreator("telegram")}
                     className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-mono text-xs font-bold transition-all shadow-md flex items-center gap-2"
                   >
                     <FaTelegram className="text-sm" />
-                    <span>Telegram</span>
+                    <span>Share on Telegram</span>
                   </button>
                   <button
                     onClick={handleCopyResultLink}
                     className="px-4 py-2.5 rounded-xl border border-gray-300 dark:border-[#27272a] bg-white dark:bg-[#18181b] text-gray-900 dark:text-white font-mono text-xs font-bold hover:bg-gray-100 dark:hover:bg-[#202025] transition-all flex items-center gap-2"
                   >
                     {resultCopied ? <FaCheck className="text-emerald-500" /> : <FaCopy />}
-                    <span>{resultCopied ? "Result Link Copied!" : "Copy Result Link"}</span>
+                    <span>{resultCopied ? "Link Copied!" : "Copy Result Link"}</span>
                   </button>
                   <button
                     onClick={() => setView("leaderboard")}
                     className="px-4 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-xs font-bold hover:bg-amber-500/20 transition-all flex items-center gap-1.5"
                   >
                     <FaTrophy className="text-amber-500" />
-                    <span>View Leaderboard</span>
+                    <span>View Live Leaderboard</span>
                   </button>
                 </div>
               </div>
@@ -1185,28 +1188,28 @@ const FriendQuizPage = () => {
               </div>
             </div>
 
-            {/* Paste Score Link Import Box */}
-            <form onSubmit={handleImportScore} className="p-5 rounded-2xl border border-blue-500/30 bg-blue-50/10 dark:bg-blue-950/20 space-y-3">
+            {/* Optional Backup Import Box */}
+            <form onSubmit={handleImportScore} className="p-4 rounded-2xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#121215]/50 space-y-2 text-xs font-mono">
               <div className="flex items-center justify-between">
-                <label className="block font-mono text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
-                  📥 Received a score link from a friend? Paste it here to add them!
+                <label className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  📥 (Optional Backup) Import Offline Score Link
                 </label>
-                <span className="text-[10px] font-mono text-gray-400">100% Private • No Cloud DB Credentials</span>
+                <span className="text-[10px] text-emerald-500 font-semibold">✨ All friend scores auto-sync live</span>
               </div>
               <div className="flex flex-col sm:flex-row items-center gap-2">
                 <input
                   type="text"
-                  placeholder="Paste result link (e.g. https://.../friend-quiz?res=...)"
+                  placeholder="Paste offline score link (optional)"
                   value={importInput}
                   onChange={(e) => setImportInput(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-[#27272a] bg-white dark:bg-[#18181b] text-gray-900 dark:text-white font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-[#27272a] bg-white dark:bg-[#18181b] text-gray-900 dark:text-white font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-mono text-xs font-bold transition-all shrink-0 shadow-md flex items-center justify-center gap-1.5"
+                  className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gray-200 dark:bg-[#202025] hover:bg-gray-300 dark:hover:bg-[#282830] text-gray-800 dark:text-gray-200 font-mono text-xs font-bold transition-all shrink-0 flex items-center justify-center gap-1.5"
                 >
                   <FaPlus size={11} />
-                  <span>Import Score</span>
+                  <span>Import</span>
                 </button>
               </div>
             </form>
