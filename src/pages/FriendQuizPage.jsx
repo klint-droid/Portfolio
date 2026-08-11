@@ -431,8 +431,9 @@ const FriendQuizPage = () => {
       isCustom: true
     };
     setQuestions((prev) => [...prev, newQ]);
+    setCreatorAnswers((prev) => ({ ...prev, [newId]: 0 }));
     setEditingQuestionId(newId);
-    showToast("✨ Added new custom question! Scroll down to edit.");
+    showToast("✨ Added new custom question! Click choices to edit text and select your answer.");
   };
 
   const handleDeleteQuestion = (qId) => {
@@ -464,22 +465,19 @@ const FriendQuizPage = () => {
       return;
     }
 
-    const answeredCount = Object.keys(creatorAnswers).length;
-    if (answeredCount < 3) {
-      showToast(`Please answer at least 3 questions! (${answeredCount}/3 selected)`);
+    if (questions.length < 3) {
+      showToast("Quiz must have at least 3 questions!");
       return;
     }
 
     const quizPayload = {
       creatorName: creatorName.trim(),
-      questions: questions
-        .filter((q) => creatorAnswers[q.id] !== undefined)
-        .map((q) => ({
-          id: q.id,
-          question: q.question,
-          options: q.options,
-          answer: creatorAnswers[q.id]
-        }))
+      questions: questions.map((q) => ({
+        id: q.id,
+        question: q.question,
+        options: q.options,
+        answer: creatorAnswers[q.id] !== undefined ? creatorAnswers[q.id] : 0
+      }))
     };
 
     showToast("Generating short quiz link...");
