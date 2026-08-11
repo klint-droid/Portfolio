@@ -17,7 +17,7 @@ import {
   FaUndo,
   FaSync
 } from "react-icons/fa";
-import { saveScoreToCloud, fetchScoresFromCloud } from "../services/quizCloudApi";
+import { saveScoreToCloud, fetchScoresFromCloud, saveQuizToCloud, fetchQuizFromCloud } from "../services/quizCloudApi";
 
 // Default Preset Questions
 const DEFAULT_QUESTIONS = [
@@ -306,10 +306,25 @@ const FriendQuizPage = () => {
     }
 
     if (qParam) {
-      const decodedQuiz = decodeData(qParam);
-      if (decodedQuiz && decodedQuiz.creatorName && decodedQuiz.questions) {
-        setActiveQuiz(decodedQuiz);
-        setView("take");
+      if (qParam.length <= 15) {
+        fetchQuizFromCloud(qParam).then((cloudQuiz) => {
+          if (cloudQuiz && cloudQuiz.creatorName && cloudQuiz.questions) {
+            setActiveQuiz(cloudQuiz);
+            setView("take");
+          } else {
+            const decodedQuiz = decodeData(qParam);
+            if (decodedQuiz && decodedQuiz.creatorName) {
+              setActiveQuiz(decodedQuiz);
+              setView("take");
+            }
+          }
+        });
+      } else {
+        const decodedQuiz = decodeData(qParam);
+        if (decodedQuiz && decodedQuiz.creatorName && decodedQuiz.questions) {
+          setActiveQuiz(decodedQuiz);
+          setView("take");
+        }
       }
     }
   }, [searchParams]);
@@ -422,7 +437,7 @@ const FriendQuizPage = () => {
     }
   };
 
-  const handleGenerateQuiz = () => {
+  const handleGenerateQuiz = async () => {
     if (!creatorName.trim()) {
       showToast("Please enter your name to create the quiz!");
       return;
@@ -446,10 +461,19 @@ const FriendQuizPage = () => {
         }))
     };
 
-    const encoded = encodeData(quizPayload);
-    const fullLink = `${window.location.origin}/friend-quiz?q=${encoded}`;
+    showToast("Generating short quiz link...");
+    const cloudRes = await saveQuizToCloud(quizPayload);
+
+    let fullLink = "";
+    if (cloudRes.success && cloudRes.shortId) {
+      fullLink = `${window.location.origin}/friend-quiz?q=${cloudRes.shortId}`;
+    } else {
+      const encoded = encodeData(quizPayload);
+      fullLink = `${window.location.origin}/friend-quiz?q=${encoded}`;
+    }
+
     setGeneratedLink(fullLink);
-    showToast("Quiz generated successfully! Share the link with your friends.");
+    showToast("✨ Short quiz link generated! Share it with your friends.");
   };
 
   const handleCopyLink = () => {

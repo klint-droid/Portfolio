@@ -4,6 +4,59 @@
  */
 
 const CLOUD_API_BASE = "https://friend-quiz-leaderboard-default-rtdb.firebaseio.com/scores";
+const CLOUD_QUIZZES_BASE = "https://friend-quiz-leaderboard-default-rtdb.firebaseio.com/quizzes";
+
+/**
+ * Save quiz configuration to cloud database and return a short ID.
+ */
+export const saveQuizToCloud = async (quizPayload) => {
+  try {
+    const shortId = Math.random().toString(36).substring(2, 8); // e.g. "a9f2k8"
+    const payload = {
+      ...quizPayload,
+      shortId,
+      createdAt: Date.now()
+    };
+
+    const response = await fetch(`${CLOUD_QUIZZES_BASE}/${shortId}.json`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return { success: true, shortId };
+  } catch (error) {
+    console.warn("Save quiz fallback to base64 encoding:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Fetch quiz configuration by short ID from cloud database.
+ */
+export const fetchQuizFromCloud = async (shortId) => {
+  try {
+    const response = await fetch(`${CLOUD_QUIZZES_BASE}/${shortId}.json`, {
+      method: "GET"
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.warn("Fetch quiz error:", error.message);
+    return null;
+  }
+};
 
 /**
  * Save a friend's score to the live cloud database.
