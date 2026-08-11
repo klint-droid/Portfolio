@@ -201,19 +201,32 @@ const FriendQuizPage = () => {
     try {
       const cloudScores = await fetchScoresFromCloud();
       setLeaderboard((prevLocal) => {
-        // Merge cloud scores with local scores, deduplicating by friendName + creatorName
-        const combined = [...prevLocal];
-        cloudScores.forEach((cloudItem) => {
-          const exists = combined.some(
-            (loc) => loc.friendName?.toLowerCase() === cloudItem.friendName?.toLowerCase() &&
-                     loc.creatorName?.toLowerCase() === cloudItem.creatorName?.toLowerCase()
-          );
-          if (!exists) {
-            combined.push(cloudItem);
+        const scoreMap = new Map();
+
+        // Load local scores
+        (prevLocal || []).forEach((item) => {
+          if (item && item.friendName && item.creatorName) {
+            const key = `${item.creatorName.toLowerCase().trim()}_${item.friendName.toLowerCase().trim()}`;
+            scoreMap.set(key, item);
           }
         });
 
-        const sorted = combined.sort((a, b) => (b.percentage || 0) - (a.percentage || 0));
+        // Merge cloud scores, updating if newer or higher percentage
+        if (Array.isArray(cloudScores)) {
+          cloudScores.forEach((cloudItem) => {
+            if (cloudItem && cloudItem.friendName && cloudItem.creatorName) {
+              const key = `${cloudItem.creatorName.toLowerCase().trim()}_${cloudItem.friendName.toLowerCase().trim()}`;
+              const existing = scoreMap.get(key);
+              if (!existing || (cloudItem.percentage || 0) >= (existing.percentage || 0)) {
+                scoreMap.set(key, cloudItem);
+              }
+            }
+          });
+        }
+
+        const sorted = Array.from(scoreMap.values()).sort(
+          (a, b) => (b.percentage || 0) - (a.percentage || 0)
+        );
         localStorage.setItem("friend_quiz_leaderboard", JSON.stringify(sorted));
         return sorted;
       });

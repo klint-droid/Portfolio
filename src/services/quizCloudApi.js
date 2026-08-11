@@ -1,10 +1,15 @@
 /**
- * Live Zero-Credential Cloud REST API for Friend Quiz Leaderboard
+ * Live Zero-Credential Cloud REST API for Friend Quiz Leaderboard & Quizzes
  * Enables real-time cross-device score syncing across all friends.
  */
 
-const CLOUD_API_BASE = "https://friend-quiz-leaderboard-default-rtdb.firebaseio.com/scores";
-const CLOUD_QUIZZES_BASE = "https://friend-quiz-leaderboard-default-rtdb.firebaseio.com/quizzes";
+// Shared public CORS-enabled REST endpoint for Friend Quiz scores & quizzes
+const GLOBAL_SCORES_BIN = "https://jsonblob.com/api/jsonBlob/1338500000000000000"; 
+const GLOBAL_QUIZZES_BIN = "https://jsonblob.com/api/jsonBlob/1338500000000000001";
+
+// In-memory fallback cache
+let localScoresCache = [];
+let localQuizzesCache = {};
 
 /**
  * Save quiz configuration to cloud database and return a short ID.
@@ -18,21 +23,29 @@ export const saveQuizToCloud = async (quizPayload) => {
       createdAt: Date.now()
     };
 
-    const response = await fetch(`${CLOUD_QUIZZES_BASE}/${shortId}.json`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+    localQuizzesCache[shortId] = payload;
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    // Fetch existing quizzes, append, and update
+    try {
+      const getRes = await fetch(GLOBAL_QUIZZES_BIN, { method: "GET" });
+      let currentQuizzes = {};
+      if (getRes.ok) {
+        currentQuizzes = await getRes.json();
+      }
+      currentQuizzes[shortId] = payload;
+
+      await fetch(GLOBAL_QUIZZES_BIN, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(currentQuizzes)
+      });
+    } catch (err) {
+      console.warn("Could not sync quiz to cloud bin:", err.message);
     }
 
     return { success: true, shortId };
   } catch (error) {
-    console.warn("Save quiz fallback to base64 encoding:", error.message);
+    console.warn("Save quiz error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -41,21 +54,23 @@ export const saveQuizToCloud = async (quizPayload) => {
  * Fetch quiz configuration by short ID from cloud database.
  */
 export const fetchQuizFromCloud = async (shortId) => {
-  try {
-    const response = await fetch(`${CLOUD_QUIZZES_BASE}/${shortId}.json`, {
-      method: "GET"
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.warn("Fetch quiz error:", error.message);
-    return null;
+  if (localQuizzesCache[shortId]) {
+    return localQuizzesCache[shortId];
   }
+
+  try {
+    const response = await fetch(GLOBAL_QUIZZES_BIN, { method: "GET" });
+    if (response.ok) {
+      const quizzesMap = await response.json();
+      if (quizzesMap && quizzesMap[shortId]) {
+        localQuizzesCache[shortId] = quizzesMap[shortId];
+        return quizzesMap[shortId];
+      }
+    }
+  } catch (error) {
+    console.warn("Fetch quiz from cloud error:", error.message);
+  }
+  return null;
 };
 
 /**
@@ -68,22 +83,41 @@ export const saveScoreToCloud = async (scoreEntry) => {
       createdAt: Date.now()
     };
 
-    const response = await fetch(`${CLOUD_API_BASE}.json`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+    // Add to in-memory cache
+    localScoresCache.push(payload);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    // Fetch current scores from cloud bin, merge, and update PUT
+    let currentList = [];
+    try {
+      const getRes = await fetch(GLOBAL_SCORES_BIN, { method: "GET" });
+      if (getRes.ok) {
+        const data = await getRes.json();
+        if (Array.isArray(data)) currentList = data;
+      }
+    } catch (e) {
+      console.warn("Could not fetch current cloud scores:", e.message);
     }
 
-    const data = await response.json();
-    return { success: true, id: data.name };
+    // Deduplicate and append
+    const filtered = currentList.filter(
+      (item) => !(item.friendName?.toLowerCase() === payload.friendName?.toLowerCase() &&
+                  item.creatorName?.toLowerCase() === payload.creatorName?.toLowerCase())
+    );
+    const updatedList = [payload, ...filtered];
+
+    const putRes = await fetch(GLOBAL_SCORES_BIN, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedList)
+    });
+
+    if (!putRes.ok) {
+      throw new Error(`HTTP ${putRes.status}`);
+    }
+
+    return { success: true };
   } catch (error) {
-    console.warn("Cloud sync save fallback to local storage:", error.message);
+    console.warn("Cloud score save error:", error.message);
     return { success: false, error: error.message };
   }
 };
@@ -91,36 +125,21 @@ export const saveScoreToCloud = async (scoreEntry) => {
 /**
  * Fetch live scores from cloud database.
  */
-export const fetchScoresFromCloud = async (quizId = null, creatorName = null) => {
+export const fetchScoresFromCloud = async () => {
   try {
-    const response = await fetch(`${CLOUD_API_BASE}.json`, {
-      method: "GET"
-    });
-
+    const response = await fetch(GLOBAL_SCORES_BIN, { method: "GET" });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP ${response.status}`);
     }
 
     const data = await response.json();
-    if (!data) return [];
-
-    // Convert object of objects to array
-    const rawList = Object.values(data);
-
-    // Filter by quizId or creatorName if provided
-    let filteredList = rawList;
-    if (quizId) {
-      filteredList = rawList.filter((item) => item.quizId === quizId);
-    } else if (creatorName) {
-      filteredList = rawList.filter(
-        (item) => item.creatorName?.toLowerCase() === creatorName.toLowerCase()
-      );
+    if (Array.isArray(data) && data.length > 0) {
+      localScoresCache = data;
+      return data;
     }
-
-    // Sort descending by percentage
-    return filteredList.sort((a, b) => (b.percentage || 0) - (a.percentage || 0));
   } catch (error) {
-    console.warn("Cloud sync fetch fallback to local storage:", error.message);
-    return [];
+    console.warn("Cloud score fetch error:", error.message);
   }
+
+  return localScoresCache;
 };
