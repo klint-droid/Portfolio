@@ -55,7 +55,7 @@ const About = () => {
             I focus on turning complex problem statements into clean, maintainable, and high-performance digital products. My core expertise spans React, Node.js, Laravel, PHP, Python, Java Springboot and cloud services.
           </p>
           <p className="font-mono text-xs text-blue-600 dark:text-blue-400 font-semibold pt-1">
-            ⚡ Open for Software Engineer, Full-Stack Developer, and DevOps positions.
+            Open for Software Engineer, Full-Stack Developer, and DevOps positions.
           </p>
         </div>
 
