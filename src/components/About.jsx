@@ -71,7 +71,7 @@ const About = () => {
             <FaArrowUpRightFromSquare size={10} />
           </a>
           <a
-            href="https://linkedin.com/in/klint-ruales"
+            href="https://www.linkedin.com/in/klint-ruales-67865527b/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1 text-gray-700 dark:text-gray-300 hover:text-blue-500 transition-colors"
