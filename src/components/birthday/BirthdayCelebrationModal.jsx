@@ -18,10 +18,11 @@ import { MdCelebration } from "react-icons/md";
 import { BIRTHDAY_CONFIG } from "../../data/birthdayConfig";
 import { triggerConfetti } from "../../utils/confetti";
 import {
-  fetchCloudWishes,
-  saveWishToCloud,
-  likeWishInCloud,
-} from "../../services/birthdayCloudApi";
+  isFirebaseConfigured,
+  subscribeToBirthdayWishes,
+  sendBirthdayWish,
+  likeBirthdayWish,
+} from "../../services/firebase";
 
 const WISHES_STORAGE_KEY = "klint_birthday_wishes_v2";
 
@@ -70,29 +71,31 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
     }
   };
 
-  // Sync with live cloud database when modal opens
-  const syncWithCloud = async () => {
-    setIsSyncing(true);
-    const cloudData = await fetchCloudWishes();
-    if (Array.isArray(cloudData) && cloudData.length > 0) {
-      setWishes(cloudData);
-    }
-    setIsSyncing(false);
-  };
-
-  // Shoot confetti & fetch live cloud wishes when modal opens
+  // Real-time Firebase Firestore listener & confetti when modal opens
   useEffect(() => {
     if (isOpen) {
       triggerConfetti({ count: 60 });
       document.body.style.overflow = "hidden";
-      syncWithCloud();
+
+      setIsSyncing(true);
+      const unsubscribe = subscribeToBirthdayWishes(
+        (liveWishes) => {
+          setWishes(liveWishes);
+          setIsSyncing(false);
+        },
+        (error) => {
+          console.warn("Firebase live wishes listener:", error);
+          setIsSyncing(false);
+        }
+      );
+
+      return () => {
+        document.body.style.overflow = "";
+        if (typeof unsubscribe === "function") unsubscribe();
+      };
     } else {
       document.body.style.overflow = "";
     }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
   }, [isOpen]);
 
   // ESC key handler to close modal
@@ -113,50 +116,40 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
     setTimeout(() => setCopiedField(null), 2200);
   };
 
-  // Submit new wish (optimistic local update + cloud sync)
+  // Submit new wish to Firebase Firestore
   const handlePostWish = async (e) => {
     e.preventDefault();
     if (!formName.trim() || !formMessage.trim()) return;
 
     setIsSubmitting(true);
 
-    const newWish = {
-      id: `wish-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      name: formName.trim(),
-      relationship: formRelation,
-      emoji: formEmoji,
-      message: formMessage.trim(),
-      timestamp: "Just now",
-      likes: 1,
-      createdAt: Date.now(),
-    };
+    try {
+      await sendBirthdayWish({
+        name: formName,
+        relationship: formRelation,
+        emoji: formEmoji,
+        message: formMessage,
+      });
 
-    // 1. Instant UI update & celebratory explosion
-    updateWishesState([newWish, ...wishes]);
-    setFormMessage("");
-    setFormName("");
-    setIsSubmitting(false);
-    setSubmitSuccess(true);
-    triggerConfetti({ count: 80 });
-    setTimeout(() => setSubmitSuccess(false), 3500);
-
-    // 2. Persist to live cloud storage across devices
-    await saveWishToCloud(newWish);
+      setFormMessage("");
+      setFormName("");
+      setIsSubmitting(false);
+      setSubmitSuccess(true);
+      triggerConfetti({ count: 80 });
+      setTimeout(() => setSubmitSuccess(false), 3500);
+    } catch (err) {
+      console.error("Post wish error:", err);
+      setIsSubmitting(false);
+    }
   };
 
-  // Like a wish (optimistic local update + cloud sync)
-  const handleToggleLike = (wishId) => {
+  // Like a wish in Firebase Firestore
+  const handleToggleLike = async (wishId) => {
     if (hasLiked[wishId]) return;
 
-    const updated = wishes.map((w) =>
-      w.id === wishId ? { ...w, likes: (w.likes || 0) + 1 } : w
-    );
-    updateWishesState(updated);
     setHasLiked((prev) => ({ ...prev, [wishId]: true }));
     triggerConfetti({ count: 25 });
-
-    // Sync like to cloud
-    likeWishInCloud(wishId);
+    await likeBirthdayWish(wishId);
   };
 
   if (!isOpen) return null;
@@ -397,7 +390,7 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                     </h4>
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Live Synced
+                      {isFirebaseConfigured() ? "Firebase Realtime" : "Firebase Ready"}
                     </span>
                   </div>
 
