@@ -10,7 +10,8 @@ import {
   FaSun,
   FaRobot,
   FaBars,
-  FaTimes
+  FaTimes,
+  FaBirthdayCake
 } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 import { trackEvent } from "../analytics";
@@ -80,7 +81,16 @@ const Sidebar = ({ theme, toggleTheme, onOpenAIChat }) => {
             Klint Ruales
           </span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          {/* Birthday Mobile Quick Trigger */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-birthday-celebration'))}
+            className="p-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/25 transition-colors"
+            title="Birthday Hub"
+            aria-label="Open Birthday Hub"
+          >
+            <FaBirthdayCake size={14} />
+          </button>
           <button 
             onClick={toggleTheme}
             className="p-2 rounded-lg bg-gray-100 dark:bg-[#18181b] text-gray-700 dark:text-gray-300"
@@ -118,7 +128,19 @@ const Sidebar = ({ theme, toggleTheme, onOpenAIChat }) => {
             ))}
           </nav>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5">
+            {/* Birthday Mobile Menu Trigger */}
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                window.dispatchEvent(new CustomEvent('open-birthday-celebration'));
+              }}
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500/20 via-rose-500/20 to-amber-500/20 border border-amber-500/40 text-amber-700 dark:text-amber-300 font-mono text-sm font-semibold transition-colors"
+            >
+              <FaBirthdayCake size={15} className="text-amber-500" />
+              <span>Birthday Hub & Gifts 🎁</span>
+            </button>
+
             <button
               onClick={() => {
                 setIsMobileMenuOpen(false);
@@ -167,6 +189,20 @@ const Sidebar = ({ theme, toggleTheme, onOpenAIChat }) => {
               Software Engineer & Full-Stack Developer specializing in web apps, cloud architectures, & AI integrations.
             </p>
           </div>
+
+          {/* Birthday Celebration Hub Trigger */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-birthday-celebration'))}
+            className="w-full flex items-center justify-between py-2.5 px-3 mb-2.5 rounded-xl border border-amber-500/40 dark:border-amber-400/30 bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-amber-500/10 hover:from-amber-500/20 hover:to-rose-500/20 text-left text-xs font-mono transition-all group shadow-sm"
+          >
+            <span className="flex items-center gap-2 text-amber-700 dark:text-amber-300 font-semibold">
+              <FaBirthdayCake className="text-amber-500 group-hover:scale-110 transition-transform" size={14} />
+              <span>Birthday Celebration</span>
+            </span>
+            <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+              Wishes & Gifts 🎁
+            </span>
+          </button>
 
           {/* AI Search & Assistant Trigger */}
           <button
