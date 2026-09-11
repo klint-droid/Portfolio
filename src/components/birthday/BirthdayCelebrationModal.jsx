@@ -12,6 +12,8 @@ import {
   FaSmile,
   FaClock,
   FaInfoCircle,
+  FaLock,
+  FaUnlock,
 } from "react-icons/fa";
 import { MdCelebration } from "react-icons/md";
 import { BIRTHDAY_CONFIG } from "../../data/birthdayConfig";
@@ -40,6 +42,11 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
   const [formMessage, setFormMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [previewUnlocked, setPreviewUnlocked] = useState(false);
+
+  const targetDateObj = new Date(BIRTHDAY_CONFIG.targetDate);
+  const isUnlockedByDate = Date.now() >= targetDateObj.getTime();
+  const isUnlocked = isUnlockedByDate || previewUnlocked;
 
   const modalRef = useRef(null);
 
@@ -339,16 +346,21 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
 
                   {/* Message Input */}
                   <div>
-                    <label className="block text-[11px] font-mono uppercase text-gray-500 dark:text-zinc-400 mb-1">
-                      Your Message *
-                    </label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-mono uppercase text-gray-500 dark:text-zinc-400">
+                        Secret Birthday Wish *
+                      </label>
+                      <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 flex items-center gap-1 font-semibold">
+                        <FaLock size={9} /> Sealed until Sept 23
+                      </span>
+                    </div>
                     <textarea
                       required
                       rows={3}
                       maxLength={350}
                       value={formMessage}
                       onChange={(e) => setFormMessage(e.target.value)}
-                      placeholder="Write a warm birthday wish, funny memory, or good vibes..."
+                      placeholder="Write your secret birthday wish, funny memory, or greetings (will be sealed in vault until birthday!)..."
                       className="w-full px-3 py-2.5 text-xs rounded-xl bg-white dark:bg-zinc-800/90 border border-gray-200 dark:border-zinc-700/80 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 transition-colors font-sans resize-none"
                     />
                   </div>
@@ -363,8 +375,8 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                       disabled={isSubmitting || !formName.trim() || !formMessage.trim()}
                       className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-sans font-semibold text-white bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 shadow-md shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
                     >
-                      <FaPaperPlane size={11} />
-                      <span>{isSubmitting ? "Posting..." : "Post Birthday Wish"}</span>
+                      <FaLock size={11} />
+                      <span>{isSubmitting ? "Sealing..." : "Seal Wish in Vault"}</span>
                     </button>
                   </div>
                 </form>
@@ -372,10 +384,65 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
 
               {/* Live Wishes Feed */}
               <div className="space-y-3">
+                {/* Time Capsule Vault Status Banner */}
+                <div
+                  className={`p-3.5 rounded-2xl border transition-all ${
+                    isUnlocked
+                      ? "bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border-emerald-500/30"
+                      : "bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-amber-500/10 border-amber-500/30"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <div
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${
+                          isUnlocked
+                            ? "bg-emerald-500 text-black shadow-emerald-500/20"
+                            : "bg-amber-500 text-black shadow-amber-500/20"
+                        }`}
+                      >
+                        {isUnlocked ? <FaUnlock size={14} /> : <FaLock size={14} />}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h5 className="font-sans font-bold text-xs text-gray-900 dark:text-white">
+                            {isUnlocked ? "🎉 Time Capsule Unlocked!" : "🔒 Birthday Time Capsule Vault"}
+                          </h5>
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase tracking-wider ${
+                              isUnlocked
+                                ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
+                                : "bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30"
+                            }`}
+                          >
+                            {isUnlocked ? "Revealed" : "Sealed"}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-gray-600 dark:text-zinc-400 mt-0.5">
+                          {isUnlocked
+                            ? "The countdown has ended! All heartfelt birthday wishes are now unlocked and revealed."
+                            : "Wishes are securely sealed in Klint's vault and will unlock automatically on September 23!"}
+                        </p>
+                      </div>
+                    </div>
+
+                    {!isUnlockedByDate && (
+                      <button
+                        type="button"
+                        onClick={() => setPreviewUnlocked(!previewUnlocked)}
+                        className="shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-mono border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
+                        title="Toggle owner preview unlocked view"
+                      >
+                        {previewUnlocked ? "Lock 🔒" : "Owner Peek 👁️"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-zinc-300">
-                      Live Wishes Wall ({wishes.length})
+                      Live Wishes Vault ({wishes.length})
                     </h4>
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
                       <span className={`w-1.5 h-1.5 rounded-full ${isSyncing ? "bg-amber-400 animate-ping" : "bg-emerald-500 animate-pulse"}`} />
@@ -397,10 +464,10 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                         🎂
                       </div>
                       <h5 className="font-sans font-bold text-sm text-gray-900 dark:text-white">
-                        The Wishes Wall is Fresh & Clean!
+                        The Wishes Vault is Fresh & Clean!
                       </h5>
                       <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1 max-w-sm leading-relaxed">
-                        No wishes posted yet. Be the very first friend to write a warm birthday wish for Klint above! 🚀
+                        No wishes sealed yet. Be the very first friend to seal a secret birthday wish for Klint above! 🚀
                       </p>
                     </div>
                   ) : (
@@ -449,9 +516,31 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                           </button>
                         </div>
 
-                        <p className="text-xs text-gray-700 dark:text-zinc-300 mt-2.5 leading-relaxed font-sans pl-1">
-                          "{wish.message}"
-                        </p>
+                        {/* Secret Locked Message vs Unlocked Message */}
+                        {isUnlocked ? (
+                          <p className="text-xs text-gray-700 dark:text-zinc-300 mt-2.5 leading-relaxed font-sans pl-1 animate-fade-in-up">
+                            "{wish.message}"
+                          </p>
+                        ) : (
+                          <div className="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-500/5 via-amber-500/10 to-amber-500/5 border border-amber-500/20 flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                              <FaLock size={12} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-mono text-[11px] font-bold text-gray-900 dark:text-amber-300">
+                                  Secret Wish Sealed in Vault
+                                </span>
+                                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                                  Locked
+                                </span>
+                              </div>
+                              <p className="text-[10px] font-mono text-gray-500 dark:text-zinc-400 mt-0.5">
+                                Unlocks automatically on September 23, 2026! 🎂
+                              </p>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))
                   )}
