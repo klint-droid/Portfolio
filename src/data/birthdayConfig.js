@@ -1,3 +1,5 @@
+import gcashQrImg from "../assets/qr-gcash-cropped.png";
+
 /**
  * Birthday Celebration Configuration
  * Customize your birthday date, profile details, payment accounts, and QR codes here.
@@ -21,7 +23,6 @@ export const BIRTHDAY_CONFIG = {
     "No pressure at all! Your wishes and visit are the best gift. But if you want to fuel the celebration with a birthday coffee, beer, or pizza, feel free to scan below! ☕🍺🍕",
 
   // Payment Options - GCash QR Only (Phone number removed for privacy & security)
-  // Place your GCash QR code image as 'gcash-qr.png' in the /public folder
   paymentMethods: [
     {
       id: "gcash",
@@ -29,7 +30,7 @@ export const BIRTHDAY_CONFIG = {
       badge: "Scan with GCash",
       accountName: "Klint Ruales",
       accountNumber: null, // Removed for privacy & security
-      qrImage: "/gcash-qr.png", // Upload your QR as 'gcash-qr.png' in the public/ folder
+      qrImage: gcashQrImg,
       color: "from-blue-600 to-indigo-600",
       accent: "#007dfe",
       note: "Scan using the GCash app camera or QR reader to send gifts safely without sharing phone numbers.",

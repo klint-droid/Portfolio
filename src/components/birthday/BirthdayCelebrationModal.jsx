@@ -585,7 +585,7 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                           src={currentPayment.qrImage}
                           alt="GCash QR Code"
                           onError={() => setQrImageError(true)}
-                          className="w-48 h-48 sm:w-52 sm:h-52 object-contain rounded-xl"
+                          className="w-48 sm:w-56 max-w-full h-auto max-h-72 object-contain rounded-xl"
                         />
                       ) : (
                         <div className="w-48 h-48 sm:w-52 sm:h-52 flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 via-indigo-950 to-blue-950 rounded-xl p-4 text-white text-center">
