@@ -1,4 +1,4 @@
-import gcashQrImg from "../assets/qr-gcash-cropped.png";
+import gcashQrImg from "../assets/qr-gcash.jpg";
 
 /**
  * Birthday Celebration Configuration
