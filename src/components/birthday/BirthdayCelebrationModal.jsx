@@ -12,7 +12,6 @@ import {
   FaSmile,
   FaClock,
   FaInfoCircle,
-  FaSyncAlt,
 } from "react-icons/fa";
 import { MdCelebration } from "react-icons/md";
 import { BIRTHDAY_CONFIG } from "../../data/birthdayConfig";
@@ -56,20 +55,10 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
       } else {
         setWishes(BIRTHDAY_CONFIG.sampleWishes || []);
       }
-    } catch (e) {
+    } catch {
       setWishes(BIRTHDAY_CONFIG.sampleWishes || []);
     }
   }, []);
-
-  // Save wishes whenever changed locally
-  const updateWishesState = (newWishes) => {
-    setWishes(newWishes);
-    try {
-      localStorage.setItem(WISHES_STORAGE_KEY, JSON.stringify(newWishes));
-    } catch (e) {
-      console.warn("LocalStorage save error:", e);
-    }
-  };
 
   // Real-time Firebase Firestore listener & confetti when modal opens
   useEffect(() => {
@@ -389,23 +378,13 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                       Live Wishes Wall ({wishes.length})
                     </h4>
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      {isFirebaseConfigured() ? "Firebase Realtime" : "Firebase Ready"}
+                      <span className={`w-1.5 h-1.5 rounded-full ${isSyncing ? "bg-amber-400 animate-ping" : "bg-emerald-500 animate-pulse"}`} />
+                      {isSyncing ? "Connecting..." : isFirebaseConfigured() ? "Firebase Realtime" : "Firebase Ready"}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={syncWithCloud}
-                      disabled={isSyncing}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono text-gray-600 dark:text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
-                      title="Sync with latest cloud wishes"
-                    >
-                      <FaSyncAlt size={10} className={isSyncing ? "animate-spin text-amber-500" : ""} />
-                      <span>{isSyncing ? "Syncing..." : "Sync"}</span>
-                    </button>
-                    <span className="hidden sm:inline-block text-[11px] font-mono text-gray-400 dark:text-zinc-500">
+                    <span className="text-[11px] font-mono text-gray-400 dark:text-zinc-500">
                       Click ❤️ to like
                     </span>
                   </div>

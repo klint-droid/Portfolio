@@ -60,7 +60,7 @@ export const subscribeToBirthdayWishes = (onUpdate, onError) => {
       const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
       const list = cached ? JSON.parse(cached) : [];
       onUpdate(list);
-    } catch (e) {
+    } catch {
       onUpdate([]);
     }
     return () => {}; // No-op unsubscribe
@@ -90,7 +90,9 @@ export const subscribeToBirthdayWishes = (onUpdate, onError) => {
         // Update local cache
         try {
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(wishes));
-        } catch (e) {}
+        } catch {
+          // Ignore cache write error
+        }
 
         onUpdate(wishes);
       },
@@ -101,7 +103,9 @@ export const subscribeToBirthdayWishes = (onUpdate, onError) => {
         try {
           const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
           if (cached) onUpdate(JSON.parse(cached));
-        } catch (e) {}
+        } catch {
+          // Ignore fallback error
+        }
       }
     );
 
@@ -138,7 +142,7 @@ export const sendBirthdayWish = async ({ name, relationship, emoji, message }) =
       const updated = [localWish, ...list];
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
       return { success: true, wish: localWish };
-    } catch (e) {
+    } catch {
       return { success: true, wish: localWish };
     }
   }
@@ -177,7 +181,9 @@ export const likeBirthdayWish = async (wishId) => {
         );
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
       }
-    } catch (e) {}
+    } catch {
+      // Ignore cache error
+    }
     return;
   }
 
