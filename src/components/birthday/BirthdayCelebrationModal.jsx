@@ -19,7 +19,6 @@ import { MdCelebration } from "react-icons/md";
 import { BIRTHDAY_CONFIG } from "../../data/birthdayConfig";
 import { triggerConfetti } from "../../utils/confetti";
 import {
-  isFirebaseConfigured,
   subscribeToBirthdayWishes,
   sendBirthdayWish,
   likeBirthdayWish,
@@ -429,10 +428,6 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                     <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-zinc-300">
                       Live Wishes Vault ({wishes.length})
                     </h4>
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
-                      <span className={`w-1.5 h-1.5 rounded-full ${isSyncing ? "bg-amber-400 animate-ping" : "bg-emerald-500 animate-pulse"}`} />
-                      {isSyncing ? "Connecting..." : isFirebaseConfigured() ? "Firebase Realtime" : "Firebase Ready"}
-                    </span>
                   </div>
 
                   <div className="flex items-center gap-2">
