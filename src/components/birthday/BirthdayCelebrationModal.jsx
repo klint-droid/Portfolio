@@ -29,7 +29,6 @@ const WISHES_STORAGE_KEY = "klint_birthday_wishes_v2";
 
 export default function BirthdayCelebrationModal({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState("wishes"); // 'wishes' | 'gift'
-  const [selectedPaymentId, setSelectedPaymentId] = useState("gcash");
   const [copiedField, setCopiedField] = useState(null);
   const [wishes, setWishes] = useState([]);
   const [hasLiked, setHasLiked] = useState({});
@@ -43,6 +42,7 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [previewUnlocked, setPreviewUnlocked] = useState(false);
+  const [qrImageError, setQrImageError] = useState(false);
 
   const targetDateObj = new Date(BIRTHDAY_CONFIG.targetDate);
   const isUnlockedByDate = Date.now() >= targetDateObj.getTime();
@@ -150,9 +150,7 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const currentPayment =
-    BIRTHDAY_CONFIG.paymentMethods.find((p) => p.id === selectedPaymentId) ||
-    BIRTHDAY_CONFIG.paymentMethods[0];
+  const currentPayment = BIRTHDAY_CONFIG.paymentMethods[0];
 
   const relationOptions = [
     "Friend",
@@ -569,111 +567,79 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                 </div>
               </div>
 
-              {/* Payment Method Switcher */}
-              <div className="space-y-2">
-                <label className="block text-[11px] font-mono uppercase text-gray-500 dark:text-zinc-400">
-                  Select Payment / E-Wallet Option
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {BIRTHDAY_CONFIG.paymentMethods.map((method) => {
-                    const isSelected = selectedPaymentId === method.id;
-                    return (
-                      <button
-                        key={method.id}
-                        type="button"
-                        onClick={() => setSelectedPaymentId(method.id)}
-                        className={`p-3 rounded-xl text-left border transition-all ${
-                          isSelected
-                            ? "bg-amber-500/10 dark:bg-amber-500/15 border-amber-500 dark:border-amber-400 shadow-sm"
-                            : "bg-gray-50 dark:bg-zinc-900/60 border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-700"
-                        }`}
-                      >
-                        <span className="block font-sans font-bold text-xs text-gray-900 dark:text-white">
-                          {method.name}
-                        </span>
-                        <span className="block text-[10px] font-mono text-gray-500 dark:text-zinc-400 mt-0.5">
-                          {method.badge}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* QR Code & Account Details Card */}
-              <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/80 border border-gray-200 dark:border-zinc-800 shadow-sm">
+              {/* GCash QR Card (Secure & Private - No Phone Number Exposed) */}
+              <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-zinc-900/80 border border-gray-200 dark:border-zinc-800 shadow-sm">
                 <div className="flex flex-col md:flex-row items-center gap-6">
                   {/* QR Visual Container */}
                   <div className="flex flex-col items-center shrink-0">
-                    <div className="relative p-3.5 rounded-2xl bg-white border-2 border-amber-500/40 shadow-lg text-center">
+                    <div className="relative p-3.5 rounded-2xl bg-white border-2 border-blue-500/50 shadow-lg text-center">
                       {/* Corner viewfinder accents */}
-                      <div className="absolute top-1 left-1 w-3 h-3 border-t-2 border-l-2 border-amber-500" />
-                      <div className="absolute top-1 right-1 w-3 h-3 border-t-2 border-r-2 border-amber-500" />
-                      <div className="absolute bottom-1 left-1 w-3 h-3 border-b-2 border-l-2 border-amber-500" />
-                      <div className="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-amber-500" />
+                      <div className="absolute top-1 left-1 w-3.5 h-3.5 border-t-2 border-l-2 border-blue-500" />
+                      <div className="absolute top-1 right-1 w-3.5 h-3.5 border-t-2 border-r-2 border-blue-500" />
+                      <div className="absolute bottom-1 left-1 w-3.5 h-3.5 border-b-2 border-l-2 border-blue-500" />
+                      <div className="absolute bottom-1 right-1 w-3.5 h-3.5 border-b-2 border-r-2 border-blue-500" />
 
-                      {/* Actual QR Image or Aesthetic Fallback Pattern */}
-                      {currentPayment.qrImage ? (
+                      {/* Actual QR Image or Aesthetic GCash Placeholder Pattern */}
+                      {!qrImageError && currentPayment.qrImage ? (
                         <img
                           src={currentPayment.qrImage}
-                          alt={`${currentPayment.name} QR Code`}
-                          className="w-44 h-44 sm:w-48 sm:h-48 object-contain rounded-lg"
+                          alt="GCash QR Code"
+                          onError={() => setQrImageError(true)}
+                          className="w-48 h-48 sm:w-52 sm:h-52 object-contain rounded-xl"
                         />
                       ) : (
-                        <div className="w-44 h-44 sm:w-48 sm:h-48 flex flex-col items-center justify-center bg-gray-900 rounded-lg p-3 text-white">
-                          <FaQrcode size={64} className="text-amber-400 mb-2" />
-                          <span className="font-mono text-[11px] font-bold tracking-wider text-amber-300">
-                            {currentPayment.name}
+                        <div className="w-48 h-48 sm:w-52 sm:h-52 flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 via-indigo-950 to-blue-950 rounded-xl p-4 text-white text-center">
+                          <FaQrcode size={64} className="text-blue-400 mb-2 drop-shadow-md" />
+                          <span className="font-mono text-xs font-bold tracking-wider text-blue-300">
+                            GCash QR Code
                           </span>
-                          <span className="font-mono text-[9px] text-zinc-400 mt-1">
-                            Scan via {currentPayment.name} App
+                          <span className="font-mono text-[9px] text-zinc-300 mt-1">
+                            Scan with GCash App
                           </span>
-                          <span className="text-[9px] font-mono px-2 py-0.5 mt-2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                          <span className="text-[9px] font-mono px-2 py-0.5 mt-2.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30 font-semibold">
                             QRPh Ready
                           </span>
                         </div>
                       )}
 
-                      <span className="block font-mono text-[10px] text-gray-600 mt-2 font-semibold">
-                        Scan to Send Love
+                      <span className="block font-mono text-[10px] text-gray-700 mt-2 font-semibold">
+                        Scan via GCash App
                       </span>
                     </div>
 
                     <span className="text-[10px] font-mono text-gray-400 dark:text-zinc-500 mt-2 text-center flex items-center gap-1">
-                      <FaInfoCircle size={10} /> Supports camera scan
+                      <FaInfoCircle size={10} /> Supports camera & GCash scanner
                     </span>
                   </div>
 
-                  {/* Account Information & Copy Buttons */}
-                  <div className="flex-1 w-full space-y-3.5">
+                  {/* Account Information & Instructions */}
+                  <div className="flex-1 w-full space-y-4">
                     <div>
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-amber-600 dark:text-amber-400 font-semibold">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50">
                         {currentPayment.badge}
                       </span>
-                      <h4 className="text-base font-bold font-sans text-gray-900 dark:text-white">
+                      <h4 className="text-lg font-bold font-sans text-gray-900 dark:text-white mt-1.5">
                         {currentPayment.name}
                       </h4>
-                      {currentPayment.bankName && (
-                        <span className="text-xs font-mono text-gray-500 dark:text-zinc-400">
-                          Bank: {currentPayment.bankName}
-                        </span>
-                      )}
+                      <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
+                        Instant transfer using GCash QR scanner.
+                      </p>
                     </div>
 
                     {/* Account Name */}
-                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-zinc-800/60 border border-gray-200 dark:border-zinc-700/60">
+                    <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-zinc-800/60 border border-gray-200 dark:border-zinc-700/60">
                       <div className="flex items-center justify-between">
                         <div>
                           <span className="block text-[10px] font-mono uppercase text-gray-500 dark:text-zinc-400">
-                            Account Name
+                            Recipient Name
                           </span>
-                          <span className="font-sans font-bold text-xs text-gray-900 dark:text-white">
+                          <span className="font-sans font-bold text-sm text-gray-900 dark:text-white">
                             {currentPayment.accountName}
                           </span>
                         </div>
                         <button
                           onClick={() => handleCopy(currentPayment.accountName, "name")}
-                          className="px-2.5 py-1 rounded-lg text-xs font-mono bg-white dark:bg-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-600 border border-gray-200 dark:border-zinc-600 text-gray-700 dark:text-zinc-200 transition-colors flex items-center gap-1"
+                          className="px-2.5 py-1.5 rounded-lg text-xs font-mono bg-white dark:bg-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-600 border border-gray-200 dark:border-zinc-600 text-gray-700 dark:text-zinc-200 transition-colors flex items-center gap-1.5"
                         >
                           {copiedField === "name" ? (
                             <>
@@ -683,44 +649,22 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                           ) : (
                             <>
                               <FaCopy size={11} />
-                              <span>Copy</span>
+                              <span>Copy Name</span>
                             </>
                           )}
                         </button>
                       </div>
                     </div>
 
-                    {/* Account Number / Handle */}
-                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-zinc-800/60 border border-gray-200 dark:border-zinc-700/60">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <span className="block text-[10px] font-mono uppercase text-gray-500 dark:text-zinc-400">
-                            Account / Mobile Number
-                          </span>
-                          <span className="font-mono font-bold text-sm text-amber-600 dark:text-amber-400 tracking-wider">
-                            {currentPayment.accountNumber}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => handleCopy(currentPayment.accountNumber, "number")}
-                          className="px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-amber-500 hover:bg-amber-600 text-black shadow-sm transition-all active:scale-95 flex items-center gap-1.5"
-                        >
-                          {copiedField === "number" ? (
-                            <>
-                              <FaCheck className="text-black" />
-                              <span>Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <FaCopy size={12} />
-                              <span>Copy Number</span>
-                            </>
-                          )}
-                        </button>
+                    {/* Security Notice */}
+                    <div className="p-3 rounded-xl bg-blue-50/70 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/40 flex items-start gap-2.5">
+                      <FaInfoCircle className="text-blue-500 shrink-0 mt-0.5" size={13} />
+                      <div className="text-[11px] leading-relaxed text-blue-900 dark:text-blue-300">
+                        <span className="font-semibold block">Privacy & Security Protected</span>
+                        <span>Phone numbers are hidden for security. Simply scan the QR code using your GCash app camera to send your birthday treat!</span>
                       </div>
                     </div>
 
-                    {/* Note */}
                     <p className="text-xs text-gray-500 dark:text-zinc-400 font-sans italic">
                       💡 {currentPayment.note}
                     </p>

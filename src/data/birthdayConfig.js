@@ -20,33 +20,20 @@ export const BIRTHDAY_CONFIG = {
   giftMessage:
     "No pressure at all! Your wishes and visit are the best gift. But if you want to fuel the celebration with a birthday coffee, beer, or pizza, feel free to scan below! ☕🍺🍕",
 
-  // Payment Options & Bank / QR details
-  // Note: If qrImage is left as null or an image isn't found, an aesthetic QR visual will be generated automatically!
-  // To use your real QR code, place your image (e.g., 'gcash-qr.png') inside the /public folder and set qrImage: '/gcash-qr.png'
+  // Payment Options - GCash QR Only (Phone number removed for privacy & security)
+  // Place your GCash QR code image as 'gcash-qr.png' in the /public folder
   paymentMethods: [
     {
       id: "gcash",
-      name: "GCash",
-      badge: "E-Wallet (PH)",
+      name: "GCash QR",
+      badge: "Scan with GCash",
       accountName: "Klint Ruales",
-      accountNumber: "09363488084", // Replace with your GCash number
-      qrImage: null, // e.g. "/gcash-qr.png"
+      accountNumber: null, // Removed for privacy & security
+      qrImage: "/gcash-qr.png", // Upload your QR as 'gcash-qr.png' in the public/ folder
       color: "from-blue-600 to-indigo-600",
       accent: "#007dfe",
-      note: "Instant transfer via GCash Express Send or QR",
+      note: "Scan using the GCash app camera or QR reader to send gifts safely without sharing phone numbers.",
     },
-    {
-      id: "bank",
-      name: "Bank Transfer / QRPh",
-      badge: "Any PH Bank",
-      bankName: "BPI / BDO / UnionBank", // Replace with your bank name
-      accountName: "Klint Ruales",
-      accountNumber: "#", // Replace with your Bank account number
-      qrImage: null, // e.g. "/qrph.png"
-      color: "from-purple-600 to-pink-600",
-      accent: "#a855f7",
-      note: "Universal QRPh scan supported by BPI, BDO, UnionBank, RCBC, etc.",
-    }
   ],
 
   // Initial wishes - empty for fresh launch
