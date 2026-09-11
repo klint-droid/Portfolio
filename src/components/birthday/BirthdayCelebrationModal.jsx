@@ -41,12 +41,10 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
   const [formMessage, setFormMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [previewUnlocked, setPreviewUnlocked] = useState(false);
   const [qrImageError, setQrImageError] = useState(false);
 
   const targetDateObj = new Date(BIRTHDAY_CONFIG.targetDate);
-  const isUnlockedByDate = Date.now() >= targetDateObj.getTime();
-  const isUnlocked = isUnlockedByDate || previewUnlocked;
+  const isUnlocked = Date.now() >= targetDateObj.getTime();
 
   const modalRef = useRef(null);
 
@@ -423,17 +421,6 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                         </p>
                       </div>
                     </div>
-
-                    {!isUnlockedByDate && (
-                      <button
-                        type="button"
-                        onClick={() => setPreviewUnlocked(!previewUnlocked)}
-                        className="shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-mono border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
-                        title="Toggle owner preview unlocked view"
-                      >
-                        {previewUnlocked ? "Lock 🔒" : "Owner Peek 👁️"}
-                      </button>
-                    )}
                   </div>
                 </div>
 
