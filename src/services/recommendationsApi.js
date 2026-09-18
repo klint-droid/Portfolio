@@ -1,6 +1,6 @@
 import Papa from "papaparse";
 
-// Default curated recommendations so the section is never empty
+// Default curated recommendations shown ONLY when the Google Sheet has 0 rows
 export const DEFAULT_RECOMMENDATIONS = [
   {
     id: "def-1",
@@ -60,37 +60,6 @@ export const getInitials = (name = "") => {
 };
 
 /**
- * Retrieve recommendations stored locally in this browser.
- */
-export const getStoredLocalRecommendations = () => {
-  try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
-    }
-  } catch (e) {
-    console.warn("Could not read local recommendations:", e);
-  }
-  return [];
-};
-
-/**
- * Save a newly written recommendation to localStorage.
- */
-const saveLocalRecommendation = (item) => {
-  try {
-    const current = getStoredLocalRecommendations();
-    const updated = [item, ...current.filter((x) => x.id !== item.id)];
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
-    return updated;
-  } catch (e) {
-    console.warn("Could not save to localStorage:", e);
-    return [];
-  }
-};
-
-/**
  * Normalizes a raw CSV object row by checking multiple possible column aliases.
  */
 const normalizeRow = (row, index) => {
@@ -122,6 +91,7 @@ const normalizeRow = (row, index) => {
     findValue(["relationship", "relation", "category", "connection"]) || "Peer";
   const timestamp = findValue(["timestamp", "date", "time", "createdat"]);
 
+  // If both name and message are missing, skip row
   if (!name && !message) {
     return null;
   }
@@ -156,16 +126,26 @@ const normalizeRow = (row, index) => {
 };
 
 /**
- * Fetch recommendations from the published Google Sheets CSV.
- * Merges with local submissions and default fallback testimonials.
+ * Fetch recommendations directly from the published Google Sheets CSV.
+ * The Google Sheet is the single source of truth:
+ * - If rows are deleted in Excel/Sheets, they will be deleted from the UI.
+ * - If the sheet has 0 entries, it falls back to DEFAULT_RECOMMENDATIONS.
  */
 export const fetchRecommendations = async () => {
-  const localList = getStoredLocalRecommendations();
+  // Wipe any legacy localStorage cache to prevent deleted entries from persisting
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+  }
+
   let sheetList = [];
 
   if (CSV_URL) {
     try {
-      // Add timestamp query parameter to bust browser/CDN caching
+      // Add timestamp query parameter to bust browser and CDN cache
       const cacheBustUrl = `${CSV_URL}${CSV_URL.includes("?") ? "&" : "?"}_t=${Date.now()}`;
       const response = await fetch(cacheBustUrl, {
         method: "GET",
@@ -195,38 +175,21 @@ export const fetchRecommendations = async () => {
     }
   }
 
-  // Combine: [local unsynced/recent submissions] + [live Google Sheet rows]
-  // Deduplicate by name + text
-  const combined = [...localList];
-
-  for (const item of sheetList) {
-    const exists = combined.some(
-      (c) =>
-        c.name.toLowerCase() === item.name.toLowerCase() &&
-        c.text.toLowerCase() === item.text.toLowerCase()
-    );
-    if (!exists) {
-      combined.push(item);
-    }
+  // If Google Sheet has rows, it is the sole source of truth!
+  // Any deleted rows in the sheet will be immediately absent here.
+  if (sheetList.length > 0) {
+    return sheetList;
   }
 
-  // If we still have few or zero items, merge default testimonials
-  for (const def of DEFAULT_RECOMMENDATIONS) {
-    const exists = combined.some(
-      (c) => c.name.toLowerCase() === def.name.toLowerCase()
-    );
-    if (!exists) {
-      combined.push(def);
-    }
-  }
-
-  return combined;
+  // Fallback only if the sheet is completely empty
+  return DEFAULT_RECOMMENDATIONS;
 };
 
 /**
  * Submit a new recommendation.
- * - Stores optimistically in localStorage.
- * - If Google Apps Script URL is provided, posts to it.
+ * - Dispatches event for instant optimistic UI feedback in current session.
+ * - Posts to the Google Apps Script Web App so it is stored in the Google Sheet.
+ * - Does NOT permanently save to localStorage, ensuring Google Sheet remains source of truth.
  */
 export const submitRecommendation = async ({
   name,
@@ -256,17 +219,14 @@ export const submitRecommendation = async ({
     timestamp: now.toISOString(),
   };
 
-  // 1. Save locally for instant optimistic UI update
-  saveLocalRecommendation(newRecommendation);
-
-  // 2. Dispatch custom event so Recommendations component updates immediately
+  // 1. Dispatch custom event so the current user sees their submission immediately
   if (typeof window !== "undefined") {
     window.dispatchEvent(
       new CustomEvent("recommendation-added", { detail: newRecommendation })
     );
   }
 
-  // 3. Post to Google Apps Script Web App if URL is available
+  // 2. Post to Google Apps Script Web App if configured
   let cloudPosted = false;
   if (POST_URL && POST_URL.trim().length > 0) {
     try {
@@ -279,7 +239,6 @@ export const submitRecommendation = async ({
         relationship: newRecommendation.relationship,
       };
 
-      // Google Apps Script requires 'no-cors' mode from browser
       await fetch(POST_URL, {
         method: "POST",
         mode: "no-cors",

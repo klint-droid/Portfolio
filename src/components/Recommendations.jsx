@@ -55,6 +55,13 @@ export default function Recommendations() {
     return () => window.removeEventListener("recommendation-added", handleRecAdded);
   }, [loadData]);
 
+  // Ensure activeIndex is within bounds if an item was deleted
+  useEffect(() => {
+    if (activeIndex >= recommendations.length && recommendations.length > 0) {
+      setActiveIndex(0);
+    }
+  }, [recommendations.length, activeIndex]);
+
   // Autoplay carousel every 7 seconds when not hovered
   useEffect(() => {
     if (recommendations.length <= 1 || isPaused || isModalOpen) {
