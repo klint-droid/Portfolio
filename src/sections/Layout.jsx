@@ -17,7 +17,7 @@ import AIChatButton from '../components/AIChatButton';
 import BirthdayAdPopup from '../components/birthday/BirthdayAdPopup';
 import BirthdayCelebrationModal from '../components/birthday/BirthdayCelebrationModal';
 
-export default function Layout() {
+export default function Layout({ initialOpenRecommend = false }) {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const [isBirthdayModalOpen, setIsBirthdayModalOpen] = useState(false);
 
@@ -62,7 +62,7 @@ export default function Layout() {
         <Projects />
         <TechStack />
         <Certifications />
-        <Recommendations />
+        <Recommendations initialOpen={initialOpenRecommend} />
         <Courses />
         <BookOfAnswers />
         <Contact />

@@ -19,6 +19,8 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Layout />} />
+        <Route path="/recommend" element={<Layout initialOpenRecommend={true} />} />
+        <Route path="/write-recommendation" element={<Layout initialOpenRecommend={true} />} />
         <Route path="/all-certifications" element={<CertificationLists />} />
         <Route path="/all-projects" element={<ProjectLists />} />
         <Route path="/all-techstack" element={<TechStackList />} />

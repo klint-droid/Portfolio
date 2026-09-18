@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import {
   FaQuoteLeft,
   FaPlus,
@@ -6,6 +7,8 @@ import {
   FaChevronRight,
   FaSyncAlt,
   FaCheckCircle,
+  FaLink,
+  FaCheck,
 } from "react-icons/fa";
 import {
   fetchRecommendations,
@@ -13,16 +16,50 @@ import {
 } from "../services/recommendationsApi";
 import WriteRecommendationModal from "./WriteRecommendationModal";
 
-export default function Recommendations() {
+export default function Recommendations({ initialOpen = false }) {
+  const location = useLocation();
   const [recommendations, setRecommendations] = useState(DEFAULT_RECOMMENDATIONS);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const autoPlayRef = useRef(null);
 
-  // Load recommendations from Google Sheet and LocalStorage
+  // Auto-open modal if navigated via direct URL (/recommend, /write-recommendation, ?recommend=true)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const shouldOpen =
+      initialOpen ||
+      location.pathname === "/recommend" ||
+      location.pathname === "/write-recommendation" ||
+      params.get("recommend") === "true" ||
+      params.get("write") === "true" ||
+      location.hash === "#recommend" ||
+      location.hash === "#write-recommendation";
+
+    if (shouldOpen) {
+      setIsModalOpen(true);
+      setTimeout(() => {
+        const el = document.getElementById("recommendations");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 150);
+    }
+  }, [location, initialOpen]);
+
+  // Copy direct review invite link to clipboard
+  const handleCopyInviteLink = () => {
+    const url = `${window.location.origin}/recommend`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2200);
+    });
+  };
+
+  // Load recommendations from Google Sheet
   const loadData = useCallback(async (showRefreshIndicator = false) => {
     if (showRefreshIndicator) setIsRefreshing(true);
     try {
@@ -110,8 +147,27 @@ export default function Recommendations() {
             </span>
           </div>
 
-          {/* Controls: Refresh & Add */}
+          {/* Controls: Copy Invite Link, Refresh & Add */}
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleCopyInviteLink}
+              title="Copy direct invite URL to send to friends or colleagues"
+              className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg border border-gray-200 dark:border-[#27272a] hover:border-blue-500/30 bg-gray-50/50 dark:bg-[#18181b]/50 transition-all cursor-pointer"
+            >
+              {copiedLink ? (
+                <>
+                  <FaCheck size={10} className="text-emerald-500" />
+                  <span className="text-emerald-500 font-semibold">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <FaLink size={10} />
+                  <span>Invite Link</span>
+                </>
+              )}
+            </button>
+
             <button
               type="button"
               onClick={() => loadData(true)}
