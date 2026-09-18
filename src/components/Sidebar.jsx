@@ -286,7 +286,7 @@ const Sidebar = ({ theme, toggleTheme, onOpenAIChat }) => {
               <FaGithub size={15} />
             </a>
             <a
-              href="https://linkedin.com/in/klint-ruales"
+              href="https://www.linkedin.com/in/klint-ruales-67865527b/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"

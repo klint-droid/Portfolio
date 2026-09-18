@@ -71,7 +71,7 @@ const Contact = () => {
           </div>
           <div className="flex flex-col gap-2 font-mono text-xs">
             <a
-              href="https://www.linkedin.com/in/klint-ruales"
+              href="https://www.linkedin.com/in/klint-ruales-67865527b/"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("Social Link", "Click", "LinkedIn")}
