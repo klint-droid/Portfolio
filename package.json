@@ -15,6 +15,7 @@
     "@react-three/postprocessing": "^3.0.4",
     "aws-react-material-icons": "^0.0.5",
     "firebase": "^12.19.0",
+    "papaparse": "^5.7.0",
     "react": "^19.1.1",
     "react-aws-icons": "^1.2.1",
     "react-dom": "^19.1.1",
