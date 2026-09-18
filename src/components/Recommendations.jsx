@@ -171,7 +171,7 @@ export default function Recommendations({ initialOpen = false }) {
             <button
               type="button"
               onClick={() => loadData(true)}
-              title="Sync latest from Google Sheets"
+              title="Refresh recommendations"
               className="p-1.5 text-xs text-gray-400 hover:text-blue-500 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
               aria-label="Refresh recommendations"
             >

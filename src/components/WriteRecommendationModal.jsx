@@ -126,9 +126,6 @@ export default function WriteRecommendationModal({ isOpen, onClose, onSubmitted 
               <span className="font-mono text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
                 Peer Endorsement
               </span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                Google Sheets Live Sync
-              </span>
             </div>
             <h2 className="text-base font-bold text-gray-900 dark:text-white mt-0.5">
               Write a Recommendation for Klint
@@ -155,7 +152,7 @@ export default function WriteRecommendationModal({ isOpen, onClose, onSubmitted 
                 Thank You So Much!
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 max-w-sm mx-auto">
-                Your recommendation has been recorded and added to the portfolio. It is also synced with the live Google Sheet!
+                Your recommendation has been recorded and will appear on the portfolio!
               </p>
             </div>
           ) : (
