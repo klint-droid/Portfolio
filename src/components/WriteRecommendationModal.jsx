@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   FaTimes,
   FaPaperPlane,
@@ -36,7 +37,19 @@ export default function WriteRecommendationModal({ isOpen, onClose, onSubmitted 
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  if (!isOpen) return null;
+  // Lock body scroll when modal is open to prevent background scrolling
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  if (!isOpen || typeof document === "undefined") return null;
 
   const previewInitials = getInitials(name || "Your Name");
   const previewColor = getAvatarColor(name || "Preview");
@@ -96,14 +109,18 @@ export default function WriteRecommendationModal({ isOpen, onClose, onSubmitted 
     onClose();
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn"
-      onClick={(e) => e.target === e.currentTarget && handleClose()}
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md overflow-y-auto animate-fade-in-up"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
     >
-      <div className="relative w-full max-w-xl bg-white dark:bg-[#121215] border border-gray-200 dark:border-[#27272a] rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+      <div className="relative w-full max-w-xl my-auto bg-white dark:bg-[#121215] border border-gray-200 dark:border-[#27272a] rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-[#27272a] bg-gray-50/70 dark:bg-[#18181b]/70">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-[#27272a] bg-gray-50/70 dark:bg-[#18181b]/70 shrink-0">
           <div>
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
@@ -120,7 +137,7 @@ export default function WriteRecommendationModal({ isOpen, onClose, onSubmitted 
           <button
             type="button"
             onClick={handleClose}
-            className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+            className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
             aria-label="Close modal"
           >
             <FaTimes size={16} />
@@ -292,7 +309,7 @@ export default function WriteRecommendationModal({ isOpen, onClose, onSubmitted 
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-4 py-2 text-xs font-mono text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+                  className="px-4 py-2 text-xs font-mono text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -318,6 +335,7 @@ export default function WriteRecommendationModal({ isOpen, onClose, onSubmitted 
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
