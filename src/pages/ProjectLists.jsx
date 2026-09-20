@@ -64,7 +64,14 @@ const ProjectLists = () => {
             tech: "Java, Swing",
             link: "https://github.com/klint-droid/RPG",
             isInternal: false
-        }
+        },
+        {
+            name: "Lauren's Portfolio Website",
+            description: "A Portfolio website for a VA",
+            tech: "React, TypeScript, Tailwind CSS",
+            link: "https://lauren-joyce-tugadi.vercel.app/",
+            isInternal: false
+        },
     ]
 
     return(
