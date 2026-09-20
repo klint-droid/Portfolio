@@ -72,6 +72,13 @@ const ProjectLists = () => {
             link: "https://lauren-joyce-tugadi.vercel.app/",
             isInternal: false
         },
+        {
+            name: "Pickle Ball Web-based Game",
+            description: "A web-based game for pickleball lovers.",
+            tech: "React, JavaScript, Tailwind CSS, Canvas",
+            link: "https://pickle-ball-two.vercel.app/",
+            isInternal: false
+        }
     ]
 
     return(
