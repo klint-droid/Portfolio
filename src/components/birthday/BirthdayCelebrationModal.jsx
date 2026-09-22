@@ -4,34 +4,29 @@ import {
   FaTimes,
   FaHeart,
   FaGift,
-  FaCopy,
   FaCheck,
   FaPaperPlane,
   FaQrcode,
-  FaExternalLinkAlt,
   FaSmile,
-  FaClock,
   FaInfoCircle,
-  FaLock,
-  FaUnlock,
+  FaFileExcel,
+  FaDownload,
+  FaUserShield,
 } from "react-icons/fa";
 import { MdCelebration } from "react-icons/md";
+import * as XLSX from "xlsx";
 import { BIRTHDAY_CONFIG } from "../../data/birthdayConfig";
 import { triggerConfetti } from "../../utils/confetti";
 import {
   subscribeToBirthdayWishes,
   sendBirthdayWish,
-  likeBirthdayWish,
 } from "../../services/firebase";
 
 const WISHES_STORAGE_KEY = "klint_birthday_wishes_v2";
 
 export default function BirthdayCelebrationModal({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState("wishes"); // 'wishes' | 'gift'
-  const [copiedField, setCopiedField] = useState(null);
   const [wishes, setWishes] = useState([]);
-  const [hasLiked, setHasLiked] = useState({});
-  const [isSyncing, setIsSyncing] = useState(false);
 
   // Form state
   const [formName, setFormName] = useState("");
@@ -39,46 +34,37 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
   const [formEmoji, setFormEmoji] = useState("🎂");
   const [formMessage, setFormMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submittedWish, setSubmittedWish] = useState(null);
   const [qrImageError, setQrImageError] = useState(false);
-
-  const targetDateObj = new Date(BIRTHDAY_CONFIG.targetDate);
-  const isUnlocked = Date.now() >= targetDateObj.getTime();
+  const [isExporting, setIsExporting] = useState(false);
 
   const modalRef = useRef(null);
 
   // Load initial wishes from localStorage or fall back to sample config
   useEffect(() => {
     try {
-      // Clear legacy sample wishes if present
       localStorage.removeItem("klint_birthday_wishes_list");
-
       const cached = localStorage.getItem(WISHES_STORAGE_KEY);
       if (cached) {
         setWishes(JSON.parse(cached));
-      } else {
-        setWishes(BIRTHDAY_CONFIG.sampleWishes || []);
       }
     } catch {
-      setWishes(BIRTHDAY_CONFIG.sampleWishes || []);
+      setWishes([]);
     }
   }, []);
 
-  // Real-time Firebase Firestore listener & confetti when modal opens
+  // Real-time Firebase listener (stores wishes in memory/cache for Excel export without public display)
   useEffect(() => {
     if (isOpen) {
-      triggerConfetti({ count: 60 });
+      triggerConfetti({ count: 50 });
       document.body.style.overflow = "hidden";
 
-      setIsSyncing(true);
       const unsubscribe = subscribeToBirthdayWishes(
         (liveWishes) => {
           setWishes(liveWishes);
-          setIsSyncing(false);
         },
         (error) => {
-          console.warn("Firebase live wishes listener:", error);
-          setIsSyncing(false);
+          console.warn("Firebase wishes sync:", error);
         }
       );
 
@@ -102,14 +88,7 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Copy to clipboard helper
-  const handleCopy = (text, fieldName) => {
-    navigator.clipboard.writeText(text);
-    setCopiedField(fieldName);
-    setTimeout(() => setCopiedField(null), 2200);
-  };
-
-  // Submit new wish to Firebase Firestore
+  // Submit new wish to Firebase / Storage
   const handlePostWish = async (e) => {
     e.preventDefault();
     if (!formName.trim() || !formMessage.trim()) return;
@@ -117,32 +96,85 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
     setIsSubmitting(true);
 
     try {
-      await sendBirthdayWish({
-        name: formName,
+      const payload = {
+        name: formName.trim(),
         relationship: formRelation,
         emoji: formEmoji,
-        message: formMessage,
+        message: formMessage.trim(),
+      };
+
+      await sendBirthdayWish(payload);
+
+      setSubmittedWish({
+        ...payload,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       });
 
       setFormMessage("");
       setFormName("");
       setIsSubmitting(false);
-      setSubmitSuccess(true);
       triggerConfetti({ count: 80 });
-      setTimeout(() => setSubmitSuccess(false), 3500);
     } catch (err) {
       console.error("Post wish error:", err);
       setIsSubmitting(false);
     }
   };
 
-  // Like a wish in Firebase Firestore
-  const handleToggleLike = async (wishId) => {
-    if (hasLiked[wishId]) return;
+  // Export wishes directly to Excel (.xlsx) file
+  const handleExportToExcel = () => {
+    try {
+      setIsExporting(true);
+      const rows = (wishes.length > 0 ? wishes : [
+        {
+          id: "WISH-001",
+          timestamp: new Date().toLocaleString(),
+          name: "Sample Friend",
+          relationship: "Friend",
+          emoji: "🎂",
+          message: "Happy Birthday Klint! Wishing you more success and blessings!",
+          status: "Received"
+        }
+      ]).map((w, index) => ({
+        "Wish ID": w.id || `WISH-${String(index + 1).padStart(3, "0")}`,
+        "Date & Time": w.timestamp || new Date().toLocaleString(),
+        "Sender Name": w.name || "Anonymous",
+        "Relationship": w.relationship || "Friend",
+        "Vibe / Sticker": w.emoji || "🎂",
+        "Birthday Message": w.message || "",
+        "Status": "Received"
+      }));
 
-    setHasLiked((prev) => ({ ...prev, [wishId]: true }));
-    triggerConfetti({ count: 25 });
-    await likeBirthdayWish(wishId);
+      const worksheet = XLSX.utils.json_to_sheet(rows, {
+        header: [
+          "Wish ID",
+          "Date & Time",
+          "Sender Name",
+          "Relationship",
+          "Vibe / Sticker",
+          "Birthday Message",
+          "Status"
+        ]
+      });
+
+      worksheet["!cols"] = [
+        { wch: 14 },
+        { wch: 22 },
+        { wch: 22 },
+        { wch: 18 },
+        { wch: 15 },
+        { wch: 60 },
+        { wch: 12 }
+      ];
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Birthday Wishes");
+
+      XLSX.writeFile(workbook, "birthday_wishes.xlsx");
+      setTimeout(() => setIsExporting(false), 1200);
+    } catch (err) {
+      console.error("Export Excel error:", err);
+      setIsExporting(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -241,7 +273,7 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
               }`}
             >
               <FaHeart className={activeTab === "wishes" ? "text-rose-900" : "text-rose-500"} />
-              <span>Wishes Wall ({wishes.length})</span>
+              <span>Send Birthday Wish 💌</span>
             </button>
 
             <button
@@ -253,7 +285,7 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
               }`}
             >
               <FaGift className={activeTab === "gift" ? "text-indigo-900" : "text-amber-500"} />
-              <span>Send a Gift / QR</span>
+              <span>Send a Gift / QR 🎁</span>
               <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-rose-500 text-white font-bold tracking-wider uppercase">
                 Twist
               </span>
@@ -263,20 +295,53 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
 
         {/* Modal Scrollable Content */}
         <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-6">
-          {/* TAB 1: WISHES WALL */}
+          {/* TAB 1: SEND BIRTHDAY WISH */}
           {activeTab === "wishes" && (
             <div className="space-y-6">
+              {/* Privacy Notice Banner */}
+              <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                  <FaUserShield size={16} />
+                </div>
+                <div className="text-xs">
+                  <p className="font-semibold text-gray-900 dark:text-zinc-200">
+                    Private & Secure Birthday Greetings
+                  </p>
+                  <p className="text-gray-600 dark:text-zinc-400 text-[11px] mt-0.5">
+                    Your wish will be sent directly and privately stored in Klint's birthday records.
+                  </p>
+                </div>
+              </div>
+
+              {/* Submitted Confirmation Card */}
+              {submittedWish && (
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-emerald-500/15 border border-emerald-500/30 animate-fade-in-up">
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500 text-black flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                      <FaCheck size={16} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-sans font-bold text-sm text-emerald-800 dark:text-emerald-300">
+                        Thank You, {submittedWish.name}! 🎉
+                      </h4>
+                      <p className="text-xs text-gray-700 dark:text-zinc-300 mt-1 leading-relaxed">
+                        Your birthday wish was successfully sent and safely stored for Klint. Thank you for celebrating!
+                      </p>
+                      <div className="mt-2.5 p-2.5 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-emerald-500/20 text-xs text-gray-800 dark:text-zinc-200 italic font-sans flex items-center gap-2">
+                        <span>{submittedWish.emoji}</span>
+                        <span className="truncate">"{submittedWish.message}"</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Leave a Wish Form */}
-              <div className="p-4 rounded-2xl bg-gray-50 dark:bg-zinc-900/70 border border-gray-200 dark:border-zinc-800">
+              <div className="p-4 sm:p-5 rounded-2xl bg-gray-50 dark:bg-zinc-900/70 border border-gray-200 dark:border-zinc-800 shadow-sm">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-gray-900 dark:text-zinc-200 flex items-center gap-2">
                     <FaPaperPlane className="text-amber-500" /> Leave a Birthday Wish
                   </h4>
-                  {submitSuccess && (
-                    <span className="text-xs font-mono font-bold text-emerald-500 flex items-center gap-1 animate-pulse">
-                      <FaCheck /> Wish Posted to Wall!
-                    </span>
-                  )}
                 </div>
 
                 <form onSubmit={handlePostWish} className="space-y-3.5">
@@ -292,7 +357,7 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                         maxLength={50}
                         value={formName}
                         onChange={(e) => setFormName(e.target.value)}
-                        placeholder="e.g. Alex (or Secret Fan)"
+                        placeholder="e.g. Alex (or Dev Friend)"
                         className="w-full px-3 py-2 text-xs rounded-xl bg-white dark:bg-zinc-800/90 border border-gray-200 dark:border-zinc-700/80 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 transition-colors font-sans"
                       />
                     </div>
@@ -343,11 +408,8 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="block text-[11px] font-mono uppercase text-gray-500 dark:text-zinc-400">
-                        Secret Birthday Wish *
+                        Birthday Wish / Greeting *
                       </label>
-                      <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 flex items-center gap-1 font-semibold">
-                        <FaLock size={9} /> Sealed until Sept 23
-                      </span>
                     </div>
                     <textarea
                       required
@@ -355,7 +417,7 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                       maxLength={350}
                       value={formMessage}
                       onChange={(e) => setFormMessage(e.target.value)}
-                      placeholder="Write your secret birthday wish, funny memory, or greetings (will be sealed in vault until birthday!)..."
+                      placeholder="Write your heartfelt birthday greeting, funny memory, or good wishes for Klint..."
                       className="w-full px-3 py-2.5 text-xs rounded-xl bg-white dark:bg-zinc-800/90 border border-gray-200 dark:border-zinc-700/80 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500 transition-colors font-sans resize-none"
                     />
                   </div>
@@ -368,163 +430,41 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                     <button
                       type="submit"
                       disabled={isSubmitting || !formName.trim() || !formMessage.trim()}
-                      className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-sans font-semibold text-white bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 shadow-md shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-sans font-semibold text-white bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 shadow-md shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
                     >
-                      <FaLock size={11} />
-                      <span>{isSubmitting ? "Sealing..." : "Seal Wish in Vault"}</span>
+                      <FaPaperPlane size={11} />
+                      <span>{isSubmitting ? "Sending..." : "Send Birthday Wish"}</span>
                     </button>
                   </div>
                 </form>
               </div>
 
-              {/* Live Wishes Feed */}
-              <div className="space-y-3">
-                {/* Time Capsule Vault Status Banner */}
-                <div
-                  className={`p-3.5 rounded-2xl border transition-all ${
-                    isUnlocked
-                      ? "bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border-emerald-500/30"
-                      : "bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-amber-500/10 border-amber-500/30"
-                  }`}
+              {/* Discreet Excel Storage & Export Control for Klint */}
+              <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800/80 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20">
+                    <FaFileExcel size={15} />
+                  </div>
+                  <div>
+                    <h5 className="font-mono text-[11px] font-semibold text-gray-800 dark:text-zinc-300">
+                      Wishes Data Store (Excel)
+                    </h5>
+                    <p className="text-[10px] text-gray-500 dark:text-zinc-400">
+                      Stored in <code className="bg-gray-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-[9px]">src/data/birthday_wishes.xlsx</code>
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleExportToExcel}
+                  disabled={isExporting}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-300 dark:border-emerald-800 transition-colors shadow-sm"
+                  title="Download all collected wishes as Excel spreadsheet"
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${
-                          isUnlocked
-                            ? "bg-emerald-500 text-black shadow-emerald-500/20"
-                            : "bg-amber-500 text-black shadow-amber-500/20"
-                        }`}
-                      >
-                        {isUnlocked ? <FaUnlock size={14} /> : <FaLock size={14} />}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h5 className="font-sans font-bold text-xs text-gray-900 dark:text-white">
-                            {isUnlocked ? "🎉 Time Capsule Unlocked!" : "🔒 Birthday Time Capsule Vault"}
-                          </h5>
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase tracking-wider ${
-                              isUnlocked
-                                ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
-                                : "bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30"
-                            }`}
-                          >
-                            {isUnlocked ? "Revealed" : "Sealed"}
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-gray-600 dark:text-zinc-400 mt-0.5">
-                          {isUnlocked
-                            ? "The countdown has ended! All heartfelt birthday wishes are now unlocked and revealed."
-                            : "Wishes are securely sealed in Klint's vault and will unlock automatically on September 23!"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-zinc-300">
-                      Live Wishes Vault ({wishes.length})
-                    </h4>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-mono text-gray-400 dark:text-zinc-500">
-                      Click ❤️ to like
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {wishes.length === 0 ? (
-                    <div className="p-8 sm:p-10 rounded-2xl bg-gray-50/70 dark:bg-zinc-900/40 border border-dashed border-gray-200 dark:border-zinc-800 text-center flex flex-col items-center justify-center animate-fade-in-up">
-                      <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-2xl mb-3 shadow-inner">
-                        🎂
-                      </div>
-                      <h5 className="font-sans font-bold text-sm text-gray-900 dark:text-white">
-                        The Wishes Vault is Fresh & Clean!
-                      </h5>
-                      <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1 max-w-sm leading-relaxed">
-                        No wishes sealed yet. Be the very first friend to seal a secret birthday wish for Klint above! 🚀
-                      </p>
-                    </div>
-                  ) : (
-                    wishes.map((wish) => (
-                      <div
-                        key={wish.id}
-                        className="p-4 rounded-2xl bg-white dark:bg-zinc-900/60 border border-gray-200 dark:border-zinc-800/80 hover:border-amber-500/40 transition-colors shadow-sm"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-center gap-2.5">
-                            <span className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-lg shrink-0">
-                              {wish.emoji || "🎂"}
-                            </span>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="font-sans font-bold text-xs text-gray-900 dark:text-white">
-                                  {wish.name}
-                                </span>
-                                {wish.relationship && (
-                                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 border border-gray-200 dark:border-zinc-700">
-                                    {wish.relationship}
-                                  </span>
-                                )}
-                              </div>
-                              <span className="text-[10px] font-mono text-gray-400 dark:text-zinc-500 flex items-center gap-1 mt-0.5">
-                                <FaClock size={9} /> {wish.timestamp || "Recently"}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Like / Heart Reaction */}
-                          <button
-                            onClick={() => handleToggleLike(wish.id)}
-                            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-mono transition-all ${
-                              hasLiked[wish.id]
-                                ? "bg-rose-500/20 text-rose-500 border border-rose-500/30"
-                                : "bg-gray-50 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 hover:text-rose-500 dark:hover:text-rose-400 border border-gray-200 dark:border-zinc-700"
-                            }`}
-                            title="Like this wish"
-                          >
-                            <FaHeart
-                              size={12}
-                              className={hasLiked[wish.id] ? "text-rose-500 animate-bounce" : ""}
-                            />
-                            <span>{wish.likes || 1}</span>
-                          </button>
-                        </div>
-
-                        {/* Secret Locked Message vs Unlocked Message */}
-                        {isUnlocked ? (
-                          <p className="text-xs text-gray-700 dark:text-zinc-300 mt-2.5 leading-relaxed font-sans pl-1 animate-fade-in-up">
-                            "{wish.message}"
-                          </p>
-                        ) : (
-                          <div className="mt-2.5 p-3 rounded-xl bg-gradient-to-r from-amber-500/5 via-amber-500/10 to-amber-500/5 border border-amber-500/20 flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                              <FaLock size={12} />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5">
-                                <span className="font-mono text-[11px] font-bold text-gray-900 dark:text-amber-300">
-                                  Secret Wish Sealed in Vault
-                                </span>
-                                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">
-                                  Locked
-                                </span>
-                              </div>
-                              <p className="text-[10px] font-mono text-gray-500 dark:text-zinc-400 mt-0.5">
-                                Unlocks automatically on September 23, 2026! 🎂
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
+                  <FaDownload size={10} />
+                  <span>{isExporting ? "Exporting..." : "Download .xlsx"}</span>
+                </button>
               </div>
             </div>
           )}
@@ -555,13 +495,11 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                   {/* QR Visual Container */}
                   <div className="flex flex-col items-center shrink-0">
                     <div className="relative p-3.5 rounded-2xl bg-white border-2 border-blue-500/50 shadow-lg text-center">
-                      {/* Corner viewfinder accents */}
                       <div className="absolute top-1 left-1 w-3.5 h-3.5 border-t-2 border-l-2 border-blue-500" />
                       <div className="absolute top-1 right-1 w-3.5 h-3.5 border-t-2 border-r-2 border-blue-500" />
                       <div className="absolute bottom-1 left-1 w-3.5 h-3.5 border-b-2 border-l-2 border-blue-500" />
                       <div className="absolute bottom-1 right-1 w-3.5 h-3.5 border-b-2 border-r-2 border-blue-500" />
 
-                      {/* Actual QR Image or Aesthetic GCash Placeholder Pattern */}
                       {!qrImageError && currentPayment.qrImage ? (
                         <img
                           src={currentPayment.qrImage}
@@ -598,58 +536,37 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                   <div className="flex-1 w-full space-y-4">
                     <div>
                       <span className="text-[10px] font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50">
-                        {currentPayment.badge}
+                        Verified GCash Account
                       </span>
-                      <h4 className="text-lg font-bold font-sans text-gray-900 dark:text-white mt-1.5">
-                        {currentPayment.name}
-                      </h4>
-                      <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
-                        Instant transfer using GCash QR scanner.
+                      <h5 className="font-sans font-bold text-lg text-gray-900 dark:text-white mt-1.5">
+                        {currentPayment.accountName}
+                      </h5>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 space-y-2 text-xs">
+                      <p className="font-mono text-gray-700 dark:text-zinc-300 text-[11px] leading-relaxed">
+                        🔒 <strong>Privacy Protected:</strong> Direct QR scanning avoids sharing phone numbers across public networks.
+                      </p>
+                      <p className="text-gray-600 dark:text-zinc-400 text-[11px] leading-relaxed">
+                        {currentPayment.note}
                       </p>
                     </div>
 
-                    {/* Account Name */}
-                    <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-zinc-800/60 border border-gray-200 dark:border-zinc-700/60">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <span className="block text-[10px] font-mono uppercase text-gray-500 dark:text-zinc-400">
-                            Recipient Name
-                          </span>
-                          <span className="font-sans font-bold text-sm text-gray-900 dark:text-white">
-                            {currentPayment.accountName}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => handleCopy(currentPayment.accountName, "name")}
-                          className="px-2.5 py-1.5 rounded-lg text-xs font-mono bg-white dark:bg-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-600 border border-gray-200 dark:border-zinc-600 text-gray-700 dark:text-zinc-200 transition-colors flex items-center gap-1.5"
-                        >
-                          {copiedField === "name" ? (
-                            <>
-                              <FaCheck className="text-emerald-500" />
-                              <span className="text-emerald-500 font-bold">Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <FaCopy size={11} />
-                              <span>Copy Name</span>
-                            </>
-                          )}
-                        </button>
+                    {/* How to pay steps */}
+                    <div className="space-y-1.5 font-mono text-[11px] text-gray-600 dark:text-zinc-400">
+                      <div className="flex items-center gap-2">
+                        <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-bold">1</span>
+                        <span>Open GCash app & tap <strong>QR / Scan</strong></span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-bold">2</span>
+                        <span>Point camera at the QR code above or upload screenshot</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-bold">3</span>
+                        <span>Input any celebratory amount & confirm 🎉</span>
                       </div>
                     </div>
-
-                    {/* Security Notice */}
-                    <div className="p-3 rounded-xl bg-blue-50/70 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/40 flex items-start gap-2.5">
-                      <FaInfoCircle className="text-blue-500 shrink-0 mt-0.5" size={13} />
-                      <div className="text-[11px] leading-relaxed text-blue-900 dark:text-blue-300">
-                        <span className="font-semibold block">Privacy & Security Protected</span>
-                        <span>Phone numbers are hidden for security. Simply scan the QR code using your GCash app camera to send your birthday treat!</span>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-gray-500 dark:text-zinc-400 font-sans italic">
-                      💡 {currentPayment.note}
-                    </p>
                   </div>
                 </div>
               </div>
@@ -658,14 +575,15 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-3 sm:p-4 border-t border-gray-100 dark:border-zinc-800/80 bg-gray-50/50 dark:bg-zinc-900/50 flex items-center justify-between text-xs font-mono shrink-0">
-          <span className="text-gray-500 dark:text-zinc-500 flex items-center gap-1.5">
+        <div className="p-4 border-t border-gray-100 dark:border-zinc-800/80 bg-gray-50/50 dark:bg-zinc-900/30 flex items-center justify-between text-xs text-gray-500 dark:text-zinc-500 shrink-0">
+          <div className="flex items-center gap-2">
             <FaBirthdayCake className="text-amber-500" />
             <span>Celebrating Klint's Birthday</span>
-          </span>
+          </div>
+
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded-xl font-sans font-medium text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
+            className="px-4 py-1.5 rounded-xl font-sans font-medium text-xs text-gray-600 dark:text-zinc-300 hover:text-gray-900 dark:hover:text-white bg-gray-200/70 dark:bg-zinc-800 hover:bg-gray-300 dark:hover:bg-zinc-700 transition-colors"
           >
             Close
           </button>

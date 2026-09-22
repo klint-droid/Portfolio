@@ -117,7 +117,7 @@ export default function BirthdayAdPopup({ onOpenCelebration }) {
               {BIRTHDAY_CONFIG.name}'s Birthday is Coming!
             </h4>
             <p className="text-xs text-gray-600 dark:text-zinc-400 line-clamp-2 mt-0.5">
-              Leveling up another year! Drop a wish on my live wall or check out the birthday twist.
+              Leveling up another year! Drop a private birthday wish or check out the birthday twist.
             </p>
           </div>
         </div>

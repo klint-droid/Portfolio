@@ -16,7 +16,7 @@ export const BIRTHDAY_CONFIG = {
   ageOrMilestone: "Another Year of Code & Innovation",
   tagline: "Leveling up another year in the tech realm! 🚀",
   subheading:
-    "Thanks for visiting my portfolio! Since my birthday is approaching, I put together this fun corner where you can drop a birthday wish on my live wall or send a celebratory treat!",
+    "Thanks for visiting my portfolio! Since my birthday is approaching, I put together this fun corner where you can drop a birthday wish or send a celebratory treat!",
   
   // The Gift / Payment QR Twist Section
   giftMessage:
