@@ -3,6 +3,7 @@ import {
   getFirestore,
   collection,
   addDoc,
+  getDocs,
   onSnapshot,
   query,
   orderBy,
@@ -208,3 +209,43 @@ function formatTimeAgo(date) {
   const days = Math.floor(hours / 24);
   return `${days}d ago`;
 }
+
+/**
+ * Fetch all birthday wishes from Firebase Firestore for Excel export.
+ */
+export const fetchAllFirebaseWishes = async () => {
+  if (!db) {
+    try {
+      const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  try {
+    const q = query(
+      collection(db, COLLECTION_NAME),
+      orderBy("createdAt", "desc")
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((docSnap) => {
+      const data = docSnap.data();
+      const dateObj = data.createdAt?.toDate ? data.createdAt.toDate() : null;
+      return {
+        id: docSnap.id,
+        ...data,
+        timestamp: dateObj ? dateObj.toLocaleString() : "Recently",
+        dateString: dateObj ? dateObj.toISOString() : new Date().toISOString(),
+      };
+    });
+  } catch (err) {
+    console.error("Error fetching all wishes from Firestore:", err);
+    try {
+      const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  }
+};

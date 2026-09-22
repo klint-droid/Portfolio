@@ -9,12 +9,9 @@ import {
   FaQrcode,
   FaSmile,
   FaInfoCircle,
-  FaFileExcel,
-  FaDownload,
   FaUserShield,
 } from "react-icons/fa";
 import { MdCelebration } from "react-icons/md";
-import * as XLSX from "xlsx";
 import { BIRTHDAY_CONFIG } from "../../data/birthdayConfig";
 import { triggerConfetti } from "../../utils/confetti";
 import {
@@ -36,7 +33,6 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedWish, setSubmittedWish] = useState(null);
   const [qrImageError, setQrImageError] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
 
   const modalRef = useRef(null);
 
@@ -117,63 +113,6 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
     } catch (err) {
       console.error("Post wish error:", err);
       setIsSubmitting(false);
-    }
-  };
-
-  // Export wishes directly to Excel (.xlsx) file
-  const handleExportToExcel = () => {
-    try {
-      setIsExporting(true);
-      const rows = (wishes.length > 0 ? wishes : [
-        {
-          id: "WISH-001",
-          timestamp: new Date().toLocaleString(),
-          name: "Sample Friend",
-          relationship: "Friend",
-          emoji: "🎂",
-          message: "Happy Birthday Klint! Wishing you more success and blessings!",
-          status: "Received"
-        }
-      ]).map((w, index) => ({
-        "Wish ID": w.id || `WISH-${String(index + 1).padStart(3, "0")}`,
-        "Date & Time": w.timestamp || new Date().toLocaleString(),
-        "Sender Name": w.name || "Anonymous",
-        "Relationship": w.relationship || "Friend",
-        "Vibe / Sticker": w.emoji || "🎂",
-        "Birthday Message": w.message || "",
-        "Status": "Received"
-      }));
-
-      const worksheet = XLSX.utils.json_to_sheet(rows, {
-        header: [
-          "Wish ID",
-          "Date & Time",
-          "Sender Name",
-          "Relationship",
-          "Vibe / Sticker",
-          "Birthday Message",
-          "Status"
-        ]
-      });
-
-      worksheet["!cols"] = [
-        { wch: 14 },
-        { wch: 22 },
-        { wch: 22 },
-        { wch: 18 },
-        { wch: 15 },
-        { wch: 60 },
-        { wch: 12 }
-      ];
-
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Birthday Wishes");
-
-      XLSX.writeFile(workbook, "birthday_wishes.xlsx");
-      setTimeout(() => setIsExporting(false), 1200);
-    } catch (err) {
-      console.error("Export Excel error:", err);
-      setIsExporting(false);
     }
   };
 
@@ -437,34 +376,6 @@ export default function BirthdayCelebrationModal({ isOpen, onClose }) {
                     </button>
                   </div>
                 </form>
-              </div>
-
-              {/* Discreet Excel Storage & Export Control for Klint */}
-              <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800/80 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20">
-                    <FaFileExcel size={15} />
-                  </div>
-                  <div>
-                    <h5 className="font-mono text-[11px] font-semibold text-gray-800 dark:text-zinc-300">
-                      Wishes Data Store (Excel)
-                    </h5>
-                    <p className="text-[10px] text-gray-500 dark:text-zinc-400">
-                      Stored in <code className="bg-gray-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-[9px]">src/data/birthday_wishes.xlsx</code>
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleExportToExcel}
-                  disabled={isExporting}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-300 dark:border-emerald-800 transition-colors shadow-sm"
-                  title="Download all collected wishes as Excel spreadsheet"
-                >
-                  <FaDownload size={10} />
-                  <span>{isExporting ? "Exporting..." : "Download .xlsx"}</span>
-                </button>
               </div>
             </div>
           )}
