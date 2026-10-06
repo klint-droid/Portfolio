@@ -14,12 +14,9 @@ import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import RightPanel from '../components/RightPanel';
 import AIChatButton from '../components/AIChatButton';
-import BirthdayAdPopup from '../components/birthday/BirthdayAdPopup';
-import BirthdayCelebrationModal from '../components/birthday/BirthdayCelebrationModal';
 
 export default function Layout({ initialOpenRecommend = false }) {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
-  const [isBirthdayModalOpen, setIsBirthdayModalOpen] = useState(false);
 
   useEffect(() => {
     document.body.className = theme === 'light' ? 'light-theme' : 'dark-theme';
@@ -30,13 +27,6 @@ export default function Layout({ initialOpenRecommend = false }) {
     }
     localStorage.setItem('theme', theme);
   }, [theme]);
-
-  // Listen for global open celebration events from anywhere
-  useEffect(() => {
-    const handleOpenCelebration = () => setIsBirthdayModalOpen(true);
-    window.addEventListener('open-birthday-celebration', handleOpenCelebration);
-    return () => window.removeEventListener('open-birthday-celebration', handleOpenCelebration);
-  }, []);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
@@ -74,15 +64,6 @@ export default function Layout({ initialOpenRecommend = false }) {
 
       {/* AI Chat Assistant Drawer (without floating button) */}
       <AIChatButton />
-
-      {/* Birthday Floating Announcement Ad */}
-      <BirthdayAdPopup onOpenCelebration={() => setIsBirthdayModalOpen(true)} />
-
-      {/* Birthday Celebration Modal Hub (Wishes Guestbook & QR Gifts) */}
-      <BirthdayCelebrationModal
-        isOpen={isBirthdayModalOpen}
-        onClose={() => setIsBirthdayModalOpen(false)}
-      />
     </div>
   );
 }
