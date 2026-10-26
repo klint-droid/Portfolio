@@ -10,6 +10,13 @@ const ProjectLists = () => {
 
     const projects = [
         {
+            name: "DoseDay",
+            description: "Mobile App - Your daily medication platform",
+            tech: "Dart, Flutter",
+            link: "https://getdoseday.vercel.app",
+            isInternal: false
+        },
+        {
             name: "Friend Quiz & Leaderboard Web App",
             description: "An interactive web app allowing users to create personalized quizzes about themselves, share links with friends, calculate friendship tier ratings (BFF, Best Friend, Good Buddy), and view a live ranked friends leaderboard.",
             tech: "React, Tailwind CSS, Web Storage API, URL Parameter Encoding",
