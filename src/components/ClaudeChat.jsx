@@ -301,12 +301,12 @@ const ClaudeChat = ({
       
       {/* CASE 1: WELCOME SCREEN (When chat is empty) */}
       {isConversationEmpty && (
-        <div className="flex-1 flex flex-col items-center justify-center py-6 sm:py-10 animate-fade-in text-center overflow-y-auto">
-          
-          {/* Claude Starburst Mascot */}
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D97757]/15 flex items-center justify-center text-[#D97757] mb-4 shadow-sm hover:scale-105 transition-transform cursor-pointer">
-            <ClaudeStarburst size={36} />
-          </div>
+        <div className="flex-1 overflow-y-auto py-6 px-2 animate-fade-in scrollbar-thin">
+          <div className="min-h-full flex flex-col items-center justify-center max-w-2xl mx-auto text-center my-auto">
+            {/* Claude Starburst Mascot */}
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D97757]/15 flex items-center justify-center text-[#D97757] mb-4 shadow-sm hover:scale-105 transition-transform cursor-pointer">
+              <ClaudeStarburst size={36} />
+            </div>
 
           {/* Claude Serif Headline */}
           <h1 className="claude-font-serif text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[var(--text-primary)] mb-2.5">
@@ -446,13 +446,13 @@ const ClaudeChat = ({
               ))}
             </div>
           </div>
-
         </div>
-      )}
+      </div>
+    )}
 
       {/* CASE 2: ACTIVE CONVERSATION STREAM */}
       {!isConversationEmpty && (
-        <div className="flex-1 overflow-y-auto py-6 space-y-6 pb-36">
+        <div className="flex-1 overflow-y-auto py-6 space-y-6 pb-6 scrollbar-thin">
           
           {/* Header Action Bar */}
           <div className="flex items-center justify-between pb-3 border-b border-[var(--border-color)] text-xs text-[var(--text-muted)]">

@@ -56,72 +56,54 @@ const ClaudeSidebar = ({
     { label: "All Shipped Projects", path: "/all-projects", icon: FaFolderOpen, isInternal: true },
     { label: "All Certifications", path: "/all-certifications", icon: FaCertificate, isInternal: true },
   ];
-
   return (
     <>
-      {/* Mobile Backdrop Overlay */}
+      {/* Mobile Backdrop Overlay - starts below navbar */}
       {isOpen && (
         <div 
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity duration-200"
+          className="fixed inset-x-0 top-14 bottom-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity duration-200"
           aria-hidden="true"
         />
       )}
 
-      {/* Claude Sidebar Container */}
+      {/* Claude Sidebar Container - positioned below navbar on mobile, flex panel on desktop */}
       <aside
         className={`bg-[var(--sidebar-bg)] border-r border-[var(--border-color)] transition-all duration-300 ease-in-out shrink-0 ${
           isOpen
-            ? "fixed inset-y-0 left-0 z-50 w-72 sm:w-80 shadow-2xl lg:shadow-none lg:static lg:w-72 lg:sm:w-80 lg:h-full lg:opacity-100 lg:pointer-events-auto"
-            : "fixed inset-y-0 left-0 z-50 w-72 sm:w-80 -translate-x-full pointer-events-none lg:static lg:w-0 lg:translate-x-0 lg:opacity-0 lg:border-none lg:pointer-events-none lg:overflow-hidden"
+            ? "fixed top-14 bottom-0 left-0 z-40 w-72 sm:w-80 shadow-2xl lg:shadow-none lg:static lg:top-auto lg:bottom-auto lg:w-72 lg:sm:w-80 lg:h-full lg:opacity-100 lg:pointer-events-auto"
+            : "fixed top-14 bottom-0 left-0 z-40 w-72 sm:w-80 -translate-x-full pointer-events-none lg:static lg:w-0 lg:translate-x-0 lg:opacity-0 lg:border-none lg:pointer-events-none lg:overflow-hidden"
         }`}
       >
         <div className="w-72 sm:w-80 h-full flex flex-col justify-between overflow-hidden">
-          {/* Top Header & New Chat Button */}
-          <div className="p-3.5 border-b border-[var(--border-color)] flex flex-col gap-2.5 shrink-0">
-            <div className="flex items-center justify-between">
+          {/* Top Action Bar */}
+          <div className="p-3 border-b border-[var(--border-color)] flex items-center justify-between gap-2 shrink-0">
+            <button
+              onClick={() => {
+                onStartNewChat();
+                if (window.innerWidth < 1024) onClose();
+              }}
+              className="flex-1 flex items-center justify-between px-3 py-2 rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[#D97757] hover:bg-[var(--card-hover)] text-[var(--text-primary)] text-xs font-medium shadow-2xs transition-all group"
+            >
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#D97757]/15 flex items-center justify-center text-[#D97757]">
-                  <ClaudeStarburst size={20} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="claude-font-serif text-lg font-semibold tracking-tight text-[var(--text-primary)] leading-tight">
-                    KlintGPT
-                  </span>
-                  <span className="text-[11px] text-[var(--text-muted)] claude-font-mono">
-                    Personal AI Portfolio
-                  </span>
-                </div>
+                <FaPlus size={11} className="text-[#D97757] group-hover:rotate-90 transition-transform" />
+                <span>Start New Interview</span>
               </div>
+              <span className="claude-font-mono text-[10px] text-[var(--text-muted)] bg-[var(--border-subtle)] px-1.5 py-0.5 rounded">
+                Esc
+              </span>
+            </button>
 
-              {/* Close Button (Visible and working on all screens) */}
-              <button
-                onClick={onClose}
-                className="p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)] transition-colors"
-                title="Collapse sidebar"
-                aria-label="Collapse sidebar"
-              >
-                <FaTimes size={15} />
-              </button>
-            </div>
-
-          {/* New Chat Button (Claude AI Style) */}
-          <button
-            onClick={() => {
-              onStartNewChat();
-              if (window.innerWidth < 1024) onClose();
-            }}
-            className="flex items-center justify-between w-full px-3.5 py-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[#D97757] hover:bg-[var(--card-hover)] text-[var(--text-primary)] text-xs font-medium shadow-sm transition-all group"
-          >
-            <div className="flex items-center gap-2">
-              <FaPlus size={11} className="text-[#D97757] group-hover:rotate-90 transition-transform" />
-              <span>Start New Interview</span>
-            </div>
-            <span className="claude-font-mono text-[10px] text-[var(--text-muted)] bg-[var(--border-subtle)] px-1.5 py-0.5 rounded">
-              Esc
-            </span>
-          </button>
-        </div>
+            {/* Close Button (Visible and working on all screens) */}
+            <button
+              onClick={onClose}
+              className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)] border border-transparent hover:border-[var(--border-color)] transition-colors shrink-0"
+              title="Collapse sidebar"
+              aria-label="Collapse sidebar"
+            >
+              <FaTimes size={14} />
+            </button>
+          </div>
 
         {/* Scrollable Navigation Area */}
         <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
@@ -162,32 +144,46 @@ const ClaudeSidebar = ({
             </div>
             <div className="space-y-0.5">
               {[
-                { id: "about", label: "01 — About Klint", icon: FaCommentDots },
-                { id: "experience", label: "02 — Experience", icon: FaBriefcase },
-                { id: "projects", label: "03 — Shipped Projects", icon: FaFolderOpen },
-                { id: "techstack", label: "04 — Tech Stack", icon: FaCode },
-                { id: "certifications", label: "05 — Certifications", icon: FaCertificate },
-                { id: "recommendations", label: "06 — Recommendations", icon: FaStar },
-                { id: "courses", label: "07 — Guided Courses", icon: FaBook },
-                { id: "book-of-answers", label: "08 — Book of Answers", icon: FaMagic },
-                { id: "contact", label: "09 — Get in Touch", icon: FaEnvelope },
-              ].map((sec) => (
-                <button
-                  key={sec.id}
-                  onClick={() => {
-                    onSelectArtifact(sec.id);
-                    if (window.innerWidth < 1024) onClose();
-                  }}
-                  className={`flex items-center justify-between w-full px-2.5 py-1.5 rounded-lg text-xs transition-colors text-left ${
-                    activeSection === sec.id
-                      ? "bg-[#D97757]/10 text-[#D97757] font-medium"
-                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)]"
-                  }`}
-                >
-                  <span className="truncate claude-font-mono">{sec.label}</span>
-                  <ClaudeArtifactIcon size={12} className="opacity-50" />
-                </button>
-              ))}
+                { id: "about", label: "About Klint", num: "01", icon: FaCommentDots },
+                { id: "experience", label: "Work Experience", num: "02", icon: FaBriefcase },
+                { id: "projects", label: "Shipped Projects", num: "03", icon: FaFolderOpen },
+                { id: "techstack", label: "Tech Stack & AWS", num: "04", icon: FaCode },
+                { id: "certifications", label: "Certifications", num: "05", icon: FaCertificate },
+                { id: "recommendations", label: "Recommendations", num: "06", icon: FaStar },
+                { id: "courses", label: "Guided Courses", num: "07", icon: FaBook },
+                { id: "book-of-answers", label: "Book of Answers", num: "08", icon: FaMagic },
+                { id: "contact", label: "Get in Touch", num: "09", icon: FaEnvelope },
+              ].map((sec) => {
+                const Icon = sec.icon;
+                const isActive = activeSection === sec.id;
+                return (
+                  <button
+                    key={sec.id}
+                    onClick={() => {
+                      onSelectArtifact(sec.id);
+                      if (window.innerWidth < 1024) onClose();
+                    }}
+                    className={`flex items-center justify-between w-full px-2.5 py-2 rounded-lg text-xs transition-colors text-left group ${
+                      isActive
+                        ? "bg-[#D97757]/15 text-[#D97757] font-semibold"
+                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 truncate">
+                      <Icon
+                        size={13}
+                        className={`shrink-0 transition-colors ${
+                          isActive ? "text-[#D97757]" : "text-[var(--text-muted)] group-hover:text-[#D97757]"
+                        }`}
+                      />
+                      <span className="truncate">{sec.label}</span>
+                    </div>
+                    <span className="claude-font-mono text-[10px] text-[var(--text-muted)] group-hover:text-[var(--text-secondary)] opacity-70">
+                      {sec.num}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
