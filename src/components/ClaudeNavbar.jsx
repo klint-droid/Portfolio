@@ -1,23 +1,17 @@
 import React from "react";
-import { ClaudeStarburst, ClaudeArtifactIcon } from "./ClaudeIcons";
+import { ClaudeStarburst } from "./ClaudeIcons";
 import { 
   FaSun, 
   FaMoon, 
   FaBars, 
   FaDownload, 
   FaPaperPlane, 
-  FaColumns, 
-  FaCommentDots, 
-  FaFolderOpen,
   FaShieldAlt
 } from "react-icons/fa";
-import { IoSparkles } from "react-icons/io5";
 
 const ClaudeNavbar = ({
   theme,
   toggleTheme,
-  viewMode, // 'chat' | 'artifacts' | 'split'
-  setViewMode,
   isSidebarOpen,
   setIsSidebarOpen,
   onOpenTelemetry,
@@ -61,49 +55,6 @@ const ClaudeNavbar = ({
               </span>
             </div>
           </div>
-        </div>
-
-        {/* Center: View Switcher Tabs (Claude AI Style) */}
-        <div className="flex items-center bg-[var(--card-bg)] p-1 rounded-xl border border-[var(--border-color)] shadow-xs shrink-0">
-          <button
-            onClick={() => setViewMode("chat")}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg text-xs font-medium transition-all ${
-              viewMode === "chat"
-                ? "bg-[#D97757] text-white shadow-xs"
-                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            }`}
-          >
-            <FaCommentDots size={12} className="shrink-0" />
-            <span className="hidden sm:inline">Interview</span>
-            <span className="sm:hidden">Chat</span>
-          </button>
-
-          {/* Desktop Split View Mode */}
-          <button
-            onClick={() => setViewMode("split")}
-            className={`hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all ${
-              viewMode === "split"
-                ? "bg-[#D97757] text-white shadow-xs"
-                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            }`}
-            title="Side-by-side Claude Chat & Portfolio Canvas"
-          >
-            <FaColumns size={12} className="shrink-0" />
-            <span>Split View</span>
-          </button>
-
-          <button
-            onClick={() => setViewMode("artifacts")}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg text-xs font-medium transition-all ${
-              viewMode === "artifacts"
-                ? "bg-[#D97757] text-white shadow-xs"
-                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            }`}
-          >
-            <ClaudeArtifactIcon size={12} className="shrink-0" />
-            <span className="hidden sm:inline">Portfolio Canvas</span>
-            <span className="sm:hidden">Canvas</span>
-          </button>
         </div>
 
         {/* Right: Quick Actions & Controls */}

@@ -2,21 +2,12 @@ import React, { useState, useEffect } from "react";
 import ClaudeNavbar from "../components/ClaudeNavbar";
 import ClaudeSidebar from "../components/ClaudeSidebar";
 import ClaudeChat from "../components/ClaudeChat";
-import ClaudeArtifactPanel from "../components/ClaudeArtifactPanel";
 import TelemetryModal from "../components/TelemetryModal";
 import "../App.css";
 
-export default function Layout({ initialOpenRecommend = false }) {
+export default function Layout() {
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
-  const [viewMode, setViewMode] = useState(() => {
-    // Default to split view on ultra-wide desktop screens, or chat on normal screens
-    if (typeof window !== "undefined" && window.innerWidth >= 1280) {
-      return "split";
-    }
-    return "chat";
-  });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeArtifactSection, setActiveArtifactSection] = useState("all");
   const [activePromptQuery, setActivePromptQuery] = useState(null);
   const [isTelemetryOpen, setIsTelemetryOpen] = useState(false);
 
@@ -31,74 +22,34 @@ export default function Layout({ initialOpenRecommend = false }) {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // Keyboard shortcut: Alt+K or Cmd+K to open chat or telemetry, Escape to close sidebar
+  // Keyboard shortcut: Escape to close sidebar
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         setIsSidebarOpen(false);
       }
-      if ((e.altKey || e.metaKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setViewMode((prev) => (prev === "chat" ? "artifacts" : "chat"));
-      }
     };
     const handleOpenTelemetryEvent = () => setIsTelemetryOpen(true);
-    const handleSwitchViewMode = (e) => {
-      if (e.detail) setViewMode(e.detail);
-    };
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("open-telemetry-scan", handleOpenTelemetryEvent);
-    window.addEventListener("switch-view-mode", handleSwitchViewMode);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("open-telemetry-scan", handleOpenTelemetryEvent);
-      window.removeEventListener("switch-view-mode", handleSwitchViewMode);
     };
   }, []);
-
-  // Responsive check on resize
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1024 && viewMode === "split") {
-        setViewMode("chat");
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [viewMode]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
   // Called when user clicks a prompt in the sidebar or prompt chips
-  const handleSelectPrompt = (promptText, sectionId) => {
+  const handleSelectPrompt = (promptText) => {
     setActivePromptQuery(promptText);
-    if (sectionId) {
-      setActiveArtifactSection(sectionId);
-    }
-    // Switch to chat if in artifacts mode
-    if (viewMode === "artifacts") {
-      setViewMode("chat");
-    }
-  };
-
-  // Called when user wants to view a specific artifact directly
-  const handleSelectArtifact = (sectionId) => {
-    setActiveArtifactSection(sectionId);
-    if (viewMode === "chat") {
-      if (window.innerWidth >= 1280) {
-        setViewMode("split");
-      } else {
-        setViewMode("artifacts");
-      }
-    }
   };
 
   const handleStartNewChat = () => {
     setActivePromptQuery("");
-    setViewMode("chat");
   };
 
   return (
@@ -108,8 +59,6 @@ export default function Layout({ initialOpenRecommend = false }) {
       <ClaudeNavbar
         theme={theme}
         toggleTheme={toggleTheme}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
         onOpenTelemetry={() => setIsTelemetryOpen(true)}
@@ -125,72 +74,17 @@ export default function Layout({ initialOpenRecommend = false }) {
           theme={theme}
           toggleTheme={toggleTheme}
           onSelectPrompt={handleSelectPrompt}
-          onSelectArtifact={handleSelectArtifact}
           onStartNewChat={handleStartNewChat}
           onOpenTelemetry={() => setIsTelemetryOpen(true)}
-          activeSection={activeArtifactSection}
         />
 
-        {/* Main Content Area (Dynamic based on View Mode) */}
-        <div className="flex-1 min-w-0 h-full flex flex-col overflow-hidden transition-all duration-300">
-          
-          {/* VIEW 1: CHAT ONLY (Claude Conversation Canvas) */}
-          {viewMode === "chat" && (
-            <main className="flex-1 flex flex-col h-full overflow-hidden">
-              <ClaudeChat
-                onNavigateArtifact={(section) => {
-                  setActiveArtifactSection(section);
-                  if (window.innerWidth >= 1280) {
-                    setViewMode("split");
-                  } else {
-                    setViewMode("artifacts");
-                  }
-                }}
-                activePromptQuery={activePromptQuery}
-                onClearActivePrompt={() => setActivePromptQuery(null)}
-              />
-            </main>
-          )}
-
-          {/* VIEW 2: ARTIFACTS ONLY (Full Traditional Portfolio Canvas) */}
-          {viewMode === "artifacts" && (
-            <main className="flex-1 flex flex-col h-full overflow-hidden">
-              <ClaudeArtifactPanel
-                activeSection={activeArtifactSection}
-                onClose={() => setViewMode("chat")}
-                initialOpenRecommend={initialOpenRecommend}
-                isSplitView={false}
-              />
-            </main>
-          )}
-
-          {/* VIEW 3: SPLIT VIEW (Claude Chat on Left + Artifact Panel on Right) */}
-          {viewMode === "split" && (
-            <div className="flex-1 min-w-0 flex h-full overflow-hidden divide-x divide-[var(--border-color)]">
-              {/* Left Column: Claude Chat */}
-              <div className="w-1/2 min-w-0 flex flex-col overflow-hidden h-full">
-                <ClaudeChat
-                  onNavigateArtifact={(section) => {
-                    setActiveArtifactSection(section);
-                  }}
-                  activePromptQuery={activePromptQuery}
-                  onClearActivePrompt={() => setActivePromptQuery(null)}
-                />
-              </div>
-
-              {/* Right Column: Live Portfolio Canvas Artifact */}
-              <div className="w-1/2 min-w-0 flex flex-col overflow-hidden h-full">
-                <ClaudeArtifactPanel
-                  activeSection={activeArtifactSection}
-                  onClose={() => setViewMode("chat")}
-                  initialOpenRecommend={initialOpenRecommend}
-                  isSplitView={true}
-                />
-              </div>
-            </div>
-          )}
-
-        </div>
+        {/* Main Content Area - Full Interactive Interview Chat */}
+        <main className="flex-1 min-w-0 h-full flex flex-col overflow-hidden">
+          <ClaudeChat
+            activePromptQuery={activePromptQuery}
+            onClearActivePrompt={() => setActivePromptQuery(null)}
+          />
+        </main>
 
       </div>
 

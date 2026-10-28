@@ -28,10 +28,8 @@ const ClaudeSidebar = ({
   theme,
   toggleTheme,
   onSelectPrompt,
-  onSelectArtifact,
   onStartNewChat,
-  onOpenTelemetry,
-  activeSection
+  onOpenTelemetry
 }) => {
   const isDark = theme === "dark";
 
@@ -135,46 +133,39 @@ const ClaudeSidebar = ({
               </div>
             </div>
 
-            {/* Section 2: Portfolio Canvas Sections */}
+            {/* Section 2: Portfolio Topics */}
             <div className="min-w-0">
               <div className="px-2 mb-1.5 flex items-center justify-between">
                 <span className="text-[10px] uppercase font-semibold tracking-wider text-[var(--text-muted)] claude-font-mono">
-                  Canvas Artifacts
+                  Portfolio Topics
                 </span>
               </div>
               <div className="space-y-0.5 min-w-0">
                 {[
-                  { id: "about", label: "About Klint", num: "01", icon: FaCommentDots },
-                  { id: "experience", label: "Work Experience", num: "02", icon: FaBriefcase },
-                  { id: "projects", label: "Shipped Projects", num: "03", icon: FaFolderOpen },
-                  { id: "techstack", label: "Tech Stack & AWS", num: "04", icon: FaCode },
-                  { id: "certifications", label: "Certifications", num: "05", icon: FaCertificate },
-                  { id: "recommendations", label: "Recommendations", num: "06", icon: FaStar },
-                  { id: "courses", label: "Guided Courses", num: "07", icon: FaBook },
-                  { id: "book-of-answers", label: "Book of Answers", num: "08", icon: FaMagic },
-                  { id: "contact", label: "Get in Touch", num: "09", icon: FaEnvelope },
+                  { id: "about", label: "About Klint", num: "01", icon: FaCommentDots, prompt: "Tell me about Klint Morales Ruales and his developer background" },
+                  { id: "experience", label: "Work Experience", num: "02", icon: FaBriefcase, prompt: "What is Klint's work experience, Kyocera role, and career milestones?" },
+                  { id: "projects", label: "Shipped Projects", num: "03", icon: FaFolderOpen, prompt: "What kind of projects has Klint built and shipped?" },
+                  { id: "techstack", label: "Tech Stack & AWS", num: "04", icon: FaCode, prompt: "What technologies, programming languages, and AWS cloud stack does Klint work with?" },
+                  { id: "certifications", label: "Certifications", num: "05", icon: FaCertificate, prompt: "What certifications, badges, and credentials does Klint hold?" },
+                  { id: "recommendations", label: "Recommendations", num: "06", icon: FaStar, prompt: "What do colleagues and managers say in recommendations for Klint?" },
+                  { id: "courses", label: "Guided Courses", num: "07", icon: FaBook, prompt: "Tell me about the courses Klint has taken or created" },
+                  { id: "book-of-answers", label: "Book of Answers", num: "08", icon: FaMagic, prompt: "Can you answer some frequently asked questions about Klint?" },
+                  { id: "contact", label: "Get in Touch", num: "09", icon: FaEnvelope, prompt: "How can I contact Klint or download his official resume?" },
                 ].map((sec) => {
                   const Icon = sec.icon;
-                  const isActive = activeSection === sec.id;
                   return (
                     <button
                       key={sec.id}
                       onClick={() => {
-                        onSelectArtifact(sec.id);
+                        onSelectPrompt(sec.prompt, sec.id);
                         if (window.innerWidth < 1024) onClose();
                       }}
-                      className={`flex items-center justify-between w-full min-w-0 px-2.5 py-2 rounded-lg text-xs transition-colors text-left group ${
-                        isActive
-                          ? "bg-[#D97757]/15 text-[#D97757] font-semibold"
-                          : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)]"
-                      }`}
+                      className="flex items-center justify-between w-full min-w-0 px-2.5 py-2 rounded-lg text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)] transition-colors text-left group"
                     >
                       <div className="flex items-center gap-2.5 min-w-0 truncate flex-1">
                         <Icon
                           size={13}
-                          className={`shrink-0 transition-colors ${
-                            isActive ? "text-[#D97757]" : "text-[var(--text-muted)] group-hover:text-[#D97757]"
-                          }`}
+                          className="shrink-0 transition-colors text-[var(--text-muted)] group-hover:text-[#D97757]"
                         />
                         <span className="truncate">{sec.label}</span>
                       </div>

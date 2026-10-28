@@ -115,7 +115,7 @@ export const STARTER_QUESTIONS = [
   }
 ];
 
-export const getKlintResponse = (query, onNavigateArtifact) => {
+export const getKlintResponse = (query) => {
   const text = query.trim().toLowerCase();
 
   // 1. RECRUITER 2-MINUTE BRIEF
@@ -130,7 +130,7 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
       ],
       quickActions: [
         { label: "Download Resume (PDF)", link: "/Klint_Ruales_Resume.pdf" },
-        { label: "View Portfolio Canvas", action: () => onNavigateArtifact && onNavigateArtifact("all") },
+        { label: "Ask about Shipped Projects", prompt: "What kind of projects has Klint built and shipped?" },
         { label: "Email Klint (klintruales11@gmail.com)", link: "mailto:klintruales11@gmail.com" }
       ]
     };
@@ -148,7 +148,7 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
       ],
       quickActions: [
         { label: "Try Friend Quiz (Viral Demo)", link: "/friend-quiz" },
-        { label: "Inspect Tech Stack in Canvas", action: () => onNavigateArtifact && onNavigateArtifact("techstack") },
+        { label: "Explore 3D Stack Cosmos", link: "/3d" },
         { label: "Open Browser Telemetry Scanner", action: () => window.dispatchEvent(new CustomEvent("open-telemetry-scan")) }
       ]
     };
@@ -165,8 +165,8 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
         "What projects showcase these technologies?"
       ],
       quickActions: [
-        { label: "Inspect Tech Stack in Canvas", action: () => onNavigateArtifact && onNavigateArtifact("techstack") },
         { label: "Explore 3D Stack Cosmos", link: "/3d" },
+        { label: "View All Projects Page", link: "/all-projects" },
         { label: "View All Tech Stack Page", link: "/all-techstack" }
       ]
     };
@@ -183,7 +183,7 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
         "How can I contact Klint or download his CV?"
       ],
       quickActions: [
-        { label: "Read Verified Recommendations", action: () => onNavigateArtifact && onNavigateArtifact("recommendations") },
+        { label: "Ask about Recommendations", prompt: "What do colleagues say about Klint in their recommendations?" },
         { label: "Download Official Resume", link: "/Klint_Ruales_Resume.pdf" },
         { label: "Send Email (klintruales11@gmail.com)", link: "mailto:klintruales11@gmail.com" }
       ]
@@ -201,9 +201,9 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
         "Where can I see his GitHub repositories?"
       ],
       quickActions: [
-        { label: "View Projects in Artifact Panel", action: () => onNavigateArtifact && onNavigateArtifact("projects") },
+        { label: "View All Projects Page", link: "/all-projects" },
         { label: "Try Interactive Friend Quiz", link: "/friend-quiz" },
-        { label: "View All Projects Page", link: "/all-projects" }
+        { label: "DoseDay Mobile App Demo", link: "https://getdoseday.vercel.app" }
       ]
     };
   }
@@ -219,8 +219,9 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
         "Tell me about the React Course he built"
       ],
       quickActions: [
-        { label: "Inspect Tech Stack in Canvas", action: () => onNavigateArtifact && onNavigateArtifact("techstack") },
-        { label: "Explore Guided React Course", link: "/react-course" }
+        { label: "Explore Guided React Course", link: "/react-course" },
+        { label: "Try Interactive Friend Quiz", link: "/friend-quiz" },
+        { label: "View All Shipped Projects", link: "/all-projects" }
       ]
     };
   }
@@ -236,8 +237,8 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
         "What are his certifications in cloud & automation?"
       ],
       quickActions: [
-        { label: "View Cloud & DevOps Stack", action: () => onNavigateArtifact && onNavigateArtifact("techstack") },
-        { label: "View 3D Tech Cosmos", link: "/3d" }
+        { label: "View 3D Tech Cosmos", link: "/3d" },
+        { label: "View All Shipped Projects", link: "/all-projects" }
       ]
     };
   }
@@ -253,7 +254,7 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
         "Why should I consider him for a full-stack role?"
       ],
       quickActions: [
-        { label: "View Experience Timeline in Canvas", action: () => onNavigateArtifact && onNavigateArtifact("experience") },
+        { label: "Ask about Shipped Projects", prompt: "What kind of projects has Klint built and shipped?" },
         { label: "Download Official CV", link: "/Klint_Ruales_Resume.pdf" }
       ]
     };
@@ -270,7 +271,6 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
         "How strong is his React knowledge?"
       ],
       quickActions: [
-        { label: "View Certifications in Canvas", action: () => onNavigateArtifact && onNavigateArtifact("certifications") },
         { label: "View All Certifications Page", link: "/all-certifications" },
         { label: "View Guided React Course", link: "/react-course" }
       ]
@@ -288,8 +288,8 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
         "How can I get in touch with him?"
       ],
       quickActions: [
-        { label: "View Recommendations Carousel", action: () => onNavigateArtifact && onNavigateArtifact("recommendations") },
-        { label: "Write a Recommendation", link: "/recommend" }
+        { label: "Write a Recommendation", link: "/recommend" },
+        { label: "Email Klint directly", link: "mailto:klintruales11@gmail.com" }
       ]
     };
   }
@@ -306,8 +306,7 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
       ],
       quickActions: [
         { label: "Download Resume (PDF)", link: "/Klint_Ruales_Resume.pdf" },
-        { label: "Send Email (klintruales11@gmail.com)", link: "mailto:klintruales11@gmail.com" },
-        { label: "View Contact Section in Canvas", action: () => onNavigateArtifact && onNavigateArtifact("contact") }
+        { label: "Send Email (klintruales11@gmail.com)", link: "mailto:klintruales11@gmail.com" }
       ]
     };
   }
@@ -315,7 +314,7 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
   // 12. PHILOSOPHY BEHIND KLINTGPT & MARUFGPT
   if (text.includes("maruf") || text.includes("claude") || text.includes("interview") || text.includes("concept") || text.includes("idea") || text.includes("why ai") || text.includes("gpt")) {
     return {
-      text: `### 💡 The Philosophy Behind KlintGPT\n\nMost developer portfolios work identically:\n> *Open website → Read About Me → Browse Projects → Check Skills → Download CV → Leave.*\n\nInspired by **MarufGPT** and the clean, thoughtful conversational interface of **Anthropic's Claude AI**, Klint built this experience so recruiters and hiring managers can **interview the portfolio directly**:\n\n- **A CV tells you what an engineer did.**\n- **A portfolio shows what they built.**\n- **KlintGPT allows you to have an intelligent conversation about both.**\n\nTraditional UI isn't replaced — you can switch between this conversational stream and the **Portfolio Artifacts Panel** at any time on desktop and mobile!`,
+      text: `### 💡 The Philosophy Behind KlintGPT\n\nMost developer portfolios work identically:\n> *Open website → Read About Me → Browse Projects → Check Skills → Download CV → Leave.*\n\nInspired by **MarufGPT** and the clean, thoughtful conversational interface of **Anthropic's Claude AI**, Klint built this experience so recruiters and hiring managers can **interview the portfolio directly**:\n\n- **A CV tells you what an engineer did.**\n- **A portfolio shows what they built.**\n- **KlintGPT allows you to have an intelligent conversation about both.**`,
       artifactSection: "about",
       followUps: [
         "What kind of projects has Klint worked on?",
@@ -323,7 +322,7 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
         "What technologies does he work with?"
       ],
       quickActions: [
-        { label: "Explore Portfolio Artifacts", action: () => onNavigateArtifact && onNavigateArtifact("projects") },
+        { label: "Ask about Shipped Projects", prompt: "What kind of projects has Klint built and shipped?" },
         { label: "Download Resume (PDF)", link: "/Klint_Ruales_Resume.pdf" }
       ]
     };
@@ -355,9 +354,9 @@ export const getKlintResponse = (query, onNavigateArtifact) => {
       "Download his CV (PDF)"
     ],
     quickActions: [
-      { label: "Explore Projects in Canvas", action: () => onNavigateArtifact && onNavigateArtifact("projects") },
-      { label: "Download Resume", link: "/Klint_Ruales_Resume.pdf" },
-      { label: "Contact Klint", action: () => onNavigateArtifact && onNavigateArtifact("contact") }
+      { label: "Ask about Shipped Projects", prompt: "What kind of projects has Klint built and shipped?" },
+      { label: "Download Resume (PDF)", link: "/Klint_Ruales_Resume.pdf" },
+      { label: "Email Klint (klintruales11@gmail.com)", link: "mailto:klintruales11@gmail.com" }
     ]
   };
 };

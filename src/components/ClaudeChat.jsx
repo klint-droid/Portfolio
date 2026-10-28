@@ -26,7 +26,6 @@ const AVAILABLE_MODELS = [
 ];
 
 const ClaudeChat = ({
-  onNavigateArtifact,
   activePromptQuery,
   onClearActivePrompt
 }) => {
@@ -111,7 +110,7 @@ const ClaudeChat = ({
 
     // Simulate conversational intelligence
     setTimeout(() => {
-      const responseData = getKlintResponse(text, onNavigateArtifact);
+      const responseData = getKlintResponse(text);
       const botMessage = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
@@ -535,20 +534,28 @@ const ClaudeChat = ({
                       {msg.quickActions && msg.quickActions.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-[var(--border-subtle)]">
                           {msg.quickActions.map((qa, qIdx) => (
-                            qa.action ? (
+                            qa.prompt ? (
+                              <button
+                                key={qIdx}
+                                onClick={() => handleSendMessage(qa.prompt)}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[#D97757] hover:bg-[var(--card-hover)] text-xs text-[var(--text-primary)] font-medium transition-all shadow-xs"
+                              >
+                                <IoSparkles size={11} className="text-[#D97757]" />
+                                <span>{qa.label}</span>
+                              </button>
+                            ) : qa.action ? (
                               <button
                                 key={qIdx}
                                 onClick={qa.action}
                                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[#D97757] hover:bg-[var(--card-hover)] text-xs text-[var(--text-primary)] font-medium transition-all shadow-xs"
                               >
-                                <ClaudeArtifactIcon size={12} className="text-[#D97757]" />
                                 <span>{qa.label}</span>
                               </button>
                             ) : (
                               <a
                                 key={qIdx}
                                 href={qa.link}
-                                target={qa.link.startsWith("http") ? "_blank" : "_self"}
+                                target={qa.link?.startsWith("http") ? "_blank" : "_self"}
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[#D97757] hover:bg-[var(--card-hover)] text-xs text-[var(--text-primary)] font-medium transition-all shadow-xs"
                               >
@@ -560,7 +567,7 @@ const ClaudeChat = ({
                         </div>
                       )}
 
-                      {/* Assistant Footer Controls (Copy, Text-to-speech, Artifact link) */}
+                      {/* Assistant Footer Controls (Copy, Text-to-speech) */}
                       <div className="flex items-center flex-wrap gap-3 mt-3 pt-2 text-xs text-[var(--text-muted)]">
                         {/* Copy Button */}
                         <button
@@ -601,17 +608,6 @@ const ClaudeChat = ({
                             </>
                           )}
                         </button>
-
-                        {/* Artifact Canvas Link */}
-                        {msg.artifactSection && (
-                          <button
-                            onClick={() => onNavigateArtifact && onNavigateArtifact(msg.artifactSection)}
-                            className="flex items-center gap-1 text-[#D97757] hover:underline ml-auto"
-                          >
-                            <ClaudeArtifactIcon size={11} />
-                            <span>Inspect {msg.artifactSection} in Canvas</span>
-                          </button>
-                        )}
                       </div>
 
                       {/* Follow-up Prompts */}
