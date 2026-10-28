@@ -168,7 +168,7 @@ export default function Layout({ initialOpenRecommend = false }) {
           {viewMode === "split" && (
             <div className="flex-1 min-w-0 flex h-full overflow-hidden divide-x divide-[var(--border-color)]">
               {/* Left Column: Claude Chat */}
-              <div className="w-1/2 flex flex-col overflow-hidden h-full">
+              <div className="w-1/2 min-w-0 flex flex-col overflow-hidden h-full">
                 <ClaudeChat
                   onNavigateArtifact={(section) => {
                     setActiveArtifactSection(section);
@@ -179,7 +179,7 @@ export default function Layout({ initialOpenRecommend = false }) {
               </div>
 
               {/* Right Column: Live Portfolio Canvas Artifact */}
-              <div className="w-1/2 flex flex-col overflow-hidden h-full">
+              <div className="w-1/2 min-w-0 flex flex-col overflow-hidden h-full">
                 <ClaudeArtifactPanel
                   activeSection={activeArtifactSection}
                   onClose={() => setViewMode("chat")}

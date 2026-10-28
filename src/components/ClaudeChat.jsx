@@ -297,7 +297,7 @@ const ClaudeChat = ({
   const isConversationEmpty = messages.length === 0;
 
   return (
-    <div className="flex flex-col h-full w-full max-w-4xl mx-auto px-3 sm:px-6 relative">
+    <div className="flex flex-col h-full w-full max-w-4xl mx-auto px-3 sm:px-6 relative min-w-0 overflow-hidden">
       
       {/* CASE 1: WELCOME SCREEN (When chat is empty) */}
       {isConversationEmpty && (

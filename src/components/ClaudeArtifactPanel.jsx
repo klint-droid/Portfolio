@@ -80,7 +80,7 @@ const ClaudeArtifactPanel = ({
   ];
 
   return (
-    <div className="flex flex-col h-full w-full bg-[var(--bg-color)] border-l border-[var(--border-color)] overflow-hidden">
+    <div className="flex flex-col h-full w-full bg-[var(--bg-color)] min-w-0 overflow-hidden">
       
       {/* Claude Artifact Top Header */}
       <div className="p-3 border-b border-[var(--border-color)] bg-[var(--card-bg)] flex items-center justify-between shrink-0">

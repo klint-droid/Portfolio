@@ -27,13 +27,13 @@ const ClaudeNavbar = ({
 
   return (
     <header className="sticky top-0 z-30 w-full border-b border-[var(--border-color)] bg-[var(--bg-color)]/90 backdrop-blur-md transition-colors duration-200">
-      <div className="flex h-14 items-center justify-between px-3 sm:px-5 max-w-[1920px] mx-auto">
+      <div className="flex h-14 items-center justify-between px-2.5 sm:px-5 max-w-[1920px] mx-auto gap-2">
         
         {/* Left: Sidebar Toggle & Claude Brand */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className={`p-2 rounded-lg transition-colors flex items-center justify-center ${
+            className={`p-2 rounded-lg transition-colors flex items-center justify-center shrink-0 ${
               isSidebarOpen 
                 ? "bg-[#D97757]/15 text-[#D97757] ring-1 ring-[#D97757]/30" 
                 : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)]"
@@ -41,22 +41,22 @@ const ClaudeNavbar = ({
             title={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
             aria-label="Toggle sidebar"
           >
-            <FaBars size={16} />
+            <FaBars size={15} />
           </button>
 
           <div 
             onClick={onOpenNewChat}
-            className="flex items-center gap-2 cursor-pointer group select-none"
+            className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group select-none shrink-0"
             title="Start new conversation"
           >
-            <div className="w-7 h-7 rounded-lg bg-[#D97757]/10 flex items-center justify-center text-[#D97757] group-hover:bg-[#D97757]/20 transition-colors">
-              <ClaudeStarburst size={18} />
+            <div className="w-7 h-7 rounded-lg bg-[#D97757]/10 flex items-center justify-center text-[#D97757] group-hover:bg-[#D97757]/20 transition-colors shrink-0">
+              <ClaudeStarburst size={17} />
             </div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="claude-font-serif text-lg font-semibold tracking-tight text-[var(--text-primary)]">
+            <div className="flex items-baseline gap-1">
+              <span className="claude-font-serif text-base sm:text-lg font-semibold tracking-tight text-[var(--text-primary)]">
                 KlintGPT
               </span>
-              <span className="hidden sm:inline-block claude-font-mono text-[10px] px-1.5 py-0.2 rounded bg-[var(--border-color)] text-[var(--text-muted)] font-medium">
+              <span className="hidden md:inline-block claude-font-mono text-[10px] px-1.5 py-0.2 rounded bg-[var(--border-color)] text-[var(--text-muted)] font-medium">
                 v2.6
               </span>
             </div>
@@ -64,18 +64,18 @@ const ClaudeNavbar = ({
         </div>
 
         {/* Center: View Switcher Tabs (Claude AI Style) */}
-        <div className="flex items-center bg-[var(--card-bg)] p-1 rounded-xl border border-[var(--border-color)] shadow-sm">
+        <div className="flex items-center bg-[var(--card-bg)] p-1 rounded-xl border border-[var(--border-color)] shadow-xs shrink-0">
           <button
             onClick={() => setViewMode("chat")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg text-xs font-medium transition-all ${
               viewMode === "chat"
-                ? "bg-[#D97757] text-white shadow-sm"
+                ? "bg-[#D97757] text-white shadow-xs"
                 : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
-            <FaCommentDots size={12} />
-            <span className="hidden xs:inline">Interview</span>
-            <span className="xs:hidden">Chat</span>
+            <FaCommentDots size={12} className="shrink-0" />
+            <span className="hidden sm:inline">Interview</span>
+            <span className="sm:hidden">Chat</span>
           </button>
 
           {/* Desktop Split View Mode */}
@@ -83,35 +83,35 @@ const ClaudeNavbar = ({
             onClick={() => setViewMode("split")}
             className={`hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all ${
               viewMode === "split"
-                ? "bg-[#D97757] text-white shadow-sm"
+                ? "bg-[#D97757] text-white shadow-xs"
                 : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
             title="Side-by-side Claude Chat & Portfolio Canvas"
           >
-            <FaColumns size={12} />
+            <FaColumns size={12} className="shrink-0" />
             <span>Split View</span>
           </button>
 
           <button
             onClick={() => setViewMode("artifacts")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg text-xs font-medium transition-all ${
               viewMode === "artifacts"
-                ? "bg-[#D97757] text-white shadow-sm"
+                ? "bg-[#D97757] text-white shadow-xs"
                 : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
-            <ClaudeArtifactIcon size={13} />
-            <span className="hidden xs:inline">Portfolio Canvas</span>
-            <span className="xs:hidden">Canvas</span>
+            <ClaudeArtifactIcon size={12} className="shrink-0" />
+            <span className="hidden sm:inline">Portfolio Canvas</span>
+            <span className="sm:hidden">Canvas</span>
           </button>
         </div>
 
         {/* Right: Quick Actions & Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Security Telemetry Audit Button */}
           <button
             onClick={onOpenTelemetry}
-            className="hidden md:flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)] claude-font-mono text-[11px] transition-colors"
+            className="hidden lg:flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)] claude-font-mono text-[11px] transition-colors shrink-0"
             title="Browser Security & Telemetry Audit"
           >
             <FaShieldAlt className="text-emerald-500" size={11} />
@@ -122,7 +122,7 @@ const ClaudeNavbar = ({
           <a
             href="/Klint_Ruales_Resume.pdf"
             download="Klint_Morales_Ruales_Resume.pdf"
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[#D97757] text-xs font-medium transition-colors"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[#D97757] text-xs font-medium transition-colors shrink-0"
           >
             <FaDownload size={11} />
             <span>CV</span>
@@ -131,7 +131,7 @@ const ClaudeNavbar = ({
           {/* Hire Me / Contact CTA */}
           <a
             href="mailto:klintruales11@gmail.com"
-            className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#D97757] hover:bg-[#C26547] text-white text-xs font-medium shadow-sm transition-all"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg bg-[#D97757] hover:bg-[#C26547] text-white text-xs font-medium shadow-xs transition-all shrink-0"
           >
             <FaPaperPlane size={10} />
             <span>Hire Me</span>
@@ -140,7 +140,7 @@ const ClaudeNavbar = ({
           {/* Theme Switcher */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)] transition-colors"
+            className="p-1.5 sm:p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)] transition-colors shrink-0"
             title={isDark ? "Switch to Claude Light Theme" : "Switch to Claude Dark Theme"}
             aria-label="Toggle theme"
           >
