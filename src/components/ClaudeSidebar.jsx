@@ -63,43 +63,47 @@ const ClaudeSidebar = ({
       {isOpen && (
         <div 
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity duration-200"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity duration-200"
           aria-hidden="true"
         />
       )}
 
       {/* Claude Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 sm:w-80 bg-[var(--sidebar-bg)] border-r border-[var(--border-color)] flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
+        className={`bg-[var(--sidebar-bg)] border-r border-[var(--border-color)] transition-all duration-300 ease-in-out shrink-0 ${
+          isOpen
+            ? "fixed inset-y-0 left-0 z-50 w-72 sm:w-80 shadow-2xl lg:shadow-none lg:static lg:w-72 lg:sm:w-80 lg:h-full lg:opacity-100 lg:pointer-events-auto"
+            : "fixed inset-y-0 left-0 z-50 w-72 sm:w-80 -translate-x-full pointer-events-none lg:static lg:w-0 lg:translate-x-0 lg:opacity-0 lg:border-none lg:pointer-events-none lg:overflow-hidden"
         }`}
       >
-        {/* Top Header & New Chat Button */}
-        <div className="p-3.5 border-b border-[var(--border-color)] flex flex-col gap-2.5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#D97757]/15 flex items-center justify-center text-[#D97757]">
-                <ClaudeStarburst size={20} />
+        <div className="w-72 sm:w-80 h-full flex flex-col justify-between overflow-hidden">
+          {/* Top Header & New Chat Button */}
+          <div className="p-3.5 border-b border-[var(--border-color)] flex flex-col gap-2.5 shrink-0">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-[#D97757]/15 flex items-center justify-center text-[#D97757]">
+                  <ClaudeStarburst size={20} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="claude-font-serif text-lg font-semibold tracking-tight text-[var(--text-primary)] leading-tight">
+                    KlintGPT
+                  </span>
+                  <span className="text-[11px] text-[var(--text-muted)] claude-font-mono">
+                    Personal AI Portfolio
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="claude-font-serif text-lg font-semibold tracking-tight text-[var(--text-primary)] leading-tight">
-                  KlintGPT
-                </span>
-                <span className="text-[11px] text-[var(--text-muted)] claude-font-mono">
-                  Personal AI Portfolio
-                </span>
-              </div>
-            </div>
 
-            {/* Mobile Close Button */}
-            <button
-              onClick={onClose}
-              className="lg:hidden p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)] transition-colors"
-              aria-label="Close menu"
-            >
-              <FaTimes size={16} />
-            </button>
-          </div>
+              {/* Close Button (Visible and working on all screens) */}
+              <button
+                onClick={onClose}
+                className="p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)] transition-colors"
+                title="Collapse sidebar"
+                aria-label="Collapse sidebar"
+              >
+                <FaTimes size={15} />
+              </button>
+            </div>
 
           {/* New Chat Button (Claude AI Style) */}
           <button
@@ -280,8 +284,8 @@ const ClaudeSidebar = ({
             <span>Download Official Resume</span>
           </a>
         </div>
-
-      </aside>
+      </div>
+    </aside>
     </>
   );
 };

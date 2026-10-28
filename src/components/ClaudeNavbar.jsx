@@ -33,11 +33,15 @@ const ClaudeNavbar = ({
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)] transition-colors"
+            className={`p-2 rounded-lg transition-colors flex items-center justify-center ${
+              isSidebarOpen 
+                ? "bg-[#D97757]/15 text-[#D97757] ring-1 ring-[#D97757]/30" 
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--card-hover)]"
+            }`}
             title={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
             aria-label="Toggle sidebar"
           >
-            <FaBars size={15} />
+            <FaBars size={16} />
           </button>
 
           <div 

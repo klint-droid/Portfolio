@@ -665,8 +665,8 @@ const ClaudeChat = ({
 
       {/* PERSISTENT FLOATING BOTTOM PROMPT BAR (When conversation is active) */}
       {!isConversationEmpty && (
-        <div className="fixed bottom-0 left-0 right-0 z-20 pointer-events-none pb-3 sm:pb-5 px-3 sm:px-6">
-          <div className="max-w-3xl mx-auto pointer-events-auto">
+        <div className="sticky bottom-0 z-20 w-full pt-2 pb-3 sm:pb-4 bg-gradient-to-t from-[var(--bg-color)] via-[var(--bg-color)]/90 to-transparent">
+          <div className="w-full max-w-3xl mx-auto">
             
             {/* Horizontal quick prompts slider */}
             <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-none mb-1">

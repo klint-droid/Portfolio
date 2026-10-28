@@ -31,9 +31,12 @@ export default function Layout({ initialOpenRecommend = false }) {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // Keyboard shortcut: Alt+K or Cmd+K to open chat or telemetry
+  // Keyboard shortcut: Alt+K or Cmd+K to open chat or telemetry, Escape to close sidebar
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setIsSidebarOpen(false);
+      }
       if ((e.altKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setViewMode((prev) => (prev === "chat" ? "artifacts" : "chat"));
@@ -113,7 +116,7 @@ export default function Layout({ initialOpenRecommend = false }) {
         onOpenNewChat={handleStartNewChat}
       />
 
-      <div className="flex-1 flex w-full relative overflow-hidden">
+      <div className="flex-1 flex w-full h-[calc(100vh-3.5rem)] relative overflow-hidden">
         
         {/* Left Collapsible Claude Sidebar */}
         <ClaudeSidebar
@@ -129,11 +132,11 @@ export default function Layout({ initialOpenRecommend = false }) {
         />
 
         {/* Main Content Area (Dynamic based on View Mode) */}
-        <div className={`flex-1 flex overflow-hidden w-full transition-all duration-300 ${isSidebarOpen ? "lg:pl-80" : "lg:pl-0"}`}>
+        <div className="flex-1 flex overflow-hidden w-full h-full min-w-0 transition-all duration-300">
           
           {/* VIEW 1: CHAT ONLY (Claude Conversation Canvas) */}
           {viewMode === "chat" && (
-            <main className="flex-1 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden">
+            <main className="flex-1 flex flex-col h-full overflow-hidden w-full">
               <ClaudeChat
                 onNavigateArtifact={(section) => {
                   setActiveArtifactSection(section);
@@ -151,7 +154,7 @@ export default function Layout({ initialOpenRecommend = false }) {
 
           {/* VIEW 2: ARTIFACTS ONLY (Full Traditional Portfolio Canvas) */}
           {viewMode === "artifacts" && (
-            <main className="flex-1 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden">
+            <main className="flex-1 flex flex-col h-full overflow-hidden w-full">
               <ClaudeArtifactPanel
                 activeSection={activeArtifactSection}
                 onClose={() => setViewMode("chat")}
@@ -163,9 +166,9 @@ export default function Layout({ initialOpenRecommend = false }) {
 
           {/* VIEW 3: SPLIT VIEW (Claude Chat on Left + Artifact Panel on Right) */}
           {viewMode === "split" && (
-            <div className="flex-1 flex h-[calc(100vh-3.5rem)] overflow-hidden divide-x divide-[var(--border-color)]">
+            <div className="flex-1 flex h-full overflow-hidden divide-x divide-[var(--border-color)] w-full">
               {/* Left Column: Claude Chat */}
-              <div className="w-1/2 flex flex-col overflow-hidden">
+              <div className="w-1/2 flex flex-col overflow-hidden h-full">
                 <ClaudeChat
                   onNavigateArtifact={(section) => {
                     setActiveArtifactSection(section);
@@ -176,7 +179,7 @@ export default function Layout({ initialOpenRecommend = false }) {
               </div>
 
               {/* Right Column: Live Portfolio Canvas Artifact */}
-              <div className="w-1/2 flex flex-col overflow-hidden">
+              <div className="w-1/2 flex flex-col overflow-hidden h-full">
                 <ClaudeArtifactPanel
                   activeSection={activeArtifactSection}
                   onClose={() => setViewMode("chat")}
