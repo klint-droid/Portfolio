@@ -93,39 +93,43 @@ const ProjectLists = () => {
             <div className="w-full">
                 <div className="flex items-center gap-4 mb-8">
                     <Link to="/" 
-                    className="p-2 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-full hover:border-[var(--text-secondary)] transition-colors">
+                    className="p-2 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-full hover:border-[#D97757] text-[var(--text-secondary)] hover:text-[#D97757] transition-colors">
                         <FaArrowLeft className="text-sm"/>
                     </Link>
-                    <div className="flex items-center gap-2">
-                        <FaFolderOpen className="text-2xl"/>
-                        <h2 className="text-lg font-bold">Projects</h2>
+                    <div className="flex items-center gap-2.5">
+                        <FaFolderOpen className="text-xl text-[#D97757]"/>
+                        <h2 className="claude-font-serif text-2xl font-semibold text-[var(--text-primary)]">All Shipped Projects</h2>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {projects.map((proj, index) => (
                         <div
                         key={index}
-                        className="group flex flex-col p-4 bg-[var(--bg-color)] rounded-xl border border-[var(--border-color)] hover:border-[var(--text-secondary)] transition-all animate-fade-in-up"
-                        style={{ animationDelay: `${index * 150}ms` }}
+                        className="group flex flex-col justify-between p-5 bg-[var(--card-bg)] rounded-xl border border-[var(--border-color)] hover:border-[#D97757]/60 hover:bg-[var(--card-hover)] transition-all animate-fade-in-up shadow-xs"
+                        style={{ animationDelay: `${index * 80}ms` }}
                         >
-                            <h3 className="text-sm font-bold group-hover:text-blue-500 transition-colors">
-                                {proj.name}
-                            </h3>
-                            <p className="text-xs mt-1 opacity-70 mb-3">
-                                {proj.description}
-                            </p>
-                            <p className="text-xs text-yellow-600 mt-1 opacity-70 mb-3">
-                                {proj.tech}
-                            </p>
-                            {proj.isInternal ? (
-                                <Link to={proj.link} className="text-xs text-blue-500 mt-auto hover:underline w-fit">
-                                    View Project
-                                </Link>
-                            ) : (
-                                <a href={proj.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 mt-auto hover:underline w-fit">
-                                    View Project
-                                </a>
-                            )}
+                            <div>
+                                <h3 className="claude-font-serif text-base font-semibold text-[var(--text-primary)] group-hover:text-[#D97757] transition-colors">
+                                    {proj.name}
+                                </h3>
+                                <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed mb-3">
+                                    {proj.description}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="claude-font-mono text-[11px] text-[#D97757] mb-3">
+                                    {proj.tech}
+                                </p>
+                                {proj.isInternal ? (
+                                    <Link to={proj.link} className="claude-font-mono text-xs font-semibold text-[#D97757] hover:underline inline-flex items-center gap-1">
+                                        <span>View Project</span> →
+                                    </Link>
+                                ) : (
+                                    <a href={proj.link} target="_blank" rel="noopener noreferrer" className="claude-font-mono text-xs font-semibold text-[#D97757] hover:underline inline-flex items-center gap-1">
+                                        <span>View Project</span> →
+                                    </a>
+                                )}
+                            </div>
                         </div>
                     ))}
                 </div>

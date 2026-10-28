@@ -20,49 +20,49 @@ import AWSRdsIcon from 'react-aws-icons/dist/aws/logo/RDS';
 
 const TechStack = () => {
   const Badge = ({ icon: IconBase, name, colorClass, isAwsIcon }) => (
-    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#18181b] hover:border-blue-500/50 hover:bg-gray-100 dark:hover:bg-[#1c1c21] transition-all cursor-default">
+    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--sidebar-bg)] hover:border-[#D97757]/60 hover:bg-[var(--card-hover)] transition-all cursor-default shadow-2xs">
       {isAwsIcon ? (
         <IconBase size={14} />
       ) : (
         <IconBase className={`${colorClass} text-sm`} />
       )}
-      <span className="font-mono text-xs font-medium text-gray-800 dark:text-gray-200">{name}</span>
+      <span className="claude-font-mono text-xs font-medium text-[var(--text-primary)]">{name}</span>
     </div>
   );
 
   return (
-    <section id="techstack" className="scroll-mt-20 bento-card">
+    <section id="techstack" className="scroll-mt-20 bento-card bg-[var(--card-bg)] border-[var(--border-color)]">
       <div className="bento-card-header">
         <div className="bento-card-title">
-          <span className="section-number">04 // TECH STACK</span>
+          <span className="section-number claude-font-mono text-xs text-[#D97757]">04 // TECH STACK</span>
         </div>
         <Link
           to="/3d"
-          className="font-mono text-xs text-gray-500 hover:text-blue-500 flex items-center gap-1.5 transition-colors group"
+          className="claude-font-mono text-xs text-[var(--text-muted)] hover:text-[#D97757] flex items-center gap-1.5 transition-colors group"
         >
-          <span>3D stack view</span>
+          <span>3D stack cosmos</span>
           <FaArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
 
       <div className="flex flex-col gap-5">
         <div>
-          <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2.5">
-            Frontend
+          <h3 className="claude-font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2.5">
+            Frontend Engineering
           </h3>
           <div className="flex flex-wrap gap-2">
-            <Badge icon={SiHtml5} name="HTML" colorClass="text-orange-500" />
-            <Badge icon={SiCss3} name="CSS" colorClass="text-blue-500" />
+            <Badge icon={SiHtml5} name="HTML5" colorClass="text-orange-500" />
+            <Badge icon={SiCss3} name="CSS3" colorClass="text-blue-500" />
             <Badge icon={SiJavascript} name="JavaScript" colorClass="text-amber-400" />
             <Badge icon={SiTypescript} name="TypeScript" colorClass="text-blue-500" />
-            <Badge icon={SiReact} name="React" colorClass="text-cyan-400" />
+            <Badge icon={SiReact} name="React 19" colorClass="text-cyan-400" />
             <Badge icon={SiTailwindcss} name="Tailwind CSS" colorClass="text-sky-400" />
           </div>
         </div>
 
         <div>
-          <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2.5">
-            Backend & Database
+          <h3 className="claude-font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2.5">
+            Backend & Databases
           </h3>
           <div className="flex flex-wrap gap-2">
             <Badge icon={FaNodeJs} name="Node.js" colorClass="text-emerald-500" />
@@ -78,13 +78,13 @@ const TechStack = () => {
         </div>
 
         <div>
-          <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2.5">
-            Tools & DevOps
+          <h3 className="claude-font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2.5">
+            Developer Tools & DevOps
           </h3>
           <div className="flex flex-wrap gap-2">
             <Badge icon={VscVscode} name="VS Code" colorClass="text-blue-500" />
             <Badge icon={SiGit} name="Git" colorClass="text-orange-500" />
-            <Badge icon={SiGithub} name="GitHub" colorClass="text-gray-900 dark:text-white" />
+            <Badge icon={SiGithub} name="GitHub" colorClass="text-[var(--text-primary)]" />
             <Badge icon={SiPostman} name="Postman" colorClass="text-orange-500" />
             <Badge icon={SiDocker} name="Docker" colorClass="text-sky-500" />
             <Badge icon={SiLinux} name="Linux" colorClass="text-amber-400" />
@@ -93,7 +93,7 @@ const TechStack = () => {
         </div>
 
         <div>
-          <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2.5">
+          <h3 className="claude-font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2.5">
             Cloud Architecture (AWS)
           </h3>
           <div className="flex flex-wrap gap-2">

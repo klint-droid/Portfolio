@@ -101,29 +101,31 @@ const CertificationLists = () => {
             <div className="w-full">
                 <div className="flex items-center gap-4 mb-8">
                     <Link to="/" 
-                    className="p-2 bg-[var(--bg-color)] border border-[var(--border-color)] rounded-full hover:border-[var(--text-secondary)] transition-colors">
+                    className="p-2 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-full hover:border-[#D97757] text-[var(--text-secondary)] hover:text-[#D97757] transition-colors">
                         <FaArrowLeft className="text-sm"/>
                     </Link>
-                    <div className="flex items-center gap-2">
-                        <BiBadge className="text-2xl"/>
-                        <h1 className="text-2xl font-bold">All Certifications</h1>
+                    <div className="flex items-center gap-2.5">
+                        <BiBadge className="text-2xl text-[#D97757]"/>
+                        <h1 className="claude-font-serif text-2xl font-semibold text-[var(--text-primary)]">All Certifications & Credentials</h1>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                     {certs.map((cert, index) => (
                         <div
                         key={index}
-                        className="group flex flex-col p-4 bg-[var(--bg-color)] rounded-xl border border-[var(--border-color)] hover:border-[var(--text-secondary)] transition-all animate-fade-in-up"
-                        style={{ animationDelay: `${index * 100}ms` }}
+                        className="group flex flex-col justify-between p-4 bg-[var(--card-bg)] rounded-xl border border-[var(--border-color)] hover:border-[#D97757]/60 hover:bg-[var(--card-hover)] transition-all animate-fade-in-up shadow-xs"
+                        style={{ animationDelay: `${index * 50}ms` }}
                         >
-                            <h3 className="text-sm font-bold group-hover:text-blue-500 transition-colors">
-                                {cert.name}
-                            </h3>
-                            <p className="text-xs mt-1 opacity-70 mb-3">
-                                {cert.issuer}
-                            </p>
-                            <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 mt-auto hover:underline w-fit">
-                                View Certificate
+                            <div>
+                                <h3 className="claude-font-serif text-sm font-semibold text-[var(--text-primary)] group-hover:text-[#D97757] transition-colors leading-snug">
+                                    {cert.name}
+                                </h3>
+                                <p className="text-xs text-[var(--text-muted)] mt-1 mb-3 claude-font-mono">
+                                    {cert.issuer}
+                                </p>
+                            </div>
+                            <a href={cert.link} target="_blank" rel="noopener noreferrer" className="claude-font-mono text-xs font-semibold text-[#D97757] hover:underline inline-flex items-center gap-1 mt-auto">
+                                <span>View Credential</span> →
                             </a>
                         </div>
                     ))}

@@ -30,22 +30,22 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="scroll-mt-20 bento-card">
+    <section id="contact" className="scroll-mt-20 bento-card bg-[var(--card-bg)] border-[var(--border-color)]">
       <div className="bento-card-header">
         <div className="bento-card-title">
-          <span className="section-number">09 // GET IN TOUCH</span>
+          <span className="section-number claude-font-mono text-xs text-[#D97757]">09 // GET IN TOUCH</span>
         </div>
-        <span className="font-mono text-xs text-blue-500 font-semibold">
+        <span className="claude-font-mono text-xs text-[#D97757] font-semibold">
           Say Hello 👋
         </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4">
         {/* Column 1: Community */}
-        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:border-blue-500/40 transition-all">
+        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-[var(--border-color)] bg-[var(--sidebar-bg)] hover:border-[#D97757]/40 transition-all">
           <div className="flex items-center gap-2 mb-1">
-            <FaUserFriends className="text-blue-500" size={15} />
-            <h3 className="font-mono text-xs font-bold text-gray-900 dark:text-white">Community</h3>
+            <FaUserFriends className="text-[#D97757]" size={15} />
+            <h3 className="claude-font-serif text-sm font-semibold text-[var(--text-primary)]">Community</h3>
           </div>
           <div className="flex flex-col gap-2">
             {memberships.map((membership, index) => (
@@ -54,30 +54,30 @@ const Contact = () => {
                 href={membership.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500 transition-colors text-xs font-mono text-gray-700 dark:text-gray-300"
+                className="flex items-center justify-between p-2 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[#D97757] transition-colors text-xs claude-font-mono text-[var(--text-secondary)]"
               >
                 <span className="truncate">{membership.name}</span>
-                <FaExternalLinkAlt size={10} className="text-gray-400 shrink-0" />
+                <FaExternalLinkAlt size={10} className="text-[var(--text-muted)] shrink-0" />
               </a>
             ))}
           </div>
         </div>
 
         {/* Column 2: Social Links */}
-        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:border-blue-500/40 transition-all">
+        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-[var(--border-color)] bg-[var(--sidebar-bg)] hover:border-[#D97757]/40 transition-all">
           <div className="flex items-center gap-2 mb-1">
-            <FaPaperPlane className="text-blue-500" size={15} />
-            <h3 className="font-mono text-xs font-bold text-gray-900 dark:text-white">Socials</h3>
+            <FaPaperPlane className="text-[#D97757]" size={15} />
+            <h3 className="claude-font-serif text-sm font-semibold text-[var(--text-primary)]">Socials</h3>
           </div>
-          <div className="flex flex-col gap-2 font-mono text-xs">
+          <div className="flex flex-col gap-2 claude-font-mono text-xs">
             <a
               href="https://www.linkedin.com/in/klint-ruales-67865527b/"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("Social Link", "Click", "LinkedIn")}
-              className="flex items-center gap-2.5 p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500 transition-colors text-gray-700 dark:text-gray-300"
+              className="flex items-center gap-2.5 p-2 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[#D97757] transition-colors text-[var(--text-secondary)] hover:text-[#D97757]"
             >
-              <FaLinkedin className="text-blue-600" size={16} />
+              <FaLinkedin className="text-blue-600" size={15} />
               <span>LinkedIn</span>
             </a>
             <a
@@ -85,9 +85,9 @@ const Contact = () => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("Social Link", "Click", "GitHub")}
-              className="flex items-center gap-2.5 p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500 transition-colors text-gray-700 dark:text-gray-300"
+              className="flex items-center gap-2.5 p-2 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[#D97757] transition-colors text-[var(--text-secondary)] hover:text-[#D97757]"
             >
-              <FaGithub className="text-gray-900 dark:text-white" size={16} />
+              <FaGithub size={15} />
               <span>GitHub</span>
             </a>
             <a
@@ -95,42 +95,42 @@ const Contact = () => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("Social Link", "Click", "Instagram")}
-              className="flex items-center gap-2.5 p-2 rounded-lg border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#121215] hover:border-blue-500 transition-colors text-gray-700 dark:text-gray-300"
+              className="flex items-center gap-2.5 p-2 rounded-lg border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-[#D97757] transition-colors text-[var(--text-secondary)] hover:text-[#D97757]"
             >
-              <FaInstagram className="text-pink-500" size={16} />
+              <FaInstagram className="text-pink-500" size={15} />
               <span>Instagram</span>
             </a>
           </div>
         </div>
 
         {/* Column 3: Inspirational Verse */}
-        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50/50 dark:bg-[#18181b]/50 hover:border-blue-500/40 transition-all justify-between">
+        <div className="flex flex-col gap-3 p-3.5 rounded-xl border border-[var(--border-color)] bg-[var(--sidebar-bg)] hover:border-[#D97757]/40 transition-all justify-between">
           <div className="flex items-center gap-2">
             <FaLightbulb className="text-amber-500" size={15} />
-            <h3 className="font-mono text-xs font-bold text-gray-900 dark:text-white">Daily Verse</h3>
+            <h3 className="claude-font-serif text-sm font-semibold text-[var(--text-primary)]">Guiding Principle</h3>
           </div>
           <div className="flex-1 flex flex-col justify-center">
-            <p className="text-xs italic text-gray-600 dark:text-gray-300 leading-relaxed mb-2">
+            <p className="claude-font-serif text-xs italic text-[var(--text-secondary)] leading-relaxed mb-2">
               "For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future."
             </p>
-            <span className="font-mono text-[11px] font-bold text-right text-blue-600 dark:text-blue-400">
+            <span className="claude-font-mono text-[11px] font-semibold text-right text-[#D97757]">
               — Jeremiah 29:11
             </span>
           </div>
         </div>
 
         {/* Column 4: Quick Action CTA */}
-        <div className="flex flex-col gap-2 font-mono text-xs">
+        <div className="flex flex-col gap-2 claude-font-mono text-xs">
           <a
             href="mailto:klintruales11@gmail.com?subject=Project Inquiry"
-            className="flex items-center gap-3 p-2.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#18181b] hover:border-blue-500 transition-colors"
+            className="flex items-center gap-3 p-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--sidebar-bg)] hover:border-[#D97757] hover:bg-[var(--card-hover)] transition-colors shadow-2xs"
           >
-            <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500 border border-blue-500/20 shrink-0">
+            <div className="p-2 rounded-lg bg-[#D97757]/10 text-[#D97757] border border-[#D97757]/20 shrink-0">
               <FaEnvelope size={14} />
             </div>
             <div className="min-w-0">
-              <p className="font-bold text-gray-900 dark:text-white text-xs truncate">Direct Email</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">klintruales11@gmail.com</p>
+              <p className="font-semibold text-[var(--text-primary)] text-xs truncate">Direct Email</p>
+              <p className="text-[10px] text-[var(--text-muted)] truncate">klintruales11@gmail.com</p>
             </div>
           </a>
 
@@ -138,28 +138,28 @@ const Contact = () => {
             href="https://calendly.com/klintruales11"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 p-2.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#18181b] hover:border-blue-500 transition-colors"
+            className="flex items-center gap-3 p-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--sidebar-bg)] hover:border-[#D97757] hover:bg-[var(--card-hover)] transition-colors shadow-2xs"
           >
-            <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500 border border-purple-500/20 shrink-0">
+            <div className="p-2 rounded-lg bg-[#D97757]/10 text-[#D97757] border border-[#D97757]/20 shrink-0">
               <FaCalendarAlt size={14} />
             </div>
             <div className="min-w-0">
-              <p className="font-bold text-gray-900 dark:text-white text-xs truncate">Schedule Call</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">Calendly Meeting</p>
+              <p className="font-semibold text-[var(--text-primary)] text-xs truncate">Schedule Call</p>
+              <p className="text-[10px] text-[var(--text-muted)] truncate">Calendly Meeting</p>
             </div>
           </a>
 
           <a
             href="/Klint_Ruales_Resume.pdf"
-            download="Klint_Ruales_Resume.pdf"
-            className="flex items-center gap-3 p-2.5 rounded-xl border border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#18181b] hover:border-blue-500 transition-colors cursor-pointer"
+            download="Klint_Morales_Ruales_Resume.pdf"
+            className="flex items-center gap-3 p-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--sidebar-bg)] hover:border-[#D97757] hover:bg-[var(--card-hover)] transition-colors cursor-pointer shadow-2xs"
           >
-            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shrink-0">
+            <div className="p-2 rounded-lg bg-[#D97757]/10 text-[#D97757] border border-[#D97757]/20 shrink-0">
               <FaDownload size={14} />
             </div>
             <div className="min-w-0">
-              <p className="font-bold text-gray-900 dark:text-white text-xs truncate">Download CV</p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">Official Resume PDF</p>
+              <p className="font-semibold text-[var(--text-primary)] text-xs truncate">Download CV</p>
+              <p className="text-[10px] text-[var(--text-muted)] truncate">Official Resume PDF</p>
             </div>
           </a>
         </div>

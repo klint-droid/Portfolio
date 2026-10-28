@@ -3,41 +3,50 @@
 @tailwind utilities;
 
 /* ==============================================
-   1. THEME VARIABLES & GRID PATTERNS
+   1. CLAUDE AI THEME SYSTEM & TOKENS
    ============================================== */
 :root {
-  /* LIGHT MODE */
-  --bg-color: #f8fafc;
-  --card-bg: #ffffff;
-  --card-hover: #f1f5f9;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
-  --border-hover: #cbd5e1;
-  --accent-color: #2563eb;
-  --accent-glow: rgba(37, 99, 235, 0.15);
-  --grid-dot: #cbd5e1;
+  /* CLAUDE LIGHT MODE (Signature Warm Ivory / Oatmeal / Terracotta) */
+  --bg-color: #FAF9F5;
+  --sidebar-bg: #F5F3ED;
+  --card-bg: #FFFFFF;
+  --card-hover: #F8F6F0;
+  --text-primary: #1F1E1D;
+  --text-secondary: #6B6862;
+  --text-muted: #949087;
+  --border-color: #EBE6DC;
+  --border-subtle: #F2EFE9;
+  --border-hover: #DDD6C9;
+  --accent-color: #D97757; /* Anthropic Terracotta */
+  --accent-hover: #C26547;
+  --accent-glow: rgba(217, 119, 87, 0.16);
+  --accent-subtle: rgba(217, 119, 87, 0.08);
+  --user-bubble: #F1ECE1;
 
   --radius-xl: 20px;
-  --radius-lg: 16px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
 }
 
-/* DARK MODE (Pitch Black + Monospace Grid Aesthetic) */
-body.dark-theme {
-  --bg-color: #09090b;
-  --card-bg: #121215;
-  --card-hover: #1c1c21;
-  --text-primary: #f4f4f5;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
-  --border-color: #27272a;
-  --border-hover: #3f3f46;
-  --accent-color: #3b82f6;
-  --accent-glow: rgba(59, 130, 246, 0.2);
-  --grid-dot: #27272a;
+/* CLAUDE DARK MODE (Signature Warm Obsidian / Espresso / Terracotta) */
+body.dark-theme,
+.dark {
+  --bg-color: #181816;
+  --sidebar-bg: #1F1E1B;
+  --card-bg: #23221F;
+  --card-hover: #2B2A26;
+  --text-primary: #F3F1EC;
+  --text-secondary: #A09C92;
+  --text-muted: #737067;
+  --border-color: #33312B;
+  --border-subtle: #292823;
+  --border-hover: #46433B;
+  --accent-color: #D97757;
+  --accent-hover: #E28769;
+  --accent-glow: rgba(217, 119, 87, 0.22);
+  --accent-subtle: rgba(217, 119, 87, 0.12);
+  --user-bubble: #2C2B27;
 }
 
 /* ==============================================
@@ -51,36 +60,38 @@ body.dark-theme {
 
 html {
   scroll-behavior: smooth;
+  height: 100%;
 }
 
 body {
-  font-family: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-primary);
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Background dot grid pattern */
-body.dark-theme {
-  background-image: radial-gradient(#27272a 1px, transparent 1px);
-  background-size: 24px 24px;
+/* Claude Serif Heading Class */
+.claude-font-serif {
+  font-family: 'Newsreader', 'Lora', Georgia, 'Times New Roman', serif;
 }
 
-body.light-theme {
-  background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
-  background-size: 24px 24px;
+/* Claude Monospace */
+.claude-font-mono {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
 }
 
-/* Custom Scrollbar */
+/* Custom Minimal Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-color);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -93,23 +104,20 @@ body.light-theme {
 }
 
 /* ==============================================
-   3. BENTO CARD & UTILITY STYLES
+   3. CLAUDE CARD & PROMPT STYLES
    ============================================== */
 .bento-card {
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  transition: all 0.25s ease-in-out;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
-  overflow: hidden;
 }
 
 .bento-card:hover {
   background-color: var(--card-hover);
   border-color: var(--border-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px var(--accent-glow);
 }
 
 .bento-card-header {
@@ -120,8 +128,8 @@ body.light-theme {
 }
 
 .bento-card-title {
-  font-family: 'Geist Mono', monospace;
-  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--text-primary);
@@ -132,44 +140,97 @@ body.light-theme {
 
 .section-number {
   font-family: 'Geist Mono', monospace;
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--accent-color);
+  letter-spacing: 0.05em;
 }
 
-/* Dither Halftone Effect for Profile Image */
-.dither-avatar {
-  position: relative;
-  filter: contrast(110%) brightness(100%);
-  transition: transform 0.3s ease, filter 0.3s ease;
+/* Claude Prompt Input Box */
+.claude-prompt-box {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.dither-avatar:hover {
-  transform: scale(1.02);
+.claude-prompt-box:focus-within {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 8px 30px -4px rgba(0, 0, 0, 0.08);
+}
+
+/* Prompt Card Chip */
+.claude-chip {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.85rem;
+  padding: 0.85rem 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  text-align: left;
+}
+
+.claude-chip:hover {
+  background-color: var(--card-hover);
+  border-color: var(--accent-color);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 14px -2px var(--accent-glow);
 }
 
 /* Badge styling */
 .tech-badge {
   font-family: 'Geist Mono', monospace;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.6rem;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-sm);
-  background-color: var(--bg-color);
+  background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .tech-badge:hover {
   border-color: var(--accent-color);
   color: var(--text-primary);
+  background-color: var(--card-hover);
+}
+
+/* Message Bubble */
+.claude-user-bubble {
+  background-color: var(--user-bubble);
+  color: var(--text-primary);
+  border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+  padding: 0.85rem 1.15rem;
+  max-width: 82%;
+  border: 1px solid var(--border-subtle);
+}
+
+.claude-assistant-bubble {
+  color: var(--text-primary);
+  border-radius: 1.25rem;
+  padding: 0.5rem 0.5rem;
+  width: 100%;
 }
 
 /* Code block highlight styling */
 .code-inline {
   font-family: 'Geist Mono', monospace;
-  background-color: var(--border-color);
-  padding: 0.15rem 0.4rem;
+  background-color: var(--border-subtle);
+  border: 1px solid var(--border-color);
+  padding: 0.12rem 0.38rem;
   border-radius: 4px;
-  font-size: 0.825rem;
+  font-size: 0.8rem;
+}
+
+/* Telemetry scan highlight */
+.terminal-window {
+  background-color: #121210;
+  border: 1px solid #2B2A26;
+  border-radius: 0.85rem;
+  color: #5EEAD4;
+  font-family: 'Geist Mono', monospace;
 }
