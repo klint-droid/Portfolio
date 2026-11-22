@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { ClaudeStarburst } from "./ClaudeIcons";
 import { 
   FaSun, 
@@ -6,7 +7,8 @@ import {
   FaBars, 
   FaDownload, 
   FaPaperPlane, 
-  FaShieldAlt
+  FaShieldAlt,
+  FaCube
 } from "react-icons/fa";
 
 const ClaudeNavbar = ({
@@ -59,6 +61,16 @@ const ClaudeNavbar = ({
 
         {/* Right: Quick Actions & Controls */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          {/* Enter 3D Studio Button */}
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[#D97757]/50 bg-[#D97757]/10 hover:bg-[#D97757] text-[#D97757] hover:text-white claude-font-mono text-[11px] font-medium transition-colors shrink-0"
+            title="Enter 3D WebGL Interview Studio"
+          >
+            <FaCube size={11} />
+            <span>3D Studio</span>
+          </Link>
+
           {/* Security Telemetry Audit Button */}
           <button
             onClick={onOpenTelemetry}

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import "./App.css";
 import { pageView } from "./analytics";
 import Layout from './sections/Layout.jsx';
 import CertificationLists from "./pages/CertificationLists.jsx";
@@ -18,13 +19,13 @@ const App = () => {
   return(
     <Router>
       <Routes>
-        <Route path="/" element={<Layout />} />
+        <Route path="/" element={<ThreePortfolio />} />
+        <Route path="/3d" element={<ThreePortfolio />} />
         <Route path="/recommend" element={<Layout initialOpenRecommend={true} />} />
         <Route path="/write-recommendation" element={<Layout initialOpenRecommend={true} />} />
         <Route path="/all-certifications" element={<CertificationLists />} />
         <Route path="/all-projects" element={<ProjectLists />} />
         <Route path="/all-techstack" element={<TechStackList />} />
-        <Route path="/3d" element={<ThreePortfolio />} />
         <Route path="/react-course" element={<ReactCoursePage />} />
         <Route path="/friend-quiz" element={<FriendQuizPage />} />
       </Routes>
