@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import { pageView } from "./analytics";
-import Layout from './sections/Layout.jsx';
 import CertificationLists from "./pages/CertificationLists.jsx";
 import ProjectLists from "./pages/ProjectLists.jsx";
 import TechStackList from "./pages/TechStackList.jsx";
@@ -21,8 +20,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<ThreePortfolio />} />
         <Route path="/3d" element={<ThreePortfolio />} />
-        <Route path="/recommend" element={<Layout initialOpenRecommend={true} />} />
-        <Route path="/write-recommendation" element={<Layout initialOpenRecommend={true} />} />
+        <Route path="/recommend" element={<ThreePortfolio initialOpenRecommend={true} />} />
+        <Route path="/write-recommendation" element={<ThreePortfolio initialOpenRecommend={true} />} />
         <Route path="/all-certifications" element={<CertificationLists />} />
         <Route path="/all-projects" element={<ProjectLists />} />
         <Route path="/all-techstack" element={<TechStackList />} />

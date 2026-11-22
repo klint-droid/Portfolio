@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FaVolumeUp,
   FaVolumeMute,
@@ -13,15 +13,58 @@ import {
   FaEye,
   FaUser,
   FaClipboardCheck,
+  FaQuoteLeft,
+  FaUserFriends,
+  FaBookOpen,
 } from "react-icons/fa";
 import { STATIONS, getOverallScore } from "../interviewState";
 
-const STATION_ICONS = {
-  seated: FaUserTie,
-  projects: FaLaptopCode,
-  stack: FaLayerGroup,
-  career: FaTrophy,
-  resume: FaFileAlt,
+const DOCK_STYLES = {
+  explore: {
+    icon: FaCompass,
+    label: "Roam Studio",
+    gradient: "from-[#D97757] to-[#B65637]",
+  },
+  seated: {
+    icon: FaUserTie,
+    label: "Interview Desk",
+    gradient: "from-[#E08264] to-[#C25D3F]",
+  },
+  projects: {
+    icon: FaLaptopCode,
+    label: "Shipped Projects",
+    gradient: "from-[#3B82F6] to-[#1D4ED8]",
+  },
+  stack: {
+    icon: FaLayerGroup,
+    label: "Tech Stack",
+    gradient: "from-[#F59E0B] to-[#D97706]",
+  },
+  career: {
+    icon: FaTrophy,
+    label: "Career & Awards",
+    gradient: "from-[#EAB308] to-[#B45309]",
+  },
+  resume: {
+    icon: FaFileAlt,
+    label: "Resume & CV",
+    gradient: "from-[#64748B] to-[#334155]",
+  },
+  recommendations: {
+    icon: FaQuoteLeft,
+    label: "Recommendations",
+    gradient: "from-[#10B981] to-[#047857]",
+  },
+  community: {
+    icon: FaUserFriends,
+    label: "Community & Life",
+    gradient: "from-[#14B8A6] to-[#0F766E]",
+  },
+  oracle: {
+    icon: FaBookOpen,
+    label: "Oracle & Course",
+    gradient: "from-[#A855F7] to-[#6D28D9]",
+  },
 };
 
 export default function GameHUD({
@@ -39,10 +82,24 @@ export default function GameHUD({
   isHired,
   toast,
 }) {
+  const [hoveredDockIdx, setHoveredDockIdx] = useState(null);
   const overall = getOverallScore(scorecard);
   const inspectedStationCount = STATIONS.filter((s) =>
     discoveredClues.includes(s.clueId)
   ).length;
+
+  const dockItems = [
+    { id: "explore", clueId: null },
+    ...STATIONS.map((s) => ({ id: s.id, clueId: s.clueId })),
+  ];
+
+  const getDockTransform = (idx) => {
+    if (hoveredDockIdx === null) return "scale-100 translate-y-0";
+    const dist = Math.abs(hoveredDockIdx - idx);
+    if (dist === 0) return "scale-[1.32] -translate-y-2.5 z-20";
+    if (dist === 1) return "scale-[1.14] -translate-y-1 z-10";
+    return "scale-100 translate-y-0";
+  };
 
   return (
     <>
@@ -174,45 +231,71 @@ export default function GameHUD({
         </div>
       )}
 
-      {/* BOTTOM STATION WAYPOINT DOCK (hidden while seated in dialogue to keep view clean) */}
+      {/* MACBOOK / macOS STYLE FLOATING DOCK (hidden while seated in dialogue to keep view clean) */}
       {mode !== "seated" && (
-        <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-30 max-w-[calc(100vw-8.5rem)] sm:max-w-xl">
-          <div className="flex items-center justify-center gap-1.5 sm:gap-2 p-1.5 rounded-2xl bg-[#181816]/88 backdrop-blur-xl border border-[#33312B] shadow-2xl overflow-x-auto scrollbar-none">
-            <button
-              onClick={() => onSelectMode("explore")}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
-                mode === "explore"
-                  ? "bg-[#D97757] text-white shadow-sm"
-                  : "text-[#A09C92] hover:text-[#F3F1EC] hover:bg-[#2B2A26]"
-              }`}
-            >
-              <FaCompass size={12} />
-              <span>Roam</span>
-            </button>
-
-            <div className="w-px h-5 bg-[#33312B] shrink-0" />
-
-            {STATIONS.map((station) => {
-              const Icon = STATION_ICONS[station.id] || FaCompass;
-              const isActive = mode === station.id;
-              const discovered = discoveredClues.includes(station.clueId);
+        <nav
+          aria-label="Studio Dock"
+          onMouseLeave={() => setHoveredDockIdx(null)}
+          className="fixed bottom-3.5 left-1/2 -translate-x-1/2 z-30"
+        >
+          <div className="flex items-end gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2 rounded-[22px] bg-[#1C1B19]/75 backdrop-blur-2xl border border-white/15 shadow-[0_14px_45px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.14)]">
+            {dockItems.map((item, idx) => {
+              const style = DOCK_STYLES[item.id] || DOCK_STYLES.explore;
+              const Icon = style.icon;
+              const isActive = mode === item.id;
+              const discovered = item.clueId && discoveredClues.includes(item.clueId);
+              const isHovered = hoveredDockIdx === idx;
 
               return (
-                <button
-                  key={station.id}
-                  onClick={() => onSelectMode(station.id)}
-                  className={`relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
-                    isActive
-                      ? "bg-[#D97757] text-white shadow-sm"
-                      : "text-[#A09C92] hover:text-[#F3F1EC] hover:bg-[#2B2A26]"
-                  }`}
-                >
-                  <Icon size={12} />
-                  <span>{station.shortLabel}</span>
-                  {discovered && !isActive && (
-                    <FaCheckCircle size={9} className="text-emerald-400 shrink-0" />
+                <React.Fragment key={item.id}>
+                  {/* Subtle macOS Dock vertical divider between Roam & Studio Stations */}
+                  {idx === 1 && (
+                    <div className="w-[1px] h-8 bg-white/15 mx-0.5 self-center shrink-0" />
                   )}
-                </button>
+
+                  <div className="relative flex flex-col items-center">
+                    {/* Floating macOS Hover Tooltip Pill */}
+                    {isHovered && (
+                      <div className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-lg bg-[#181816]/95 border border-white/15 text-[#F3F1EC] text-[11px] font-medium whitespace-nowrap shadow-xl backdrop-blur-md">
+                        {style.label}
+                        <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-2 h-2 bg-[#181816] border-r border-b border-white/15 rotate-45" />
+                      </div>
+                    )}
+
+                    {/* Squircle App Icon */}
+                    <button
+                      type="button"
+                      onClick={() => onSelectMode(item.id)}
+                      onMouseEnter={() => setHoveredDockIdx(idx)}
+                      onFocus={() => setHoveredDockIdx(idx)}
+                      onBlur={() => setHoveredDockIdx(null)}
+                      aria-label={style.label}
+                      className={`relative w-9 h-9 sm:w-10 sm:h-10 rounded-[12px] flex items-center justify-center bg-gradient-to-br ${style.gradient} text-white shadow-[0_4px_12px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.28)] border transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer origin-bottom ${
+                        isActive
+                          ? "border-white/75 ring-2 ring-white/25"
+                          : "border-white/15 opacity-90 hover:opacity-100"
+                      } ${getDockTransform(idx)}`}
+                    >
+                      <Icon className="text-[15px] sm:text-[17px] drop-shadow-xs" />
+
+                      {/* Discovered Evidence Corner Badge */}
+                      {discovered && (
+                        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#181816] flex items-center justify-center shadow-sm">
+                          <FaCheckCircle size={10} className="text-emerald-400" />
+                        </span>
+                      )}
+                    </button>
+
+                    {/* macOS Active Running Indicator Dot */}
+                    <span
+                      className={`mt-1 w-1 h-1 rounded-full transition-all duration-200 ${
+                        isActive
+                          ? "bg-[#F3F1EC] scale-100 shadow-[0_0_6px_rgba(255,255,255,0.85)]"
+                          : "bg-transparent scale-0"
+                      }`}
+                    />
+                  </div>
+                </React.Fragment>
               );
             })}
           </div>

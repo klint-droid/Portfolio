@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { RoundedBox, Text, Html } from "@react-three/drei";
+import { RoundedBox, Text, Html, Sparkles } from "@react-three/drei";
 
 const HOLO_NODES = [
   { label: "REACT", color: "#61DAFB", angle: 0 },
@@ -20,6 +20,7 @@ export default function InteractiveStations({
 }) {
   const holoRingRef = useRef();
   const trophyRef = useRef();
+  const oracleBookRef = useRef();
 
   useFrame(({ clock }) => {
     const t = clock.elapsedTime;
@@ -29,6 +30,10 @@ export default function InteractiveStations({
     }
     if (trophyRef.current) {
       trophyRef.current.rotation.y = Math.sin(t * 0.8) * 0.25;
+    }
+    if (oracleBookRef.current) {
+      oracleBookRef.current.position.y = 1.18 + Math.sin(t * 2.4) * 0.045;
+      oracleBookRef.current.rotation.y = Math.sin(t * 0.9) * 0.16;
     }
   });
 
@@ -51,6 +56,9 @@ export default function InteractiveStations({
   const isProjectsHovered = hoveredStation === "projects";
   const isStackHovered = hoveredStation === "stack";
   const isCareerHovered = hoveredStation === "career";
+  const isRecsHovered = hoveredStation === "recommendations";
+  const isCommunityHovered = hoveredStation === "community";
+  const isOracleHovered = hoveredStation === "oracle";
 
   return (
     <group>
@@ -391,6 +399,254 @@ export default function InteractiveStations({
             <div className="pointer-events-none select-none px-3 py-1.5 rounded-full bg-[#181816]/92 border border-[#D97757]/70 text-[#F3F1EC] text-xs font-mono whitespace-nowrap shadow-lg">
               <span className="text-[#D97757] font-bold mr-1.5">[Click]</span>
               Inspect Career, Certs & Quotes
+            </div>
+          </Html>
+        )}
+      </group>
+
+      {/* ================================================================
+          STATION 4: LIVE RECOMMENDATIONS PINBOARD (Right-Front Wall)
+      ================================================================ */}
+      <group
+        position={[6.22, 0, 2.35]}
+        rotation={[0, -Math.PI / 2, 0]}
+        {...makeHandlers("recommendations")}
+      >
+        {/* Warm Walnut Frame */}
+        <RoundedBox args={[2.55, 1.55, 0.08]} radius={0.03} position={[0, 1.72, 0]} castShadow receiveShadow>
+          <meshStandardMaterial color="#4A3224" roughness={0.62} />
+        </RoundedBox>
+        {/* Charcoal Felt Pinboard Surface */}
+        <mesh position={[0, 1.72, 0.045]}>
+          <planeGeometry args={[2.35, 1.35]} />
+          <meshStandardMaterial
+            color="#201E1C"
+            emissive="#D97757"
+            emissiveIntensity={isRecsHovered ? 0.18 : 0.03}
+            roughness={0.92}
+          />
+        </mesh>
+        {/* Top Accent Strip */}
+        <mesh position={[0, 2.55, 0.02]}>
+          <boxGeometry args={[2.2, 0.035, 0.035]} />
+          <meshStandardMaterial
+            color="#D97757"
+            emissive="#D97757"
+            emissiveIntensity={isRecsHovered ? 2.2 : 1.0}
+          />
+        </mesh>
+        <Text position={[0, 2.24, 0.055]} fontSize={0.09} letterSpacing={0.1} color="#F3F1EC" anchorX="center" anchorY="middle">
+          RECOMMENDATIONS WALL
+        </Text>
+
+        {/* Pinned Testimonial Note Cards */}
+        {[
+          { x: -0.72, y: 1.72, rot: 0.04, name: "Kent John", tag: "★★★★★", bg: "#2B2824" },
+          { x: 0.0, y: 1.66, rot: -0.03, name: "Milven S.", tag: "★★★★★", bg: "#2E2A25" },
+          { x: 0.72, y: 1.74, rot: 0.05, name: "+ Write One", tag: "LIVE SHEET", bg: "#D97757" },
+        ].map((card, i) => (
+          <group key={i} position={[card.x, card.y, 0.06]} rotation={[0, 0, card.rot]}>
+            <RoundedBox args={[0.62, 0.54, 0.02]} radius={0.015}>
+              <meshStandardMaterial
+                color={card.bg}
+                emissive={i === 2 ? "#D97757" : "#000000"}
+                emissiveIntensity={i === 2 ? (isRecsHovered ? 0.65 : 0.28) : 0}
+                roughness={0.75}
+              />
+            </RoundedBox>
+            {/* Brass pushpin */}
+            <mesh position={[0, 0.22, 0.02]}>
+              <sphereGeometry args={[0.022, 10, 10]} />
+              <meshStandardMaterial color="#FBBF24" metalness={0.85} roughness={0.2} />
+            </mesh>
+            <Text position={[0, 0.05, 0.018]} fontSize={0.06} color="#F3F1EC" anchorX="center" anchorY="middle">
+              {card.name}
+            </Text>
+            <Text
+              position={[0, -0.09, 0.018]}
+              fontSize={0.045}
+              color={i === 2 ? "#FFF7ED" : "#F59E0B"}
+              anchorX="center"
+              anchorY="middle"
+            >
+              {card.tag}
+            </Text>
+          </group>
+        ))}
+
+        {/* Small console shelf underneath */}
+        <RoundedBox args={[2.1, 0.06, 0.34]} radius={0.015} position={[0, 0.86, 0.14]} castShadow>
+          <meshStandardMaterial color="#5A3C2A" roughness={0.58} />
+        </RoundedBox>
+
+        {isRecsHovered && activeStation !== "recommendations" && (
+          <Html position={[0, 2.75, 0.15]} center distanceFactor={7}>
+            <div className="pointer-events-none select-none px-3 py-1.5 rounded-full bg-[#181816]/92 border border-[#D97757]/70 text-[#F3F1EC] text-xs font-mono whitespace-nowrap shadow-lg">
+              <span className="text-[#D97757] font-bold mr-1.5">[Click]</span>
+              Read &amp; Write Live Recommendations
+            </div>
+          </Html>
+        )}
+      </group>
+
+      {/* ================================================================
+          STATION 5: COMMUNITY, BEYOND CODING & PRINCIPLE LOUNGE (Left-Front Wall)
+      ================================================================ */}
+      <group
+        position={[-6.15, 0, 2.65]}
+        rotation={[0, Math.PI / 2, 0]}
+        {...makeHandlers("community")}
+      >
+        {/* Cozy Walnut Lounge Bench */}
+        <RoundedBox args={[2.2, 0.08, 0.62]} radius={0.025} position={[0, 0.44, 0.36]} castShadow receiveShadow>
+          <meshStandardMaterial color="#5A3C2A" roughness={0.58} />
+        </RoundedBox>
+        <RoundedBox args={[2.08, 0.09, 0.54]} radius={0.03} position={[0, 0.51, 0.36]} castShadow>
+          <meshStandardMaterial color="#2A2825" roughness={0.92} />
+        </RoundedBox>
+        {[-0.92, 0.92].map((lx, idx) => (
+          <mesh key={idx} position={[lx, 0.21, 0.36]} castShadow>
+            <boxGeometry args={[0.07, 0.42, 0.52]} />
+            <meshStandardMaterial color="#161514" metalness={0.75} roughness={0.35} />
+          </mesh>
+        ))}
+
+        {/* Community Board Frame */}
+        <RoundedBox args={[1.42, 1.15, 0.06]} radius={0.025} position={[-0.68, 1.75, 0]} castShadow>
+          <meshStandardMaterial
+            color="#1E1C1A"
+            emissive="#5EEAD4"
+            emissiveIntensity={isCommunityHovered ? 0.22 : 0.04}
+            roughness={0.6}
+          />
+        </RoundedBox>
+        <Text position={[-0.68, 2.12, 0.04]} fontSize={0.072} color="#5EEAD4" anchorX="center" anchorY="middle">
+          COMMUNITY
+        </Text>
+        <Text position={[-0.68, 1.88, 0.04]} fontSize={0.052} color="#F3F1EC" anchorX="center" anchorY="middle">
+          Data Analytics PH
+        </Text>
+        <Text position={[-0.68, 1.69, 0.04]} fontSize={0.05} color="#D8D3C8" anchorX="center" anchorY="middle">
+          Passerelles Numériques
+        </Text>
+        <Text position={[-0.68, 1.5, 0.04]} fontSize={0.05} color="#D97757" anchorX="center" anchorY="middle">
+          DEP × DataCamp
+        </Text>
+
+        {/* Framed Guiding Principle Plaque (Jeremiah 29:11) + Beyond Coding */}
+        <RoundedBox args={[1.18, 1.15, 0.06]} radius={0.025} position={[0.74, 1.75, 0]} castShadow>
+          <meshStandardMaterial
+            color="#221E1A"
+            emissive="#F59E0B"
+            emissiveIntensity={isCommunityHovered ? 0.25 : 0.06}
+            roughness={0.55}
+          />
+        </RoundedBox>
+        <Text position={[0.74, 2.12, 0.04]} fontSize={0.064} color="#FBBF24" anchorX="center" anchorY="middle">
+          BEYOND CODING
+        </Text>
+        <Text position={[0.74, 1.82, 0.04]} fontSize={0.052} color="#F3F1EC" anchorX="center" anchorY="middle">
+          Run • Bike • Hike
+        </Text>
+        <Text position={[0.74, 1.62, 0.04]} fontSize={0.046} color="#D8D3C8" anchorX="center" anchorY="middle">
+          Church &amp; Volunteering
+        </Text>
+        <Text position={[0.74, 1.38, 0.04]} fontSize={0.046} color="#D97757" anchorX="center" anchorY="middle">
+          — Jeremiah 29:11
+        </Text>
+
+        {/* Warm accent bar */}
+        <mesh position={[0, 2.46, 0.01]}>
+          <boxGeometry args={[2.5, 0.03, 0.03]} />
+          <meshStandardMaterial
+            color="#5EEAD4"
+            emissive="#5EEAD4"
+            emissiveIntensity={isCommunityHovered ? 2.0 : 0.85}
+          />
+        </mesh>
+
+        {isCommunityHovered && activeStation !== "community" && (
+          <Html position={[0, 2.66, 0.2]} center distanceFactor={7}>
+            <div className="pointer-events-none select-none px-3 py-1.5 rounded-full bg-[#181816]/92 border border-[#5EEAD4]/70 text-[#F3F1EC] text-xs font-mono whitespace-nowrap shadow-lg">
+              <span className="text-[#5EEAD4] font-bold mr-1.5">[Click]</span>
+              Community, Beyond Coding &amp; Socials
+            </div>
+          </Html>
+        )}
+      </group>
+
+      {/* ================================================================
+          STATION 6: BOOK OF ANSWERS ORACLE & REACT COURSE NOOK (Front-Left)
+      ================================================================ */}
+      <group
+        position={[-2.35, 0, 4.65]}
+        rotation={[0, Math.PI, 0]}
+        {...makeHandlers("oracle")}
+      >
+        {/* Sculpted Walnut Reading Podium */}
+        <mesh position={[0, 0.06, 0]} castShadow>
+          <cylinderGeometry args={[0.42, 0.48, 0.12, 20]} />
+          <meshStandardMaterial color="#1C1B19" metalness={0.6} roughness={0.35} />
+        </mesh>
+        <mesh position={[0, 0.52, 0]} castShadow>
+          <cylinderGeometry args={[0.14, 0.18, 0.82, 16]} />
+          <meshStandardMaterial color="#4A3224" roughness={0.58} />
+        </mesh>
+        <RoundedBox args={[0.74, 0.06, 0.52]} radius={0.02} position={[0, 0.94, 0]} rotation={[0.18, 0, 0]} castShadow>
+          <meshStandardMaterial color="#5A3C2A" roughness={0.52} />
+        </RoundedBox>
+
+        {/* Levitating Glowing Open Book of Answers! */}
+        <group ref={oracleBookRef} position={[0, 1.18, 0]}>
+          {/* Left Page + Terracotta Cover */}
+          <group position={[-0.14, 0, 0]} rotation={[0.25, 0, 0.22]}>
+            <RoundedBox args={[0.28, 0.025, 0.36]} radius={0.008}>
+              <meshStandardMaterial color="#C86A4B" emissive="#D97757" emissiveIntensity={isOracleHovered ? 0.65 : 0.22} />
+            </RoundedBox>
+            <mesh position={[0, 0.018, 0]}>
+              <boxGeometry args={[0.25, 0.015, 0.33]} />
+              <meshStandardMaterial color="#FAF8F4" emissive="#FFF7ED" emissiveIntensity={0.2} />
+            </mesh>
+          </group>
+          {/* Right Page + Terracotta Cover */}
+          <group position={[0.14, 0, 0]} rotation={[0.25, 0, -0.22]}>
+            <RoundedBox args={[0.28, 0.025, 0.36]} radius={0.008}>
+              <meshStandardMaterial color="#C86A4B" emissive="#D97757" emissiveIntensity={isOracleHovered ? 0.65 : 0.22} />
+            </RoundedBox>
+            <mesh position={[0, 0.018, 0]}>
+              <boxGeometry args={[0.25, 0.015, 0.33]} />
+              <meshStandardMaterial color="#FAF8F4" emissive="#FFF7ED" emissiveIntensity={0.2} />
+            </mesh>
+          </group>
+          <Sparkles count={18} scale={[0.7, 0.5, 0.7]} size={2.2} speed={0.5} color="#FBBF24" />
+        </group>
+
+        {/* React Guided Learning Path Board on Front Wall behind podium */}
+        <group position={[0, 2.15, -0.68]}>
+          <RoundedBox args={[2.1, 0.96, 0.06]} radius={0.03} castShadow>
+            <meshStandardMaterial
+              color="#1A1917"
+              emissive="#D97757"
+              emissiveIntensity={isOracleHovered ? 0.28 : 0.06}
+              roughness={0.5}
+            />
+          </RoundedBox>
+          <Text position={[0, 0.25, 0.04]} fontSize={0.085} color="#FBBF24" anchorX="center" anchorY="middle">
+            BOOK OF ANSWERS ORACLE
+          </Text>
+          <Text position={[0, 0.02, 0.04]} fontSize={0.07} color="#61DAFB" anchorX="center" anchorY="middle">
+            + REACT GUIDED LEARNING PATH
+          </Text>
+          <Text position={[0, -0.22, 0.04]} fontSize={0.048} color="#A09C92" anchorX="center" anchorY="middle">
+            Ask the Oracle • Browse Course • Security Audit
+          </Text>
+        </group>
+
+        {isOracleHovered && activeStation !== "oracle" && (
+          <Html position={[0, 2.8, -0.2]} center distanceFactor={7}>
+            <div className="pointer-events-none select-none px-3 py-1.5 rounded-full bg-[#181816]/92 border border-[#FBBF24]/70 text-[#F3F1EC] text-xs font-mono whitespace-nowrap shadow-lg">
+              <span className="text-[#FBBF24] font-bold mr-1.5">[Click]</span>
+              Consult Book of Answers &amp; React Course
             </div>
           </Html>
         )}

@@ -231,6 +231,12 @@ export default function KlintCharacter({
         targetLook.current.set(-3.3, 1.8, -4.5);
       } else if (activeStation === "resume") {
         targetLook.current.set(0.85, 0.9, -1.1);
+      } else if (activeStation === "recommendations") {
+        targetLook.current.set(5.5, 1.7, 2.35);
+      } else if (activeStation === "community") {
+        targetLook.current.set(-5.5, 1.6, 2.65);
+      } else if (activeStation === "oracle") {
+        targetLook.current.set(-2.35, 1.5, 4.5);
       } else if (activeStation === "seated") {
         targetLook.current.set(0, 1.42, 0.48);
       } else if (cameraPerspective === "third" && playerRef?.current) {

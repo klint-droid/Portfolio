@@ -6,6 +6,8 @@ import DialogueBox from "../three/interview/ui/DialogueBox";
 import StationModal from "../three/interview/ui/StationModal";
 import VerdictModal from "../three/interview/ui/VerdictModal";
 import JobEvaluatorModal from "../three/interview/ui/JobEvaluatorModal";
+import WriteRecommendationModal from "../components/WriteRecommendationModal";
+import TelemetryModal from "../components/TelemetryModal";
 import {
   STATIONS,
   INITIAL_SCORECARD,
@@ -82,9 +84,9 @@ class WebGLErrorBoundary extends Component {
   }
 }
 
-export default function ThreePortfolio() {
-  const [hasEntered, setHasEntered] = useState(false);
-  const [mode, setMode] = useState("title");
+export default function ThreePortfolio({ initialOpenRecommend = false }) {
+  const [hasEntered, setHasEntered] = useState(initialOpenRecommend);
+  const [mode, setMode] = useState(initialOpenRecommend ? "recommendations" : "title");
   const [cameraPerspective, setCameraPerspective] = useState("third");
   const [klintMood, setKlintMood] = useState("idle");
   const [hoveredStation, setHoveredStation] = useState(null);
@@ -105,6 +107,9 @@ export default function ThreePortfolio() {
   const [completedRounds, setCompletedRounds] = useState([]);
   const [isVerdictOpen, setIsVerdictOpen] = useState(false);
   const [isJDEvalOpen, setIsJDEvalOpen] = useState(false);
+  const [isWriteRecOpen, setIsWriteRecOpen] = useState(initialOpenRecommend);
+  const [isTelemetryOpen, setIsTelemetryOpen] = useState(false);
+  const [latestSubmittedRec, setLatestSubmittedRec] = useState(null);
   const [jdReport, setJdReport] = useState(null);
   const [isHired, setIsHired] = useState(false);
   const [toast, setToast] = useState(null);
@@ -473,7 +478,11 @@ export default function ThreePortfolio() {
       const inField = tag === "INPUT" || tag === "TEXTAREA" || isTypingInput;
 
       if (e.key === "Escape") {
-        if (isJDEvalOpen) {
+        if (isWriteRecOpen) {
+          setIsWriteRecOpen(false);
+        } else if (isTelemetryOpen) {
+          setIsTelemetryOpen(false);
+        } else if (isJDEvalOpen) {
           setIsJDEvalOpen(false);
         } else if (isVerdictOpen) {
           setIsVerdictOpen(false);
@@ -483,13 +492,31 @@ export default function ThreePortfolio() {
           setMode("explore");
           stopSpeech();
         }
-      } else if (!inField && hasEntered && !isJDEvalOpen && e.key.toLowerCase() === "v") {
+      } else if (
+        !inField &&
+        hasEntered &&
+        !isJDEvalOpen &&
+        !isWriteRecOpen &&
+        !isTelemetryOpen &&
+        e.key.toLowerCase() === "v"
+      ) {
         handleTogglePerspective();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [hasEntered, mode, isJDEvalOpen, isVerdictOpen, isChatOpen, isTypingInput, stopSpeech, handleTogglePerspective]);
+  }, [
+    hasEntered,
+    mode,
+    isWriteRecOpen,
+    isTelemetryOpen,
+    isJDEvalOpen,
+    isVerdictOpen,
+    isChatOpen,
+    isTypingInput,
+    stopSpeech,
+    handleTogglePerspective,
+  ]);
 
   const handleEnterStudio = (initialMode) => {
     setHasEntered(true);
@@ -506,6 +533,8 @@ export default function ThreePortfolio() {
     hasEntered &&
     !isVerdictOpen &&
     !isJDEvalOpen &&
+    !isWriteRecOpen &&
+    !isTelemetryOpen &&
     ((mode === "seated" && !isChatOpen) || isSpeaking || klintMood === "coffee");
 
   return (
@@ -631,8 +660,31 @@ export default function ThreePortfolio() {
             stationId={mode}
             onClose={() => setMode("explore")}
             onAskKlint={(prompt) => handleAskQuestion(prompt)}
+            onOpenWriteRec={() => setIsWriteRecOpen(true)}
+            onOpenTelemetry={() => setIsTelemetryOpen(true)}
+            latestSubmittedRec={latestSubmittedRec}
           />
         )}
+
+        {/* WRITE RECOMMENDATION MODAL (Live Google Sheets Sync) */}
+        <WriteRecommendationModal
+          isOpen={isWriteRecOpen}
+          onClose={() => setIsWriteRecOpen(false)}
+          onSubmitted={(newRec) => {
+            setLatestSubmittedRec(newRec);
+            showToast(
+              "Recommendation Posted!",
+              `Thank you ${newRec?.name || ""}! Your endorsement is now live on the studio wall.`,
+              "⭐"
+            );
+          }}
+        />
+
+        {/* BROWSER TELEMETRY & SECURITY AUDIT MODAL */}
+        <TelemetryModal
+          isOpen={isTelemetryOpen}
+          onClose={() => setIsTelemetryOpen(false)}
+        />
 
         {/* FINAL VERDICT / HIRED MODAL */}
         <VerdictModal

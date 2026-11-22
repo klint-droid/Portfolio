@@ -33,6 +33,18 @@ export const CAMERA_PRESETS = {
     position: [0.85, 1.52, -0.1],
     target: [0.82, 0.86, -1.12],
   },
+  recommendations: {
+    position: [2.95, 1.75, 2.35],
+    target: [6.1, 1.72, 2.35],
+  },
+  community: {
+    position: [-2.75, 1.7, 2.65],
+    target: [-5.9, 1.58, 2.65],
+  },
+  oracle: {
+    position: [-2.15, 1.72, 1.95],
+    target: [-2.35, 1.48, 4.55],
+  },
 };
 
 export const STATION_STAND_SPOTS = {
@@ -40,6 +52,9 @@ export const STATION_STAND_SPOTS = {
   stack: { pos: [3.2, 0, -0.1], yaw: Math.PI / 2 },
   career: { pos: [-3.35, 0, -3.5], yaw: Math.PI },
   resume: { pos: [0.95, 0, 0.35], yaw: Math.PI + 0.15 },
+  recommendations: { pos: [4.2, 0, 2.35], yaw: Math.PI / 2 },
+  community: { pos: [-4.05, 0, 2.65], yaw: -Math.PI / 2 },
+  oracle: { pos: [-2.35, 0, 3.15], yaw: 0 },
 };
 
 export const STATIONS = [
@@ -92,6 +107,36 @@ export const STATIONS = [
     clueTitle: "Official Resume Verified",
     scoreBoost: { velocity: 15, backend: 15 },
     position: [0.82, 1.18, -1.12],
+  },
+  {
+    id: "recommendations",
+    label: "Recommendations Wall",
+    shortLabel: "Reviews",
+    hint: "Read & write peer endorsements",
+    clueId: "inspected-recommendations",
+    clueTitle: "Peer Endorsements Verified",
+    scoreBoost: { culture: 25 },
+    position: [6.1, 2.3, 2.35],
+  },
+  {
+    id: "community",
+    label: "Community & Beyond",
+    shortLabel: "Community",
+    hint: "Memberships, life & socials",
+    clueId: "inspected-community",
+    clueTitle: "Community & Values Explored",
+    scoreBoost: { culture: 20 },
+    position: [-5.9, 2.3, 2.65],
+  },
+  {
+    id: "oracle",
+    label: "Courses & Oracle",
+    shortLabel: "Oracle",
+    hint: "Book of Answers & React Course",
+    clueId: "inspected-oracle",
+    clueTitle: "Consulted Developer Oracle",
+    scoreBoost: { frontend: 15, culture: 10 },
+    position: [-2.35, 1.9, 4.55],
   },
 ];
 
@@ -306,6 +351,79 @@ export const PEER_QUOTES = [
     role: "Computer Technology Specialist • USJ-R",
   },
 ];
+
+export const COMMUNITY_MEMBERSHIPS = [
+  {
+    name: "Data Analytics Philippines",
+    role: "Active Community Member",
+    link: "https://www.facebook.com/groups/dataanalyticsphilippines",
+  },
+  {
+    name: "Passerelles Numériques Philippines",
+    role: "Scholar & Tech Community",
+    link: "https://www.facebook.com/passerellesnumeriques.philippines",
+  },
+  {
+    name: "DEP × DataCamp",
+    role: "SQL Associate Scholar",
+    link: "https://www.datacamp.com/certificate/SQA0012000674391",
+  },
+];
+
+export const BEYOND_CODING_ITEMS = [
+  {
+    icon: "🏃",
+    title: "Running, Biking & Hiking",
+    desc: "Staying active outdoors keeps me energized, focused, and fuels creativity and productivity in engineering.",
+  },
+  {
+    icon: "🤝",
+    title: "Church, Volunteering & Community Service",
+    desc: "Active in church activities and volunteering — strengthening teamwork, empathy, and servant leadership.",
+  },
+];
+
+export const GUIDING_VERSE = {
+  quote:
+    "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.",
+  ref: "Jeremiah 29:11",
+};
+
+export const REACT_COURSE_DATA = {
+  title: "React Guided Learning Path",
+  subtitle: "From Node.js Setup to Building & Deploying Production React Apps",
+  status: "Active Curriculum",
+  topics: [
+    "Node.js & Vite Modern Tooling",
+    "JSX, Components & Props Composition",
+    "State Management (useState, useReducer)",
+    "Effects & REST API Integration",
+    "Context API & Reusable Custom Hooks",
+    "React Router v7 & Automated Vitest Testing",
+  ],
+  tech: ["React 19", "Vite", "JavaScript", "Node.js", "React Router", "Vitest"],
+};
+
+export const ORACLE_ANSWERS = [
+  "Yes — but make sure to push to a feature branch first.",
+  "Without a doubt. The compiler smiles upon you today.",
+  "Hire Klint immediately — your engineering team will thank you.",
+  "Outlook good. 100% test coverage lies ahead.",
+  "Signs point to YES. Merging directly without conflicts.",
+  "Refactor your code, drink coffee, and ask again.",
+  "It is certain. Success is in the next commit.",
+  "404 Error: Doubt not found. Proceed with confidence!",
+  "The stars align — your pull request will be approved in record time.",
+  "Definitely. Clean architecture brings eternal peace.",
+  "Deploying on Friday? The Book says GO FOR IT!",
+  "All indicators say YES. Klint is the developer you need.",
+];
+
+export const DATACAMP_BADGE = {
+  title: "DataCamp SQL Associate Certified",
+  image: "/badge/SQL Associate - LinkedIn.png",
+  link: "https://www.datacamp.com/certificate/SQA0012000674391",
+};
 
 export const COFFEE_QUIPS = [
   "Ah, iced Americano fuel! That mug is directly responsible for at least four production deployments.",
