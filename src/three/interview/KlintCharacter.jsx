@@ -167,6 +167,8 @@ function CharacterSpeechBubble({
   );
 }
 
+const CHAR_WORLD_POS = new THREE.Vector3(0, 1.38, -2.08);
+
 /**
  * Stylized procedural 3D Klint character seated behind the interview desk.
  * Supports:
@@ -249,10 +251,9 @@ export default function KlintCharacter({
         targetLook.current.copy(state.camera.position);
       }
 
-      const charWorldPos = new THREE.Vector3(0, 1.38, -2.08);
-      const dx = targetLook.current.x - charWorldPos.x;
-      const dy = targetLook.current.y - charWorldPos.y;
-      const dz = Math.max(0.5, targetLook.current.z - charWorldPos.z);
+      const dx = targetLook.current.x - CHAR_WORLD_POS.x;
+      const dy = targetLook.current.y - CHAR_WORLD_POS.y;
+      const dz = Math.max(0.5, targetLook.current.z - CHAR_WORLD_POS.z);
 
       let desiredYaw = THREE.MathUtils.clamp(Math.atan2(dx, dz) * 0.65, -0.58, 0.58);
       let desiredPitch = THREE.MathUtils.clamp(-Math.atan2(dy, Math.hypot(dx, dz)) * 0.45, -0.25, 0.25);
@@ -521,14 +522,14 @@ export default function KlintCharacter({
               <boxGeometry args={[0.042, 0.007, 0.007]} />
               <meshStandardMaterial color="#1F1E1D" metalness={0.7} roughness={0.25} />
             </mesh>
-            {/* Subtle glass tint */}
+            {/* Subtle glass tint (lightweight material for mobile GPU speed) */}
             <mesh position={[-0.065, 0, -0.002]}>
               <circleGeometry args={[0.042, 16]} />
-              <meshPhysicalMaterial color="#DBEAFE" transparent opacity={0.16} roughness={0.05} />
+              <meshBasicMaterial color="#DBEAFE" transparent opacity={0.14} />
             </mesh>
             <mesh position={[0.065, 0, -0.002]}>
               <circleGeometry args={[0.042, 16]} />
-              <meshPhysicalMaterial color="#DBEAFE" transparent opacity={0.16} roughness={0.05} />
+              <meshBasicMaterial color="#DBEAFE" transparent opacity={0.14} />
             </mesh>
           </group>
 

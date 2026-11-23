@@ -197,6 +197,7 @@ function InterviewerChair({ position, onSelect }) {
 }
 
 export default function StudioRoom({
+  isMobile = false,
   isCelebrating = false,
   onSelectStation,
   onCoffeeClick,
@@ -204,23 +205,24 @@ export default function StudioRoom({
   setHoveredStation,
 }) {
   const slatOffsets = useMemo(() => {
+    const step = isMobile ? 0.36 : 0.18;
     const arr = [];
-    for (let x = -6.1; x <= -4.4; x += 0.18) arr.push(x);
-    for (let x = -1.6; x <= 0.7; x += 0.18) arr.push(x);
+    for (let x = -6.1; x <= -4.4; x += step) arr.push(x);
+    for (let x = -1.6; x <= 0.7; x += step) arr.push(x);
     return arr;
-  }, []);
+  }, [isMobile]);
 
   return (
     <group>
       {/* ================= LIGHTING ================= */}
-      <hemisphereLight args={["#F5E6D3", "#1A1816", 0.55]} />
+      <hemisphereLight args={["#F5E6D3", "#1A1816", isMobile ? 0.95 : 0.55]} />
 
       {/* Main soft studio fill */}
       <directionalLight
         position={[3.5, 4.8, 3.2]}
-        intensity={0.75}
+        intensity={isMobile ? 1.05 : 0.75}
         color="#FFF3E0"
-        castShadow
+        castShadow={!isMobile}
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
         shadow-camera-near={1}
@@ -232,9 +234,6 @@ export default function StudioRoom({
         shadow-bias={-0.0005}
       />
 
-      {/* Cool moonlight rim from the Cebu skyline window */}
-      <directionalLight position={[5.2, 3.4, -6.0]} intensity={0.65} color="#7DD3FC" />
-
       {/* Warm terracotta architect desk lamp glow */}
       <pointLight
         position={[-1.02, 1.38, -1.42]}
@@ -244,20 +243,21 @@ export default function StudioRoom({
         color="#FF9E6D"
       />
 
-      {/* Overhead warm studio pendant accent */}
-      <pointLight
-        position={[0, 3.4, -1.1]}
-        intensity={isCelebrating ? 3.5 : 1.7}
-        distance={9}
-        decay={2}
-        color="#FFE4C4"
-      />
-
-      {/* Projects monitor wall soft glow */}
-      <pointLight position={[-4.6, 1.7, -0.9]} intensity={1.3} distance={5.5} color="#D97757" />
-
-      {/* Tech stack holo console glow */}
-      <pointLight position={[4.5, 1.6, -0.2]} intensity={1.4} distance={5.5} color="#F59E0B" />
+      {/* Extra fill lights on desktop only (keeps mobile fragment shaders super lightweight) */}
+      {!isMobile && (
+        <>
+          <directionalLight position={[5.2, 3.4, -6.0]} intensity={0.65} color="#7DD3FC" />
+          <pointLight
+            position={[0, 3.4, -1.1]}
+            intensity={isCelebrating ? 3.5 : 1.7}
+            distance={9}
+            decay={2}
+            color="#FFE4C4"
+          />
+          <pointLight position={[-4.6, 1.7, -0.9]} intensity={1.3} distance={5.5} color="#D97757" />
+          <pointLight position={[4.5, 1.6, -0.2]} intensity={1.4} distance={5.5} color="#F59E0B" />
+        </>
+      )}
 
       {/* ================= ARCHITECTURE ================= */}
       {/* Hardwood Floor */}
@@ -310,12 +310,12 @@ export default function StudioRoom({
       <group position={[3.5, 2.18, -5.38]}>
         <mesh>
           <planeGeometry args={[4.1, 3.05]} />
-          <meshPhysicalMaterial
+          <meshStandardMaterial
             color="#93C5FD"
             transparent
             opacity={0.08}
-            roughness={0.05}
-            metalness={0.1}
+            roughness={0.12}
+            metalness={0.15}
           />
         </mesh>
         {/* Dark aluminum mullions */}
@@ -469,12 +469,16 @@ export default function StudioRoom({
             <planeGeometry args={[0.66, 0.095]} />
             <meshStandardMaterial color="#23211E" />
           </mesh>
-          <Text position={[0, 0.016, 0.035]} fontSize={0.038} color="#F3F1EC" anchorX="center" anchorY="middle">
-            KLINT RUALES
-          </Text>
-          <Text position={[0, -0.022, 0.035]} fontSize={0.021} color="#D97757" anchorX="center" anchorY="middle">
-            SOFTWARE ENGINEER
-          </Text>
+          {!isMobile && (
+            <>
+              <Text position={[0, 0.016, 0.035]} fontSize={0.038} color="#F3F1EC" anchorX="center" anchorY="middle">
+                KLINT RUALES
+              </Text>
+              <Text position={[0, -0.022, 0.035]} fontSize={0.021} color="#D97757" anchorX="center" anchorY="middle">
+                SOFTWARE ENGINEER
+              </Text>
+            </>
+          )}
         </group>
 
         {/* Terracotta Architect Desk Lamp (Left of Desk) */}
@@ -578,16 +582,18 @@ export default function StudioRoom({
             <meshStandardMaterial color="#FAF8F4" roughness={0.9} />
           </mesh>
           {/* Tiny header text on folder */}
-          <Text
-            position={[0, 0.018, 0.02]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            fontSize={0.034}
-            color="#1F1E1D"
-            anchorX="center"
-            anchorY="middle"
-          >
-            KLINT_CV.PDF
-          </Text>
+          {!isMobile && (
+            <Text
+              position={[0, 0.018, 0.02]}
+              rotation={[-Math.PI / 2, 0, 0]}
+              fontSize={0.034}
+              color="#1F1E1D"
+              anchorX="center"
+              anchorY="middle"
+            >
+              KLINT_CV.PDF
+            </Text>
+          )}
         </group>
       </group>
 
@@ -616,16 +622,18 @@ export default function StudioRoom({
       <StudioPlant position={[-5.25, 0, -4.3]} />
       <StudioPlant position={[5.25, 0, -4.1]} />
 
-      {/* Floating warm studio dust particles */}
-      <Sparkles
-        count={isCelebrating ? 110 : 45}
-        scale={[10, 3.6, 8]}
-        position={[0, 1.9, -1]}
-        size={isCelebrating ? 3.2 : 1.6}
-        speed={isCelebrating ? 1.2 : 0.25}
-        opacity={isCelebrating ? 0.85 : 0.35}
-        color={isCelebrating ? "#FCD34D" : "#F3C7A8"}
-      />
+      {/* Floating warm studio dust particles (desktop only) */}
+      {!isMobile && (
+        <Sparkles
+          count={isCelebrating ? 110 : 45}
+          scale={[10, 3.6, 8]}
+          position={[0, 1.9, -1]}
+          size={isCelebrating ? 3.2 : 1.6}
+          speed={isCelebrating ? 1.2 : 0.25}
+          opacity={isCelebrating ? 0.85 : 0.35}
+          color={isCelebrating ? "#FCD34D" : "#F3C7A8"}
+        />
+      )}
     </group>
   );
 }

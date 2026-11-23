@@ -2,6 +2,8 @@ import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { RoundedBox, Text, Html, Sparkles } from "@react-three/drei";
 
+const NullText = () => null;
+
 const HOLO_NODES = [
   { label: "REACT", color: "#61DAFB", angle: 0 },
   { label: "NODE", color: "#4ADE80", angle: (Math.PI * 2) / 6 },
@@ -12,12 +14,15 @@ const HOLO_NODES = [
 ];
 
 export default function InteractiveStations({
+  isMobile = false,
   activeStation,
   onSelectStation,
   hoveredStation,
   setHoveredStation,
   discoveredClues = [],
 }) {
+  // Skip ~30 Troika SDF Web Worker text atlases on mobile to prevent startup RAM/CPU spikes
+  const StationText = isMobile ? NullText : Text;
   const holoRingRef = useRef();
   const trophyRef = useRef();
   const oracleBookRef = useRef();
@@ -125,35 +130,35 @@ export default function InteractiveStations({
             <planeGeometry args={[1.28, 0.08]} />
             <meshStandardMaterial color="#D97757" emissive="#D97757" emissiveIntensity={0.8} />
           </mesh>
-          <Text position={[0, 0.31, 0.042]} fontSize={0.045} color="#FFF" anchorX="center" anchorY="middle">
+          <StationText position={[0, 0.31, 0.042]} fontSize={0.045} color="#FFF" anchorX="center" anchorY="middle">
             SHIPPED PROJECTS • 11 APPS
-          </Text>
+          </StationText>
           {/* Project cards on screen */}
           <mesh position={[-0.32, 0.04, 0.038]}>
             <planeGeometry args={[0.56, 0.34]} />
             <meshStandardMaterial color="#272421" emissive="#D97757" emissiveIntensity={0.18} />
           </mesh>
-          <Text position={[-0.32, 0.1, 0.044]} fontSize={0.055} color="#F3F1EC" anchorX="center" anchorY="middle">
+          <StationText position={[-0.32, 0.1, 0.044]} fontSize={0.055} color="#F3F1EC" anchorX="center" anchorY="middle">
             DoseDay
-          </Text>
-          <Text position={[-0.32, -0.02, 0.044]} fontSize={0.03} color="#D97757" anchorX="center" anchorY="middle">
+          </StationText>
+          <StationText position={[-0.32, -0.02, 0.044]} fontSize={0.03} color="#D97757" anchorX="center" anchorY="middle">
             Flutter • Health App
-          </Text>
+          </StationText>
 
           <mesh position={[0.32, 0.04, 0.038]}>
             <planeGeometry args={[0.56, 0.34]} />
             <meshStandardMaterial color="#272421" emissive="#E2A055" emissiveIntensity={0.18} />
           </mesh>
-          <Text position={[0.32, 0.1, 0.044]} fontSize={0.055} color="#F3F1EC" anchorX="center" anchorY="middle">
+          <StationText position={[0.32, 0.1, 0.044]} fontSize={0.055} color="#F3F1EC" anchorX="center" anchorY="middle">
             EvaTrack
-          </Text>
-          <Text position={[0.32, -0.02, 0.044]} fontSize={0.03} color="#E2A055" anchorX="center" anchorY="middle">
+          </StationText>
+          <StationText position={[0.32, -0.02, 0.044]} fontSize={0.03} color="#E2A055" anchorX="center" anchorY="middle">
             Laravel • React • SQL
-          </Text>
+          </StationText>
 
-          <Text position={[0, -0.25, 0.044]} fontSize={0.038} color="#A09C92" anchorX="center" anchorY="middle">
+          <StationText position={[0, -0.25, 0.044]} fontSize={0.038} color="#A09C92" anchorX="center" anchorY="middle">
             Click to explore live demos →
-          </Text>
+          </StationText>
         </group>
 
         {/* Right Ultrawide Monitor (Friend Quiz + POSify) */}
@@ -183,18 +188,18 @@ export default function InteractiveStations({
             <planeGeometry args={[1.28, 0.08]} />
             <meshStandardMaterial color="#0D9488" emissive="#5EEAD4" emissiveIntensity={0.55} />
           </mesh>
-          <Text position={[0, 0.31, 0.042]} fontSize={0.044} color="#F3F1EC" anchorX="center" anchorY="middle">
+          <StationText position={[0, 0.31, 0.042]} fontSize={0.044} color="#F3F1EC" anchorX="center" anchorY="middle">
             LIVE WEB • ML • ENTERPRISE
-          </Text>
-          <Text position={[0, 0.07, 0.044]} fontSize={0.062} color="#5EEAD4" anchorX="center" anchorY="middle">
+          </StationText>
+          <StationText position={[0, 0.07, 0.044]} fontSize={0.062} color="#5EEAD4" anchorX="center" anchorY="middle">
             Friend Quiz • POSify
-          </Text>
-          <Text position={[0, -0.1, 0.044]} fontSize={0.042} color="#E2E8F0" anchorX="center" anchorY="middle">
+          </StationText>
+          <StationText position={[0, -0.1, 0.044]} fontSize={0.042} color="#E2E8F0" anchorX="center" anchorY="middle">
             Evacuation AI • Grade Predict
-          </Text>
-          <Text position={[0, -0.25, 0.044]} fontSize={0.034} color="#94A3B8" anchorX="center" anchorY="middle">
+          </StationText>
+          <StationText position={[0, -0.25, 0.044]} fontSize={0.034} color="#94A3B8" anchorX="center" anchorY="middle">
             {discoveredClues.includes("inspected-projects") ? "✓ EVIDENCE COLLECTED" : "● UNINSPECTED STATION"}
-          </Text>
+          </StationText>
         </group>
 
         {isProjectsHovered && activeStation !== "projects" && (
@@ -279,7 +284,7 @@ export default function InteractiveStations({
                     metalness={0.5}
                   />
                 </mesh>
-                <Text
+                <StationText
                   position={[0, 0.17, 0]}
                   fontSize={0.07}
                   color="#F3F1EC"
@@ -287,14 +292,14 @@ export default function InteractiveStations({
                   anchorY="middle"
                 >
                   {node.label}
-                </Text>
+                </StationText>
               </group>
             );
           })}
         </group>
 
         {/* Front Console Label */}
-        <Text
+        <StationText
           position={[-0.58, 0.62, 0]}
           rotation={[0, -Math.PI / 2, 0]}
           fontSize={0.08}
@@ -303,7 +308,7 @@ export default function InteractiveStations({
           anchorY="middle"
         >
           TECH STACK
-        </Text>
+        </StationText>
 
         {isStackHovered && activeStation !== "stack" && (
           <Html position={[0, 2.22, 0]} center distanceFactor={7}>
@@ -372,12 +377,12 @@ export default function InteractiveStations({
               <planeGeometry args={[0.48, 0.36]} />
               <meshStandardMaterial color="#252320" />
             </mesh>
-            <Text position={[0, 0.05, 0.026]} fontSize={0.062} color={plaque.color} anchorX="center" anchorY="middle">
+            <StationText position={[0, 0.05, 0.026]} fontSize={0.062} color={plaque.color} anchorX="center" anchorY="middle">
               {plaque.title}
-            </Text>
-            <Text position={[0, -0.06, 0.026]} fontSize={0.045} color="#F3F1EC" anchorX="center" anchorY="middle">
+            </StationText>
+            <StationText position={[0, -0.06, 0.026]} fontSize={0.045} color="#F3F1EC" anchorX="center" anchorY="middle">
               {plaque.sub}
-            </Text>
+            </StationText>
           </group>
         ))}
 
@@ -390,9 +395,9 @@ export default function InteractiveStations({
         ))}
 
         {/* Shelf Header */}
-        <Text position={[0, 2.86, -0.08]} fontSize={0.095} letterSpacing={0.12} color="#F3F1EC" anchorX="center" anchorY="middle">
+        <StationText position={[0, 2.86, -0.08]} fontSize={0.095} letterSpacing={0.12} color="#F3F1EC" anchorX="center" anchorY="middle">
           CAREER & AWARDS
-        </Text>
+        </StationText>
 
         {isCareerHovered && activeStation !== "career" && (
           <Html position={[0, 3.05, 0.1]} center distanceFactor={7}>
@@ -435,9 +440,9 @@ export default function InteractiveStations({
             emissiveIntensity={isRecsHovered ? 2.2 : 1.0}
           />
         </mesh>
-        <Text position={[0, 2.24, 0.055]} fontSize={0.09} letterSpacing={0.1} color="#F3F1EC" anchorX="center" anchorY="middle">
+        <StationText position={[0, 2.24, 0.055]} fontSize={0.09} letterSpacing={0.1} color="#F3F1EC" anchorX="center" anchorY="middle">
           RECOMMENDATIONS WALL
-        </Text>
+        </StationText>
 
         {/* Pinned Testimonial Note Cards */}
         {[
@@ -459,10 +464,10 @@ export default function InteractiveStations({
               <sphereGeometry args={[0.022, 10, 10]} />
               <meshStandardMaterial color="#FBBF24" metalness={0.85} roughness={0.2} />
             </mesh>
-            <Text position={[0, 0.05, 0.018]} fontSize={0.06} color="#F3F1EC" anchorX="center" anchorY="middle">
+            <StationText position={[0, 0.05, 0.018]} fontSize={0.06} color="#F3F1EC" anchorX="center" anchorY="middle">
               {card.name}
-            </Text>
-            <Text
+            </StationText>
+            <StationText
               position={[0, -0.09, 0.018]}
               fontSize={0.045}
               color={i === 2 ? "#FFF7ED" : "#F59E0B"}
@@ -470,7 +475,7 @@ export default function InteractiveStations({
               anchorY="middle"
             >
               {card.tag}
-            </Text>
+            </StationText>
           </group>
         ))}
 
@@ -520,18 +525,18 @@ export default function InteractiveStations({
             roughness={0.6}
           />
         </RoundedBox>
-        <Text position={[-0.68, 2.12, 0.04]} fontSize={0.072} color="#5EEAD4" anchorX="center" anchorY="middle">
+        <StationText position={[-0.68, 2.12, 0.04]} fontSize={0.072} color="#5EEAD4" anchorX="center" anchorY="middle">
           COMMUNITY
-        </Text>
-        <Text position={[-0.68, 1.88, 0.04]} fontSize={0.052} color="#F3F1EC" anchorX="center" anchorY="middle">
+        </StationText>
+        <StationText position={[-0.68, 1.88, 0.04]} fontSize={0.052} color="#F3F1EC" anchorX="center" anchorY="middle">
           Data Analytics PH
-        </Text>
-        <Text position={[-0.68, 1.69, 0.04]} fontSize={0.05} color="#D8D3C8" anchorX="center" anchorY="middle">
+        </StationText>
+        <StationText position={[-0.68, 1.69, 0.04]} fontSize={0.05} color="#D8D3C8" anchorX="center" anchorY="middle">
           Passerelles Numériques
-        </Text>
-        <Text position={[-0.68, 1.5, 0.04]} fontSize={0.05} color="#D97757" anchorX="center" anchorY="middle">
+        </StationText>
+        <StationText position={[-0.68, 1.5, 0.04]} fontSize={0.05} color="#D97757" anchorX="center" anchorY="middle">
           DEP × DataCamp
-        </Text>
+        </StationText>
 
         {/* Framed Guiding Principle Plaque (Jeremiah 29:11) + Beyond Coding */}
         <RoundedBox args={[1.18, 1.15, 0.06]} radius={0.025} position={[0.74, 1.75, 0]} castShadow>
@@ -542,18 +547,18 @@ export default function InteractiveStations({
             roughness={0.55}
           />
         </RoundedBox>
-        <Text position={[0.74, 2.12, 0.04]} fontSize={0.064} color="#FBBF24" anchorX="center" anchorY="middle">
+        <StationText position={[0.74, 2.12, 0.04]} fontSize={0.064} color="#FBBF24" anchorX="center" anchorY="middle">
           BEYOND CODING
-        </Text>
-        <Text position={[0.74, 1.82, 0.04]} fontSize={0.052} color="#F3F1EC" anchorX="center" anchorY="middle">
+        </StationText>
+        <StationText position={[0.74, 1.82, 0.04]} fontSize={0.052} color="#F3F1EC" anchorX="center" anchorY="middle">
           Run • Bike • Hike
-        </Text>
-        <Text position={[0.74, 1.62, 0.04]} fontSize={0.046} color="#D8D3C8" anchorX="center" anchorY="middle">
+        </StationText>
+        <StationText position={[0.74, 1.62, 0.04]} fontSize={0.046} color="#D8D3C8" anchorX="center" anchorY="middle">
           Church &amp; Volunteering
-        </Text>
-        <Text position={[0.74, 1.38, 0.04]} fontSize={0.046} color="#D97757" anchorX="center" anchorY="middle">
+        </StationText>
+        <StationText position={[0.74, 1.38, 0.04]} fontSize={0.046} color="#D97757" anchorX="center" anchorY="middle">
           — Jeremiah 29:11
-        </Text>
+        </StationText>
 
         {/* Warm accent bar */}
         <mesh position={[0, 2.46, 0.01]}>
@@ -618,7 +623,9 @@ export default function InteractiveStations({
               <meshStandardMaterial color="#FAF8F4" emissive="#FFF7ED" emissiveIntensity={0.2} />
             </mesh>
           </group>
-          <Sparkles count={18} scale={[0.7, 0.5, 0.7]} size={2.2} speed={0.5} color="#FBBF24" />
+          {!isMobile && (
+            <Sparkles count={18} scale={[0.7, 0.5, 0.7]} size={2.2} speed={0.5} color="#FBBF24" />
+          )}
         </group>
 
         {/* React Guided Learning Path Board on Front Wall behind podium */}
@@ -631,15 +638,15 @@ export default function InteractiveStations({
               roughness={0.5}
             />
           </RoundedBox>
-          <Text position={[0, 0.25, 0.04]} fontSize={0.085} color="#FBBF24" anchorX="center" anchorY="middle">
+          <StationText position={[0, 0.25, 0.04]} fontSize={0.085} color="#FBBF24" anchorX="center" anchorY="middle">
             BOOK OF ANSWERS ORACLE
-          </Text>
-          <Text position={[0, 0.02, 0.04]} fontSize={0.07} color="#61DAFB" anchorX="center" anchorY="middle">
+          </StationText>
+          <StationText position={[0, 0.02, 0.04]} fontSize={0.07} color="#61DAFB" anchorX="center" anchorY="middle">
             + REACT GUIDED LEARNING PATH
-          </Text>
-          <Text position={[0, -0.22, 0.04]} fontSize={0.048} color="#A09C92" anchorX="center" anchorY="middle">
+          </StationText>
+          <StationText position={[0, -0.22, 0.04]} fontSize={0.048} color="#A09C92" anchorX="center" anchorY="middle">
             Ask the Oracle • Browse Course • Security Audit
-          </Text>
+          </StationText>
         </group>
 
         {isOracleHovered && activeStation !== "oracle" && (

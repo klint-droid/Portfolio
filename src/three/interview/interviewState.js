@@ -527,3 +527,19 @@ export const DESK_COLLIDER = new THREE.Box2(
   new THREE.Vector2(-1.85, -2.55),
   new THREE.Vector2(1.85, -0.45)
 );
+
+/**
+ * Detects mobile / touch / low-memory devices so the WebGL scene switches
+ * to a crash-proof low-VRAM graphics profile automatically.
+ */
+export function detectMobileDevice() {
+  if (typeof window === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  const mobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+  const coarsePointer =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(pointer: coarse)").matches;
+  const narrowScreen = window.innerWidth <= 820;
+  const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4;
+  return mobileUA || (coarsePointer && narrowScreen) || (narrowScreen && lowMemory);
+}

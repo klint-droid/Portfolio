@@ -1,13 +1,11 @@
-import React, { Component, useState, useEffect, useCallback, useRef } from "react";
-import { FaPlay, FaCompass, FaDownload, FaEnvelope } from "react-icons/fa";
+import React, { Component, Suspense, lazy, useState, useEffect, useCallback, useRef } from "react";
+import { FaPlay, FaCompass, FaDownload, FaEnvelope, FaRedoAlt } from "react-icons/fa";
 import InterviewScene from "../three/interview/InterviewScene";
 import GameHUD from "../three/interview/ui/GameHUD";
 import DialogueBox from "../three/interview/ui/DialogueBox";
 import StationModal from "../three/interview/ui/StationModal";
 import VerdictModal from "../three/interview/ui/VerdictModal";
 import JobEvaluatorModal from "../three/interview/ui/JobEvaluatorModal";
-import WriteRecommendationModal from "../components/WriteRecommendationModal";
-import TelemetryModal from "../components/TelemetryModal";
 import {
   STATIONS,
   INITIAL_SCORECARD,
@@ -17,6 +15,9 @@ import {
 } from "../three/interview/interviewState";
 import { getKlintResponse, KLINT_PROFILE } from "../data/klintKnowledge";
 import { triggerConfetti } from "../utils/confetti";
+
+const WriteRecommendationModal = lazy(() => import("../components/WriteRecommendationModal"));
+const TelemetryModal = lazy(() => import("../components/TelemetryModal"));
 
 const INITIAL_WELCOME_TEXT =
   "Hey, welcome to my studio! I'm Klint Morales Ruales — Software Engineer Intern at Kyocera Document Solutions and Full-Stack Developer based in Cebu City. You're in the interviewer's seat today, so ask me anything below or open the chat icon on the right!";
@@ -112,6 +113,7 @@ export default function ThreePortfolio({ initialOpenRecommend = false }) {
   const [latestSubmittedRec, setLatestSubmittedRec] = useState(null);
   const [jdReport, setJdReport] = useState(null);
   const [isHired, setIsHired] = useState(false);
+  const [contextLost, setContextLost] = useState(false);
   const [toast, setToast] = useState(null);
   const [isTypingInput, setIsTypingInput] = useState(false);
 
@@ -537,6 +539,38 @@ export default function ThreePortfolio({ initialOpenRecommend = false }) {
     !isTelemetryOpen &&
     ((mode === "seated" && !isChatOpen) || isSpeaking || klintMood === "coffee");
 
+  if (contextLost) {
+    return (
+      <div className="w-screen h-screen bg-[#181816] text-[#F3F1EC] flex flex-col items-center justify-center p-6 text-center">
+        <div className="max-w-md space-y-4">
+          <h1 className="claude-font-serif text-3xl font-semibold">
+            3D Graphics Context Paused
+          </h1>
+          <p className="text-sm text-[#A09C92]">
+            Your device freed WebGL graphics memory. Tap below to reload the 3D studio or grab Klint&apos;s resume directly.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => window.location.reload()}
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#D97757] hover:bg-[#C26547] text-white font-semibold text-sm transition-colors cursor-pointer"
+            >
+              <FaRedoAlt size={12} />
+              <span>Reload 3D Studio</span>
+            </button>
+            <a
+              href={KLINT_PROFILE.resumeUrl}
+              download="Klint_Morales_Ruales_Resume.pdf"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#242320] hover:bg-[#312F2A] border border-[#3B3832] text-[#F3F1EC] font-semibold text-sm transition-colors"
+            >
+              <FaDownload size={12} />
+              <span>Download CV</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <WebGLErrorBoundary>
       <div className="relative w-screen h-screen overflow-hidden bg-[#121110] text-[#F3F1EC] select-none">
@@ -561,6 +595,7 @@ export default function ThreePortfolio({ initialOpenRecommend = false }) {
           onCoffeeClick={handleCoffeeClick}
           discoveredClues={discoveredClues}
           isTypingInput={isTypingInput}
+          onContextLost={() => setContextLost(true)}
         />
 
         {/* CINEMATIC TITLE OVERLAY (Before Entering) */}
@@ -666,25 +701,33 @@ export default function ThreePortfolio({ initialOpenRecommend = false }) {
           />
         )}
 
-        {/* WRITE RECOMMENDATION MODAL (Live Google Sheets Sync) */}
-        <WriteRecommendationModal
-          isOpen={isWriteRecOpen}
-          onClose={() => setIsWriteRecOpen(false)}
-          onSubmitted={(newRec) => {
-            setLatestSubmittedRec(newRec);
-            showToast(
-              "Recommendation Posted!",
-              `Thank you ${newRec?.name || ""}! Your endorsement is now live on the studio wall.`,
-              "⭐"
-            );
-          }}
-        />
+        {/* WRITE RECOMMENDATION MODAL (Live Google Sheets Sync, lazy-loaded) */}
+        {isWriteRecOpen && (
+          <Suspense fallback={null}>
+            <WriteRecommendationModal
+              isOpen={isWriteRecOpen}
+              onClose={() => setIsWriteRecOpen(false)}
+              onSubmitted={(newRec) => {
+                setLatestSubmittedRec(newRec);
+                showToast(
+                  "Recommendation Posted!",
+                  `Thank you ${newRec?.name || ""}! Your endorsement is now live on the studio wall.`,
+                  "⭐"
+                );
+              }}
+            />
+          </Suspense>
+        )}
 
-        {/* BROWSER TELEMETRY & SECURITY AUDIT MODAL */}
-        <TelemetryModal
-          isOpen={isTelemetryOpen}
-          onClose={() => setIsTelemetryOpen(false)}
-        />
+        {/* BROWSER TELEMETRY & SECURITY AUDIT MODAL (lazy-loaded) */}
+        {isTelemetryOpen && (
+          <Suspense fallback={null}>
+            <TelemetryModal
+              isOpen={isTelemetryOpen}
+              onClose={() => setIsTelemetryOpen(false)}
+            />
+          </Suspense>
+        )}
 
         {/* FINAL VERDICT / HIRED MODAL */}
         <VerdictModal
